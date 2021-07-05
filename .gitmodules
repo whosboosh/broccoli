@@ -1,0 +1,15 @@
+[submodule "Broccoli/vendor/imgui"]
+	path = Broccoli/vendor/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "Broccoli/vendor/glfw"]
+	path = Broccoli/vendor/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "Broccoli/vendor/assimp"]
+	path = Broccoli/vendor/assimp
+	url = https://github.com/assimp/assimp.git
+[submodule "Broccoli/vendor/glm"]
+	path = Broccoli/vendor/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "Broccoli/vendor/glad"]
+	path = Broccoli/vendor/glad
+	url = https://github.com/Dav1dde/glad.git
