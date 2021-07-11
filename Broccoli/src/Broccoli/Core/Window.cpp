@@ -1,4 +1,5 @@
-#include "Window.h"
+#include "Broccoli/Core/Window.h"
+#include "Broccoli/Renderer/RendererAPI.h"
 
 namespace Broccoli {
 
@@ -6,131 +7,32 @@ namespace Broccoli {
 
 	Window::Window(WindowSpecification windowSpec)
 	{
-		width = windowSpec.width;
-		height = windowSpec.height;
+		this->windowSpec = windowSpec;
 	}
 
-	void Window::enableOpenGL()
+	// Main window initialisation method
+	void Window::init()
 	{
-		std::cout << "opening open gl\n";
-		if (!isClosed)
+		if (!glfwInitialised)
 		{
-			glfwSetWindowShouldClose(mainWindow, GL_TRUE);
-			this->keys[1023] = { false };
-			this->keys[82] = { false }; // Reset key for toggling api
-			isClosed = true;
+			int status = glfwInit();
+			std::cout << "Failed to initialise GLFW " << status;
+			glfwInitialised = true;
 		}
-		else {
-			mouseFirstMoved = true;
-			if (!glfwInit())
-			{
-				printf("Error Initialising GLFW");
-				glfwTerminate();
-				return;
-			}
 
-			// Setup GLFW Windows Properties
-			// OpenGL version
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-			// Core Profile
-			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-			// Allow forward compatiblity
-			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-			// Enable multisampling buffer for MSAA
-			//glfwWindowHint(GLFW_SAMPLES, 4);
-
-			// Create the window
-			mainWindow = glfwCreateWindow(width, height, "OpenGL", NULL, NULL);
-			if (!mainWindow)
-			{
-				printf("Error creating GLFW window!");
-				glfwTerminate();
-				return;
-			}
-
-			// Get buffer size information
-			glfwGetFramebufferSize(mainWindow, &bufferWidth, &bufferHeight);
-
-			// Set the current context
-			glfwMakeContextCurrent(mainWindow);
-
-			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-			{
-				std::cout << "Failed to initialize GLAD" << std::endl;
-				return;
-			}
-
-			glEnable(GL_DEPTH_TEST);
-			//glEnable(GL_MULTISAMPLE);
-
-			// Create Viewport
-			glViewport(0, 0, bufferWidth, bufferHeight);
-
-			glfwSwapInterval(0); // Disable vsync
-
-			glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			glfwSetWindowUserPointer(mainWindow, this);
-			glfwSetCursorPosCallback(mainWindow, mouse_callback);
-			glfwSetKeyCallback(mainWindow, key_callback);
-			glfwSetFramebufferSizeCallback(mainWindow, framebuffer_size_callback);
-
-			isClosed = false;
-
-			// IMGUI context
-			IMGUI_CHECKVERSION();
-			ImGui::CreateContext();
-			ImGuiIO& io = ImGui::GetIO(); (void)io;
-			ImGui::StyleColorsDark();
-
-			// Setup Platform/Renderer backends
-			ImGui_ImplGlfw_InitForOpenGL(mainWindow, true);
-			ImGui_ImplOpenGL3_Init("#version 330");
-		}
-	}
-
-	void Window::enableVulkan()
-	{
-		std::cout << "opening vulkan \n";
-		if (!isClosed)
+		if (RendererAPI::getCurrent() == RendererAPIType::Vulkan)
 		{
-			glfwSetWindowShouldClose(mainWindow, GL_TRUE);
-			this->keys[1023] = { false };
-			this->keys[82] = { false }; // Reset key for toggling api
-			isClosed = true;
-		}
-		else {
-			mouseFirstMoved = true;
-			// Initialse GLFW
-			if (!glfwInit())
-			{
-				printf("Error Initialising GLFW");
-				glfwTerminate();
-				return;
-			}
-
-			// Set GLFW to not work with opengl
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-			glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-
-			mainWindow = glfwCreateWindow(width, height, "Vulkan", nullptr, nullptr);
-			if (!mainWindow)
-			{
-				printf("Error creating GLFW window!");
-				glfwTerminate();
-				return;
-			}
-
-			glfwSetWindowUserPointer(mainWindow, this);
-			glfwSetFramebufferSizeCallback(mainWindow, framebuffer_size_callback);
-			glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			glfwSetCursorPosCallback(mainWindow, mouse_callback);
-			glfwSetKeyCallback(mainWindow, key_callback);
-
-			isClosed = false;
 		}
+		glfwCreateWindow(windowSpec.width, windowSpec.height, windowSpec.title.c_str(), nullptr, nullptr);
+
+		// Creating renderer context
+		rendererContext = RendererContext::create();
+		//rendererContext->init();
+
+
 	}
+
 
 	float Window::getXChange()
 	{
@@ -193,6 +95,25 @@ namespace Broccoli {
 
 		theWindow->lastX = xpos;
 		theWindow->lastY = ypos;
+	}
+
+	void Window::processEvents()
+	{
+		glfwPollEvents();
+	}
+
+	std::pair<uint32_t, uint32_t> Window::getWindowPos()
+	{
+		int x, y;
+		glfwGetWindowPos(mainWindow, &x, &y);
+		return { x, y };
+	}
+
+	void Window::setVsync(bool param)
+	{
+		windowSpec.vsync = param;
+		// TODO, if opengl then set glfwSwapInterval(1); for on
+		// Vulkan custom implementation
 	}
 
 	Window::~Window()

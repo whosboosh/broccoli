@@ -15,6 +15,8 @@
 #endif
 #include <GLFW/glfw3.h>
 
+#include "Broccoli/Renderer/RendererContext.h"
+
 namespace Broccoli {
 
 	struct KeyAction {
@@ -40,52 +42,50 @@ namespace Broccoli {
 		Window();
 		Window(WindowSpecification windowSpec);
 
-		void enableOpenGL();
-		void enableVulkan();
-
-		bool getShouldClose() { return glfwWindowShouldClose(mainWindow); }
-		void swapBuffers() { glfwSwapBuffers(mainWindow); }
-		KeyAction* getKeys() { return keys; }
-		float getXChange();
-		float getYChange();
-
-		// OpenGL specific functions
-		int getBufferWidth() { return bufferWidth; }
-		int getBufferHeight() { return bufferHeight; }
-
 		GLFWwindow* getWindow() { return mainWindow; }
 
-		void setIsClosed(bool isClosed) { this->isClosed = isClosed; }
-		void setShouldSwitch(bool shouldSwitch) { this->shouldSwitch = shouldSwitch; }
-		bool getIsClosed() { return isClosed; }
-		bool getShouldSwitch() { return shouldSwitch; }
-		bool getIsControllingGame() { return isControllingGame; }
+		// New refcactor methods
+		void init();
+		void processEvents();
+		void swapBuffers() { glfwSwapBuffers(mainWindow); }
+
+		// Get the current window size
+		std::pair<uint32_t, uint32_t> getSize() { return { width, height }; }
+		std::pair<uint32_t, uint32_t> getWindowPos();
+
+		void setVsync(bool param);
+		bool isVsync() { return windowSpec.vsync; }
+
+		// Mouse functions
+		float getXChange();
+		float getYChange();
+		KeyAction* getKeys() { return keys; }
 
 		~Window();
 	private:
 		GLFWwindow* mainWindow;
+		
+		WindowSpecification windowSpec;
 
+		bool glfwInitialised = false;
 		bool isControllingGame = true;
-
-		bool isClosed = true;
-		bool shouldSwitch = false;
-
 		int width, height;
-
-		// OpenGL specific
-		int bufferWidth, bufferHeight;
 
 		// Global
 		KeyAction keys[1024] = { 0, 0 };
 
+		// Mouse callback data
+		bool mouseFirstMoved = true;
 		float lastX;
 		float lastY;
 		float xChange = 0.0f;
 		float yChange = 0.0f;
 
-		bool mouseFirstMoved = true;
 		static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 		static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
+
+		Ref<RendererContext> rendererContext;
 	};
 }

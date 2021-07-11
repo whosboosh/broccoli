@@ -20,21 +20,24 @@
 namespace Broccoli {
 	Application::Application(int argc, char** argvv)
 	{
-		Broccoli::ApplicationInfo info;
-		info.Name = "Cloud Gaming Engine";
-		info.windowHeight = 900;
-		info.windowWidth = 1600;
-		info.fullscreen = true;
-		info.vsync = false;
+		appInfo.Name = "Cloud Gaming Engine";
+		appInfo.windowHeight = 900;
+		appInfo.windowWidth = 1600;
+		appInfo.fullscreen = true;
+		appInfo.vsync = false;
 
 		WindowSpecification windowSpec;
 		windowSpec.title = appInfo.Name;
 		windowSpec.width = appInfo.windowWidth;
 		windowSpec.height = appInfo.windowHeight;
 		windowSpec.fullscreen = appInfo.fullscreen;
+		windowSpec.vsync = appInfo.vsync;
 
 		window = new Window(windowSpec);
-		window->enableVulkan();
+		window->init();
+		window->setVsync(false);
+
+		// Initialise renderer and ImGui
 	}
 
 
@@ -42,12 +45,10 @@ namespace Broccoli {
 	{
 		while (isRunning)
 		{
-			frameCounter = 0;
-
 			//glfwPollEvents
 			if (!isMinimised)
 			{
-				std::cout << "New Frame";
+				std::cout << "New Frame " << frameCounter << "\n";
 				// Begin render frame
 				
 				// Submit imgui

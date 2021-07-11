@@ -49,7 +49,8 @@ namespace Broccoli {
 
 		if (keys[GLFW_KEY_R].key)
 		{
-			window->enableOpenGL();
+			// TODO: Switch renderer on hotkey
+			//window->enableOpenGL();
 		}
 
 		if (keys[GLFW_KEY_LEFT_SHIFT].key && keys[GLFW_KEY_LEFT_SHIFT].action == GLFW_PRESS)
