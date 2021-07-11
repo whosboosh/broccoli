@@ -16,7 +16,12 @@ namespace Broccoli {
 		if (!glfwInitialised)
 		{
 			int status = glfwInit();
-			std::cout << "Failed to initialise GLFW " << status;
+			if (!status)
+			{
+				std::cout << "Failed to initialise GLFW " << status;
+				glfwTerminate();
+				return;
+			}
 			glfwInitialised = true;
 		}
 
@@ -24,15 +29,25 @@ namespace Broccoli {
 		{
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		}
-		glfwCreateWindow(windowSpec.width, windowSpec.height, windowSpec.title.c_str(), nullptr, nullptr);
+		mainWindow = glfwCreateWindow(windowSpec.width, windowSpec.height, windowSpec.title.c_str(), nullptr, nullptr);
+		if (!mainWindow)
+		{
+			std::cout << "Error creating GLFW window!";
+			glfwTerminate();
+			return;
+		}
 
 		// Creating renderer context
 		rendererContext = RendererContext::create();
 		rendererContext->init();
 
+		glfwSetWindowUserPointer(mainWindow, this);
+		glfwSetFramebufferSizeCallback(mainWindow, framebuffer_size_callback);
+		glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetCursorPosCallback(mainWindow, mouse_callback);
+		glfwSetKeyCallback(mainWindow, key_callback);
 
 	}
-
 
 	float Window::getXChange()
 	{
@@ -112,8 +127,11 @@ namespace Broccoli {
 	void Window::setVsync(bool param)
 	{
 		windowSpec.vsync = param;
-		// TODO, if opengl then set glfwSwapInterval(1); for on
-		// Vulkan custom implementation
+		if (RendererAPI::getCurrent() == RendererAPIType::OpenGL)
+		{
+			param == 1 ? glfwSwapInterval(1) : glfwSwapInterval(0);
+		}
+		// TODO: Vulkan custom implementation for vsync
 	}
 
 	Window::~Window()

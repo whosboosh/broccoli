@@ -37,7 +37,7 @@ namespace Broccoli {
 		window->init();
 		window->setVsync(false);
 
-		// Initialise renderer and ImGui
+		// Initialise renderer (shaders etc) and ImGui
 	}
 
 
@@ -45,7 +45,7 @@ namespace Broccoli {
 	{
 		while (isRunning)
 		{
-			//glfwPollEvents
+			window->processEvents();
 			if (!isMinimised)
 			{
 				std::cout << "New Frame " << frameCounter << "\n";
