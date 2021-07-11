@@ -30,6 +30,10 @@ namespace Broccoli {
 		Ref() : instance(nullptr)
 		{
 		}
+		~Ref()
+		{
+			decreaseRef();
+		}
 
 		Ref(std::nullptr_t n) :instance(instance)
 		{
@@ -53,6 +57,46 @@ namespace Broccoli {
 		{
 			return Ref<T>(new T(std::forward<Args>(args)...));
 		}
+
+		
+		template<typename T2>
+		Ref(Ref<T2>&& other)
+		{
+			instance = (T*)other.instance;
+			other.instance = nullptr;
+		}
+
+		Ref& operator=(std::nullptr_t)
+		{
+			decreaseRef();
+			instance = nullptr;
+			return *this;
+		}
+
+		Ref& operator=(const Ref<T>& other)
+		{
+			other.increaseRef();
+			decreaseRef();
+
+			instance = other.instance;
+			return *this;
+		}
+		
+		template<typename T2>
+		Ref& operator=(Ref<T2>&& other)
+		{
+			decreaseRef();
+
+			instance = other.instance;
+			other.instance = nullptr;
+			return *this;
+		}
+
+		T* operator->() { return instance; }
+		const T* operator->() const { return instance; }
+
+		T& operator*() { return *instance; }
+		const T& operator*() const { return *instance; }
 
 	private:
 		void increaseRef() const
