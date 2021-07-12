@@ -1,4 +1,6 @@
 ﻿  VulkanContext.cpp
-  LINK : C:\Users\natha\source\repos\Broccoli\Debug\Broccoli.exe not found or not built by the last incremental link; performing full link
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  VulkanDevice.cpp
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Platform\Vulkan\VulkanDevice.cpp(114,61): warning C4805: '==': unsafe mix of type 'VkBool32' and type 'bool' in operation
+  RendererContext.cpp
+  Generating Code...
   Broccoli.vcxproj -> C:\Users\natha\source\repos\Broccoli\Debug\Broccoli.exe

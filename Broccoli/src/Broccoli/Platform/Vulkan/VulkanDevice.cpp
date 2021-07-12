@@ -76,12 +76,8 @@ namespace Broccoli {
 		deviceIndices = getQueueFamilies(device);
 		std::cout << "Vulkan physical device queue families fetched...\n";
 
-
 		// Check that the device extentions are valid
-		const std::vector<const char*> deviceExtensions = {
-			VK_KHR_SWAPCHAIN_EXTENSION_NAME
-		};
-
+		// deviceExtensions defined in VulkanDevice.h
 		bool extensionsSupported = checkDeviceExtensionSupport(device, deviceExtensions);
 		std::cout << "Vulkan physical device extention support: " << extensionsSupported << "\n";
 		std::cout << "Vulkan device indicies valid: " << deviceIndices.isValid() << "\n";
@@ -176,6 +172,42 @@ namespace Broccoli {
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<int> queueFamilyIndicies = { physicalDevice->getQueueFamilyIndicies().graphicsFamily, physicalDevice->getQueueFamilyIndicies().presentationFamily }; // If they both are the same value, only 1 is stored
 	
+		// Queues the logical device needs to create and info to do so
+		for (int queueFamilyIndex : queueFamilyIndicies)
+		{
+			VkDeviceQueueCreateInfo queueCreateInfo = {};
+			queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+			queueCreateInfo.queueFamilyIndex = queueFamilyIndex; // Index of the family to create a queue from
+			queueCreateInfo.queueCount = 1;						// Number of queues to create
+			float priority = 1.0f;
+			queueCreateInfo.pQueuePriorities = &priority;		// Vulkan needs to know how to handle multiple queue families, (1 is the highest priority)
+
+			queueCreateInfos.push_back(queueCreateInfo);
+		}
+
+		// Information to create logical device, (sometimes called "device")
+		VkDeviceCreateInfo deviceCreateInfo = {};
+		deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+		deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());  // Number of Queue Create Infos
+		deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();							 // List of Queue Create Infos so device can create required queues
+		deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size()); // Number of enabled logical device extensions
+		deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();						 // List of enabled logical device extensions
+
+		// Physical device features the logical device will be using
+		VkPhysicalDeviceFeatures deviceFeatures = {};
+		deviceFeatures.samplerAnisotropy = VK_TRUE; // Enable anisotropy
+		//deviceFeatures.depthClamp = VK_TRUE; // use if using depthClampEnable to true
+		deviceCreateInfo.pEnabledFeatures = &deviceFeatures; // Physical Device features Logical Device will use
+
+		// Create the logical device for the given phyiscal device
+		VkResult result = vkCreateDevice(physicalDevice->getPhysicalDevice(), &deviceCreateInfo, nullptr, &logicalDevice);
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to create a Logical Device");
+		}
+
+		// Queues are created at the same time as the device, we need a handle to queues
+		vkGetDeviceQueue(logicalDevice, physicalDevice->getQueueFamilyIndicies().graphicsFamily, 0, &graphicsQueue); // From Logical Device, of given Queue Family, of Queue Index(0). Store queue reference in the graphicsQueue
+		vkGetDeviceQueue(logicalDevice, physicalDevice->getQueueFamilyIndicies().presentationFamily, 0, &presentationQueue);
 	}
 
 	VulkanLogicalDevice::~VulkanLogicalDevice()

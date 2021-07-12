@@ -26,6 +26,11 @@ namespace Broccoli {
 		}
 	};
 
+	// Specify device extensions we want to support
+	const std::vector<const char*> deviceExtensions = {
+		VK_KHR_SWAPCHAIN_EXTENSION_NAME
+	};
+
 	// Provides functionality for creating vulkan device, logical and physical device, device features, queues and buffers
 	class VulkanPhysicalDevice : public RefCounted
 	{
@@ -61,6 +66,9 @@ namespace Broccoli {
 		~VulkanLogicalDevice();
 	private:
 		VkDevice logicalDevice;
+
+		VkQueue graphicsQueue;
+		VkQueue presentationQueue;
 
 	};
 
