@@ -88,11 +88,13 @@ namespace Broccoli {
 
 		// Call to VulkanValidation, create the debug messenger for debug callbacks
 		setupDebugMessenger();
+		std::cout << "Vulkan validation layers created...\n";
 
 
 		// Create the surface (Creating a surface create info struct, specific to GLFW window type) - returns result
 		result = glfwCreateWindowSurface(VulkanContext::getInstance(), windowHandle, nullptr, &surface);
 		if (result != VK_SUCCESS) throw std::runtime_error("Failed to create surface");
+		std::cout << "Vulkan surface creation successful\n";
 
 		// Create the vulkan devices (logical and physical)
 		physicalDevice = Ref<VulkanPhysicalDevice>::create();

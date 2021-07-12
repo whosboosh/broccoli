@@ -48,7 +48,7 @@ namespace Broccoli {
 			window->processEvents();
 			if (!isMinimised)
 			{
-				std::cout << "New Frame " << frameCounter << "\n";
+				//std::cout << "New Frame " << frameCounter << "\n";
 				// Begin render frame
 				
 				// Submit imgui

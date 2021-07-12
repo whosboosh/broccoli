@@ -208,6 +208,8 @@ namespace Broccoli {
 		// Queues are created at the same time as the device, we need a handle to queues
 		vkGetDeviceQueue(logicalDevice, physicalDevice->getQueueFamilyIndicies().graphicsFamily, 0, &graphicsQueue); // From Logical Device, of given Queue Family, of Queue Index(0). Store queue reference in the graphicsQueue
 		vkGetDeviceQueue(logicalDevice, physicalDevice->getQueueFamilyIndicies().presentationFamily, 0, &presentationQueue);
+
+		std::cout << "Vulkan Logical device creation successful\n";
 	}
 
 	VulkanLogicalDevice::~VulkanLogicalDevice()
