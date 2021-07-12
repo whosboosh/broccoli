@@ -1,13 +1,12 @@
 #include "VulkanContext.h"
 
+#include "VulkanValidation.h"
+
+// Vendor
+#include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 
-#include "Broccoli/Utilities/VulkanInitializers.hpp"
-#include "Broccoli/Platform/Vulkan/VulkanValidation.h"
-
 namespace Broccoli {
-
-
 
 	VulkanContext::VulkanContext()
 	{
@@ -27,9 +26,18 @@ namespace Broccoli {
 
 	}
 
-
-	void VulkanContext::createInstance()
+	void VulkanContext::init()
 	{
+		std::cout << "Vulkan Context Creation starting\n";
+
+		// Setup Vulkan
+		if (!glfwVulkanSupported())
+		{
+			std::cout << "GLFW: Vulkan Not Supported\n";
+			return;
+		}
+
+		// Create the vulkan instance and validation layers
 		// APP INFO
 		VkApplicationInfo appInfo = {};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -79,27 +87,12 @@ namespace Broccoli {
 		{
 			throw std::runtime_error("Failed to create a Vulkan Instance");
 		}
-		
+
 		// Call to VulkanValidation, create the debug messenger for debug callbacks
 		setupDebugMessenger();
-	}
 
-	void VulkanContext::init()
-	{
-		std::cout << "Vulkan running!";
-
-		// Setup Vulkan
-		if (!glfwVulkanSupported())
-		{
-			std::cout << "GLFW: Vulkan Not Supported\n";
-			return;
-		}
-
-		// Validation layers
-
-		// Instance and surface creation
-
-
+		// Create the vulkan devices (logical and physical)
+		physicalDevice = VulkanPhysicalDevice::selectDevice();
 	}
 
 }

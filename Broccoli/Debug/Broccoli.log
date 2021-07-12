@@ -1,16 +1,5 @@
-﻿  Application.cpp
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Application.cpp(59,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  Camera.cpp
-  Window.cpp
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(104,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(105,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(108,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(109,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(111,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(112,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-  EntryPoint.cpp
-  OpenGLContext.cpp
-  VulkanContext.cpp
+﻿  VulkanContext.cpp
+  VulkanDevice.cpp
   RendererContext.cpp
   Generating Code...
   Broccoli.vcxproj -> C:\Users\natha\source\repos\Broccoli\Debug\Broccoli.exe

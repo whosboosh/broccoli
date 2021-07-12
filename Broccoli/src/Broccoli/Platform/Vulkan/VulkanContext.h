@@ -1,34 +1,30 @@
 #pragma once
 
+// Project dependencies
 #include "Broccoli/Renderer/RendererContext.h"
 
-#include <iostream>
-#include <vector>
+#include "vulkan/vulkan.h"
 
-#include <vulkan/vulkan.h>
+#include "VulkanDevice.h"
+#include "Broccoli/Utilities/VulkanInitializers.hpp"
 
 namespace Broccoli {
-
-	struct VulkanDevice {
-		VkPhysicalDevice physicalDevice;
-		VkDevice logicalDevice;
-	};
 
 	class VulkanContext : public RendererContext
 	{
 	public:
 		VulkanContext();
-		virtual ~VulkanContext();
+		~VulkanContext();
 	
-		virtual VulkanDevice getDevice() { return mainDevice; };
+		//Ref<VulkanLogicalDevice> getLogicalDevice() { return logicalDevice; };
 		static VkInstance getInstance() { return mainInstance; };
-
-		virtual void createInstance();
 
 		virtual void init() override;
 
 	private:
-		VulkanDevice mainDevice;
+		Ref<VulkanPhysicalDevice> physicalDevice;
+		Ref<VulkanLogicalDevice> logicalDevice;
+
 		inline static VkInstance mainInstance;
 	};
 }

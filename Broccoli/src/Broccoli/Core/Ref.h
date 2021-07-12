@@ -8,48 +8,125 @@ namespace Broccoli {
 	class RefCounted
 	{
 	public:
-		void incrementRefCount() const
+		void IncRefCount() const
 		{
-			refCount++;
+			m_RefCount++;
 		}
-		void decreaseRefCount() const
+		void DecRefCount() const
 		{
-			refCount--;
+			m_RefCount--;
 		}
 
-		uint32_t getRefCount() const { return refCount; }
-
+		uint32_t GetRefCount() const { return m_RefCount; }
 	private:
-		mutable uint32_t refCount = 0;
+		mutable uint32_t m_RefCount = 0; // TODO: atomic
 	};
 
 	template<typename T>
 	class Ref
 	{
 	public:
-		Ref() : instance(nullptr)
-		{
-		}
-		~Ref()
-		{
-			decreaseRef();
-		}
-
-		Ref(std::nullptr_t n) :instance(instance)
+		Ref()
+			: m_Instance(nullptr)
 		{
 		}
 
-		Ref(T* instance) : instance(instance)
+		Ref(std::nullptr_t n)
+			: m_Instance(nullptr)
 		{
-			static_assert(std::is_base_of<RefCounted, T>::value, "Class is not RefCounted");
-			increaseRef();
+		}
+
+		Ref(T* instance)
+			: m_Instance(instance)
+		{
+			static_assert(std::is_base_of<RefCounted, T>::value, "Class is not RefCounted!");
+
+			IncRef();
 		}
 
 		template<typename T2>
 		Ref(const Ref<T2>& other)
 		{
-			instance = (T*)other.instance;
-			increaseRef();
+			m_Instance = (T*)other.m_Instance;
+			IncRef();
+		}
+
+		template<typename T2>
+		Ref(Ref<T2>&& other)
+		{
+			m_Instance = (T*)other.m_Instance;
+			other.m_Instance = nullptr;
+		}
+
+		~Ref()
+		{
+			DecRef();
+		}
+
+		Ref(const Ref<T>& other)
+			: m_Instance(other.m_Instance)
+		{
+			IncRef();
+		}
+
+		Ref& operator=(std::nullptr_t)
+		{
+			DecRef();
+			m_Instance = nullptr;
+			return *this;
+		}
+
+		Ref& operator=(const Ref<T>& other)
+		{
+			other.IncRef();
+			DecRef();
+
+			m_Instance = other.m_Instance;
+			return *this;
+		}
+
+		template<typename T2>
+		Ref& operator=(const Ref<T2>& other)
+		{
+			other.IncRef();
+			DecRef();
+
+			m_Instance = other.m_Instance;
+			return *this;
+		}
+
+		template<typename T2>
+		Ref& operator=(Ref<T2>&& other)
+		{
+			DecRef();
+
+			m_Instance = other.m_Instance;
+			other.m_Instance = nullptr;
+			return *this;
+		}
+
+		operator bool() { return m_Instance != nullptr; }
+		operator bool() const { return m_Instance != nullptr; }
+
+		T* operator->() { return m_Instance; }
+		const T* operator->() const { return m_Instance; }
+
+		T& operator*() { return *m_Instance; }
+		const T& operator*() const { return *m_Instance; }
+
+		T* Raw() { return  m_Instance; }
+		const T* Raw() const { return  m_Instance; }
+
+		void Reset(T* instance = nullptr)
+		{
+			DecRef();
+			m_Instance = instance;
+		}
+
+		template<typename T2>
+		Ref<T2> As() const
+		{
+			return Ref<T2>(*this);
 		}
 
 		template<typename... Args>
@@ -58,71 +135,45 @@ namespace Broccoli {
 			return Ref<T>(new T(std::forward<Args>(args)...));
 		}
 
-		
-		template<typename T2>
-		Ref(Ref<T2>&& other)
+		bool operator==(const Ref<T>& other) const
 		{
-			instance = (T*)other.instance;
-			other.instance = nullptr;
+			return m_Instance == other.m_Instance;
 		}
 
-		Ref& operator=(std::nullptr_t)
+		bool operator!=(const Ref<T>& other) const
 		{
-			decreaseRef();
-			instance = nullptr;
-			return *this;
+			return !(*this == other);
 		}
 
-		Ref& operator=(const Ref<T>& other)
+		bool EqualsObject(const Ref<T>& other)
 		{
-			other.increaseRef();
-			decreaseRef();
+			if (!m_Instance || !other.m_Instance)
+				return false;
 
-			instance = other.instance;
-			return *this;
+			return *m_Instance == *other.m_Instance;
 		}
-		
-		template<typename T2>
-		Ref& operator=(Ref<T2>&& other)
-		{
-			decreaseRef();
-
-			instance = other.instance;
-			other.instance = nullptr;
-			return *this;
-		}
-
-		T* operator->() { return instance; }
-		const T* operator->() const { return instance; }
-
-		T& operator*() { return *instance; }
-		const T& operator*() const { return *instance; }
-
 	private:
-		void increaseRef() const
+		void IncRef() const
 		{
-			if (instance)
-			{
-				instance->incrementRefCount();
-			}
+			if (m_Instance)
+				m_Instance->IncRefCount();
 		}
 
-		void decreaseRef() const
+		void DecRef() const
 		{
-			if (instance)
+			if (m_Instance)
 			{
-				instance->decreaseRefCount();
-				if (instance->getRefCount() == 0)
+				m_Instance->DecRefCount();
+				if (m_Instance->GetRefCount() == 0)
 				{
-					delete instance;
-					instance = nullptr;
+					delete m_Instance;
+					m_Instance = nullptr;
 				}
 			}
 		}
 
-	private:
 		template<class T2>
 		friend class Ref;
-		mutable T* instance;
+		mutable T* m_Instance;
 	};
 }

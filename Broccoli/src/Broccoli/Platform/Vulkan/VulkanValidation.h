@@ -1,8 +1,11 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
+#include "VulkanContext.h"
 
-#include "Broccoli/Platform/Vulkan/VulkanContext.h"
+#include <vulkan/vulkan.h>
+#include <GLFW/glfw3.h>
+
+#include <iostream>
 
 // Functions in this file are responsible for providing vulkan with necessary validation layers for debugging
 namespace Broccoli {

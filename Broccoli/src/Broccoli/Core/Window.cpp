@@ -41,6 +41,8 @@ namespace Broccoli {
 		rendererContext = RendererContext::create();
 		rendererContext->init();
 
+		// Create the swapchain including surface initialisation
+
 		glfwSetWindowUserPointer(mainWindow, this);
 		glfwSetFramebufferSizeCallback(mainWindow, framebuffer_size_callback);
 		glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
