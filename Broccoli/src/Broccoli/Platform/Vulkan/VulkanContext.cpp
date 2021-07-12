@@ -2,8 +2,6 @@
 
 #include "VulkanValidation.h"
 
-// Vendor
-#include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 
 namespace Broccoli {
@@ -26,7 +24,7 @@ namespace Broccoli {
 
 	}
 
-	void VulkanContext::init()
+	void VulkanContext::init(GLFWwindow* windowHandle)
 	{
 		std::cout << "Vulkan Context Creation starting\n";
 
@@ -91,8 +89,14 @@ namespace Broccoli {
 		// Call to VulkanValidation, create the debug messenger for debug callbacks
 		setupDebugMessenger();
 
+
+		// Create the surface (Creating a surface create info struct, specific to GLFW window type) - returns result
+		result = glfwCreateWindowSurface(VulkanContext::getInstance(), windowHandle, nullptr, &surface);
+		if (result != VK_SUCCESS) throw std::runtime_error("Failed to create surface");
+
 		// Create the vulkan devices (logical and physical)
-		physicalDevice = VulkanPhysicalDevice::selectDevice();
+		physicalDevice = Ref<VulkanPhysicalDevice>::create();
+		logicalDevice = Ref<VulkanLogicalDevice>::create(physicalDevice);
 	}
 
 }

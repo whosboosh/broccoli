@@ -2,6 +2,8 @@
 
 #include "Broccoli/Core/Ref.h"
 
+struct GLFWwindow;
+
 namespace Broccoli {
 	class RendererContext : public RefCounted
 	{
@@ -9,7 +11,7 @@ namespace Broccoli {
 		RendererContext() = default;
 		virtual ~RendererContext() = default;
 
-		virtual void init() = 0;
+		virtual void init(GLFWwindow* windowHandle) = 0;
 
 		static Ref<RendererContext> create();
 	};

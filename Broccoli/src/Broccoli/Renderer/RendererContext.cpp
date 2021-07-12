@@ -7,6 +7,8 @@
 #include "Broccoli/Platform/OpenGL/OpenGLContext.h"
 #include "Broccoli/Platform/Vulkan//VulkanContext.h"
 
+#include <GLFW/glfw3.h>
+
 namespace Broccoli {
 	Ref<RendererContext> RendererContext::create()
 	{

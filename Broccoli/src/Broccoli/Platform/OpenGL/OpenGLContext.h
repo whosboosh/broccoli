@@ -2,8 +2,7 @@
 
 #include "Broccoli/Renderer/RendererContext.h"
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+struct GLFWwindow;
 
 namespace Broccoli {
 	class OpenGLContext : public RendererContext
@@ -12,7 +11,7 @@ namespace Broccoli {
 		OpenGLContext();
 		virtual ~OpenGLContext();
 
-		virtual void init() override;
+		virtual void init(GLFWwindow* windowHandle) override;
 
 	private:
 		GLFWwindow* windowHandle;

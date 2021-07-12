@@ -1,5 +1,8 @@
 #include "OpenGLContext.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include <iostream>
 
 namespace Broccoli {
@@ -10,7 +13,8 @@ namespace Broccoli {
 	Broccoli::OpenGLContext::~OpenGLContext()
 	{
 	}
-	void OpenGLContext::init()
+
+	void OpenGLContext::init(GLFWwindow* windowHandle)
 	{
 		glfwMakeContextCurrent(windowHandle);
 

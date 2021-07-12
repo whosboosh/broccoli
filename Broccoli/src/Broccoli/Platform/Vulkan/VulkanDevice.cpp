@@ -3,6 +3,8 @@
 // Same directory platform includes
 #include "VulkanContext.h"
 
+#include <set>
+
 namespace Broccoli {
 	VulkanPhysicalDevice::VulkanPhysicalDevice()
 	{
@@ -109,6 +111,16 @@ namespace Broccoli {
 				indicies.graphicsFamily = i; // If queue family is valid, get the index
 			}
 
+			// Check if the queue family supports presentation
+			VkBool32 presentationSupport = false;
+			vkGetPhysicalDeviceSurfaceSupportKHR(device, i, VulkanContext::getSurface(), &presentationSupport);
+			// Check if queue is presentation type (can be both graphics and presentation)
+			if (queueFamily.queueCount > 0 && presentationSupport == true)
+			{
+				indicies.presentationFamily = i;
+			}
+
+
 			// Check if the queue family indicies are in a valid state. Break
 			if (indicies.isValid()) break;
 			i++;
@@ -159,9 +171,11 @@ namespace Broccoli {
 		return temp;
 	}
 
-
-	VulkanLogicalDevice::VulkanLogicalDevice()
+	VulkanLogicalDevice::VulkanLogicalDevice(const Ref<VulkanPhysicalDevice>& physicalDevice)
 	{
+		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+		std::set<int> queueFamilyIndicies = { physicalDevice->getQueueFamilyIndicies().graphicsFamily, physicalDevice->getQueueFamilyIndicies().presentationFamily }; // If they both are the same value, only 1 is stored
+	
 	}
 
 	VulkanLogicalDevice::~VulkanLogicalDevice()

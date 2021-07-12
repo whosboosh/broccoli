@@ -12,14 +12,17 @@
 #include <iostream>
 #include <vector>
 
+struct GLFWwindow;
+
 namespace Broccoli {
 	
 	// Indicies (locations) of Queue Families (if they exist at all)
 	struct QueueFamilyIndicies {
 		int graphicsFamily = -1; // Location of Graphics Queue Family
+		int presentationFamily = -1;
 		bool isValid()
 		{
-			return graphicsFamily >= 0;
+			return graphicsFamily >= 0 && presentationFamily >= 0;
 		}
 	};
 
@@ -39,6 +42,7 @@ namespace Broccoli {
 		VkPhysicalDevice getPhysicalDevice() const { return physicalDevice; }
 		const QueueFamilyIndicies& getQueueFamilyIndicies() const { return deviceIndices; }
 		const VkPhysicalDeviceProperties& getPhysicalDeviceProperties() const { return deviceProperties; }
+		const VkPhysicalDeviceFeatures& getPhysicalDeviceFeatures() const { return deviceFeatures; }
 
 	private:
 		VkPhysicalDevice physicalDevice = nullptr;
@@ -53,10 +57,11 @@ namespace Broccoli {
 	class VulkanLogicalDevice : public RefCounted
 	{
 	public:
-		VulkanLogicalDevice();
+		VulkanLogicalDevice(const Ref<VulkanPhysicalDevice>& physicalDevice);
 		~VulkanLogicalDevice();
 	private:
 		VkDevice logicalDevice;
+
 	};
 
 }

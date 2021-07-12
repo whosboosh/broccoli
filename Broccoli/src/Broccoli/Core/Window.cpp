@@ -39,7 +39,7 @@ namespace Broccoli {
 
 		// Creating renderer context
 		rendererContext = RendererContext::create();
-		rendererContext->init();
+		rendererContext->init(mainWindow);
 
 		// Create the swapchain including surface initialisation
 

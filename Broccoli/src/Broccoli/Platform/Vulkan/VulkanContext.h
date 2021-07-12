@@ -8,6 +8,11 @@
 #include "VulkanDevice.h"
 #include "Broccoli/Utilities/VulkanInitializers.hpp"
 
+// Vendor
+#include <vulkan/vulkan.h>
+
+struct GLFWwindow;
+
 namespace Broccoli {
 
 	class VulkanContext : public RendererContext
@@ -18,13 +23,15 @@ namespace Broccoli {
 	
 		//Ref<VulkanLogicalDevice> getLogicalDevice() { return logicalDevice; };
 		static VkInstance getInstance() { return mainInstance; };
+		static VkSurfaceKHR getSurface() { return surface; }
 
-		virtual void init() override;
+		virtual void init(GLFWwindow* windowHandle) override;
 
 	private:
 		Ref<VulkanPhysicalDevice> physicalDevice;
 		Ref<VulkanLogicalDevice> logicalDevice;
 
 		inline static VkInstance mainInstance;
+		inline static VkSurfaceKHR surface;
 	};
 }
