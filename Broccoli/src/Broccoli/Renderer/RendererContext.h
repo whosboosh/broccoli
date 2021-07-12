@@ -3,7 +3,6 @@
 #include "Broccoli/Core/Ref.h"
 
 namespace Broccoli {
-	
 	class RendererContext : public RefCounted
 	{
 	public:
