@@ -1,3 +1,6 @@
-﻿  Application.cpp
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Application.cpp(59,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+﻿  VulkanDevice.cpp
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Platform\Vulkan\VulkanDevice.cpp(114,61): warning C4805: '==': unsafe mix of type 'VkBool32' and type 'bool' in operation
+  VulkanSwapchain.cpp
+  RendererContext.cpp
+  Generating Code...
   Broccoli.vcxproj -> C:\Users\natha\source\repos\Broccoli\Debug\Broccoli.exe

@@ -167,7 +167,7 @@ namespace Broccoli {
 		return temp;
 	}
 
-	VulkanLogicalDevice::VulkanLogicalDevice(const Ref<VulkanPhysicalDevice>& physicalDevice)
+	VulkanLogicalDevice::VulkanLogicalDevice(const Ref<VulkanPhysicalDevice>& physicalDevice) : physicalDevice(physicalDevice)
 	{
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<int> queueFamilyIndicies = { physicalDevice->getQueueFamilyIndicies().graphicsFamily, physicalDevice->getQueueFamilyIndicies().presentationFamily }; // If they both are the same value, only 1 is stored
@@ -200,7 +200,7 @@ namespace Broccoli {
 		deviceCreateInfo.pEnabledFeatures = &deviceFeatures; // Physical Device features Logical Device will use
 
 		// Create the logical device for the given phyiscal device
-		VkResult result = vkCreateDevice(physicalDevice->getPhysicalDevice(), &deviceCreateInfo, nullptr, &logicalDevice);
+		VkResult result = vkCreateDevice(physicalDevice->getVulkanPhysicalDevice(), &deviceCreateInfo, nullptr, &logicalDevice);
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create a Logical Device\n");
 		}

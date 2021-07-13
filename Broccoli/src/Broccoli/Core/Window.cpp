@@ -47,7 +47,7 @@ namespace Broccoli {
 		if (RendererAPI::getCurrent() == RendererAPIType::Vulkan)
 		{
 			vulkanSwapchain.init(VulkanContext::getInstance(), rendererContext.As<VulkanContext>()->getLogicalDevice());
-			vulkanSwapchain.create(windowSpec.width, windowSpec.height, windowSpec.vsync);
+			vulkanSwapchain.create(&windowSpec.width, &windowSpec.height, windowSpec.vsync);
 		}
 
 		glfwSetWindowUserPointer(mainWindow, this);

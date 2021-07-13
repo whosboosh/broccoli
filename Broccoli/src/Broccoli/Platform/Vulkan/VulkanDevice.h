@@ -44,7 +44,7 @@ namespace Broccoli {
 		bool checkDeviceExtensionSupport(VkPhysicalDevice device, std::vector<const char*> deviceExtentions);
 
 		// Getters
-		VkPhysicalDevice getPhysicalDevice() const { return physicalDevice; }
+		VkPhysicalDevice getVulkanPhysicalDevice() const { return physicalDevice; }
 		const QueueFamilyIndicies& getQueueFamilyIndicies() const { return deviceIndices; }
 		const VkPhysicalDeviceProperties& getPhysicalDeviceProperties() const { return deviceProperties; }
 		const VkPhysicalDeviceFeatures& getPhysicalDeviceFeatures() const { return deviceFeatures; }
@@ -66,6 +66,7 @@ namespace Broccoli {
 		~VulkanLogicalDevice();
 
 		VkDevice getLogicalDevice() const { return logicalDevice; }
+		const Ref<VulkanPhysicalDevice>& getPhysicalDevice() const { return physicalDevice; }
 
 		VkQueue getGraphicsQueue() const { return graphicsQueue; }
 		VkQueue getPresentationQueue() const { return presentationQueue; }
@@ -75,6 +76,7 @@ namespace Broccoli {
 		void cleanup();
 	private:
 		VkDevice logicalDevice;
+		Ref<VulkanPhysicalDevice> physicalDevice;
 
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;

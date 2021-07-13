@@ -16,7 +16,7 @@ namespace Broccoli {
 		VulkanSwapchain();
 
 		void init(VkInstance instance, const Ref<VulkanLogicalDevice>& logicalDevice);
-		void create(uint32_t width, uint32_t height, bool vsync);
+		void create(uint32_t* width, uint32_t* height, bool vsync);
 
 		~VulkanSwapchain();
 
