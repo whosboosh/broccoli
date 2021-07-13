@@ -99,6 +99,27 @@ namespace Broccoli {
 			// Add image to swapChainImages List in global namespace
 			swapChainImages.push_back(swapChainImage);
 		}
+
+		// Create command buffers
+		// Command pool first
+		VkCommandPoolCreateInfo cmdPoolCreateInfo = vks::initializers::commandPoolCreateInfo();
+		cmdPoolCreateInfo.queueFamilyIndex = logicalDevice->getPhysicalDevice()->getQueueFamilyIndicies().graphicsFamily;
+		cmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		result = vkCreateCommandPool(device, &cmdPoolCreateInfo, nullptr, &commandPool);
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to create command pool for swapchain command buffer");
+		}
+		else {
+			std::cout << "Created swapchain command pool\n";
+		}
+		// Allocate command buffers (same amount as swapchain images)
+		VkCommandBufferAllocateInfo commandBufferAllocateInfo = vks::initializers::commandBufferAllocateInfo(commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, swapChainImageCount);
+		commandBuffers.resize(swapChainImageCount);
+		vkAllocateCommandBuffers(device, &commandBufferAllocateInfo, commandBuffers.data());
+
+		// Create synchronisation objects (semaphores & fences)
+		createSynchronisation();
+
 	}
 
 	SwapChainDetails VulkanSwapchain::getSwapchainDetails(VkPhysicalDevice physicalDevice)
@@ -193,7 +214,7 @@ namespace Broccoli {
 	}
 
 	VkImageView VulkanSwapchain::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
-	{
+	{ 
 		VkImageViewCreateInfo viewCreateInfo = {};
 		viewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 		viewCreateInfo.image = image; // Image to create view for
@@ -222,6 +243,31 @@ namespace Broccoli {
 		}
 
 		return imageView;
+	}
+
+	void VulkanSwapchain::createSynchronisation()
+	{
+		imageAvailable.resize(MAX_FRAME_DRAWS);
+		renderFinished.resize(MAX_FRAME_DRAWS);
+		drawFences.resize(MAX_FRAME_DRAWS);
+
+		// Semaphore creation information
+		VkSemaphoreCreateInfo semaphoreCreateInfo = {};
+		semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+		// Fence creation information
+		VkFenceCreateInfo fenceCreateInfo = {};
+		fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+		fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+		for (size_t i = 0; i < MAX_FRAME_DRAWS; i++) {
+			if (vkCreateSemaphore(logicalDevice->getLogicalDevice(), &semaphoreCreateInfo, nullptr, &imageAvailable[i]) != VK_SUCCESS ||
+				vkCreateSemaphore(logicalDevice->getLogicalDevice(), &semaphoreCreateInfo, nullptr, &renderFinished[i]) != VK_SUCCESS ||
+				vkCreateFence(logicalDevice->getLogicalDevice(), &fenceCreateInfo, nullptr, &drawFences[i]) != VK_SUCCESS) {
+				throw std::runtime_error("Failed to create a sempahore and/or Fence!");
+			}
+			std::cout << "Created index count " << i+1 << " synchronisation object!\n";
+		}
 	}
 
 	VulkanSwapchain::~VulkanSwapchain()

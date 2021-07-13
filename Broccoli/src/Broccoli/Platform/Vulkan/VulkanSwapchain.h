@@ -12,6 +12,8 @@
 
 namespace Broccoli {
 
+	const int MAX_FRAME_DRAWS = 2;
+
 	struct SwapChainDetails {
 		VkSurfaceCapabilitiesKHR surfaceCapabilities; // Surface properties (e.g. image size/extent)
 		std::vector<VkSurfaceFormatKHR> formats;	  // Surface Image formats (e.g. RGBA and size of each colour)
@@ -38,6 +40,8 @@ namespace Broccoli {
 
 		VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 
+		void createSynchronisation();
+
 		~VulkanSwapchain();
 
 	private:
@@ -52,5 +56,12 @@ namespace Broccoli {
 		std::vector<SwapChainImage> swapChainImages;
 
 		VkExtent2D swapChainExtent;
+
+		VkCommandPool commandPool;
+		std::vector<VkCommandBuffer> commandBuffers;
+
+		std::vector<VkSemaphore> imageAvailable;
+		std::vector<VkSemaphore> renderFinished;
+		std::vector<VkFence> drawFences;
 	};
 }
