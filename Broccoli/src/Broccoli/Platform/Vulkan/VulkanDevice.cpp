@@ -16,7 +16,7 @@ namespace Broccoli {
 		// If deviceCount = 0 then no devices support vulkan
 		if (deviceCount == 0)
 		{
-			throw std::runtime_error("Can't find GPUs that suport Vulkan Instance");
+			throw std::runtime_error("Can't find GPUs that suport Vulkan Instance\n");
 		}
 
 		// Get list of physical devices
@@ -37,7 +37,7 @@ namespace Broccoli {
 		}
 		if (!selectedPhysicalDevice)
 		{
-			throw std::runtime_error("No discrete GPU found");
+			throw std::runtime_error("No discrete GPU found\n");
 		}
 		physicalDevice = selectedPhysicalDevice;
 		// TODO: depth format
@@ -202,18 +202,43 @@ namespace Broccoli {
 		// Create the logical device for the given phyiscal device
 		VkResult result = vkCreateDevice(physicalDevice->getPhysicalDevice(), &deviceCreateInfo, nullptr, &logicalDevice);
 		if (result != VK_SUCCESS) {
-			throw std::runtime_error("Failed to create a Logical Device");
+			throw std::runtime_error("Failed to create a Logical Device\n");
 		}
 
 		// Queues are created at the same time as the device, we need a handle to queues
 		vkGetDeviceQueue(logicalDevice, physicalDevice->getQueueFamilyIndicies().graphicsFamily, 0, &graphicsQueue); // From Logical Device, of given Queue Family, of Queue Index(0). Store queue reference in the graphicsQueue
 		vkGetDeviceQueue(logicalDevice, physicalDevice->getQueueFamilyIndicies().presentationFamily, 0, &presentationQueue);
+		std::cout << "Graphics and presentation queue fetched...\n";
+
+		// Create command pools
+		VkCommandPoolCreateInfo poolInfo = {};
+		poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		poolInfo.queueFamilyIndex = physicalDevice->getQueueFamilyIndicies().graphicsFamily; // Queue family type that buffers from this command pool will use
+
+		// Create a graphics queue family command pool
+		result = vkCreateCommandPool(logicalDevice, &poolInfo, nullptr, &graphicsCommandPool);
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to create graphics pool (Command Pool)\n");
+		}
+		else {
+			std::cout << "Graphics command pool created successfully\n";
+		}
 
 		std::cout << "Vulkan Logical device creation successful\n";
 	}
 
 	VulkanLogicalDevice::~VulkanLogicalDevice()
 	{
+		cleanup();
+	}
+
+	void VulkanLogicalDevice::cleanup()
+	{
+		vkDestroyCommandPool(logicalDevice, graphicsCommandPool, nullptr);
+
+		vkDeviceWaitIdle(logicalDevice);
+		vkDestroyDevice(logicalDevice, nullptr);
 	}
 
 }

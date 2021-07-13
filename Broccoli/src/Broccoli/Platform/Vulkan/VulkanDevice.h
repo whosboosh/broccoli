@@ -64,11 +64,15 @@ namespace Broccoli {
 	public:
 		VulkanLogicalDevice(const Ref<VulkanPhysicalDevice>& physicalDevice);
 		~VulkanLogicalDevice();
+
+		void cleanup();
 	private:
 		VkDevice logicalDevice;
 
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
+
+		VkCommandPool graphicsCommandPool;
 
 	};
 
