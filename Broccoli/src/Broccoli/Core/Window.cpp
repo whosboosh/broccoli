@@ -46,7 +46,7 @@ namespace Broccoli {
 		// Create the vulkan swapchain 
 		if (RendererAPI::getCurrent() == RendererAPIType::Vulkan)
 		{
-			vulkanSwapchain.init(VulkanContext::getInstance(), rendererContext.As<VulkanContext>()->getLogicalDevice());
+			vulkanSwapchain.init(VulkanContext::getInstance(), rendererContext.As<VulkanContext>()->getLogicalDevice(), VulkanContext::getSurface());
 			vulkanSwapchain.create(&windowSpec.width, &windowSpec.height, windowSpec.vsync);
 		}
 

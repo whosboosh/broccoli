@@ -83,6 +83,13 @@ namespace Broccoli {
 		std::cout << "Vulkan device indicies valid: " << deviceIndices.isValid() << "\n";
 		std::cout << "Vulkan device sampler anisotropy support: " << deviceFeatures.samplerAnisotropy << "\n";
 
+		// TODO:
+		/*
+		if (extensionsSupported) {
+			SwapChainDetails swapChainDetails = getSwapChainDetails(device);
+			swapChainValid = !swapChainDetails.presentationMode.empty() && !swapChainDetails.formats.empty();
+		}*/
+
 		return deviceIndices.isValid() && extensionsSupported && deviceFeatures.samplerAnisotropy;
 	}
 
