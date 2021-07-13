@@ -16,6 +16,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Broccoli/Renderer/RendererContext.h"
+#include "Broccoli/Platform/Vulkan/VulkanSwapchain.h"
 
 namespace Broccoli {
 
@@ -87,5 +88,6 @@ namespace Broccoli {
 
 
 		Ref<RendererContext> rendererContext;
+		VulkanSwapchain vulkanSwapchain;
 	};
 }

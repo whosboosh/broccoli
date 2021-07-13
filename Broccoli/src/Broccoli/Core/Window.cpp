@@ -1,6 +1,8 @@
 #include "Broccoli/Core/Window.h"
 #include "Broccoli/Renderer/RendererAPI.h"
 
+#include "Broccoli/Platform/Vulkan/VulkanContext.h"
+
 namespace Broccoli {
 
 
@@ -41,7 +43,12 @@ namespace Broccoli {
 		rendererContext = RendererContext::create();
 		rendererContext->init(mainWindow);
 
-		// Create the swapchain including surface initialisation
+		// Create the vulkan swapchain 
+		if (RendererAPI::getCurrent() == RendererAPIType::Vulkan)
+		{
+			vulkanSwapchain.init(VulkanContext::getInstance(), rendererContext.As<VulkanContext>()->getLogicalDevice());
+			vulkanSwapchain.create(windowSpec.width, windowSpec.height, windowSpec.vsync);
+		}
 
 		glfwSetWindowUserPointer(mainWindow, this);
 		glfwSetFramebufferSizeCallback(mainWindow, framebuffer_size_callback);

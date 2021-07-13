@@ -21,7 +21,8 @@ namespace Broccoli {
 		VulkanContext();
 		~VulkanContext();
 	
-		//Ref<VulkanLogicalDevice> getLogicalDevice() { return logicalDevice; };
+		Ref<VulkanLogicalDevice> getLogicalDevice() { return logicalDevice; };
+		Ref<VulkanPhysicalDevice> getPhysicalDevice() { return physicalDevice; }
 		static VkInstance getInstance() { return mainInstance; };
 		static VkSurfaceKHR getSurface() { return surface; }
 

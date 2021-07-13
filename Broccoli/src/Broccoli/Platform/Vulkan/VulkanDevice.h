@@ -65,6 +65,13 @@ namespace Broccoli {
 		VulkanLogicalDevice(const Ref<VulkanPhysicalDevice>& physicalDevice);
 		~VulkanLogicalDevice();
 
+		VkDevice getLogicalDevice() const { return logicalDevice; }
+
+		VkQueue getGraphicsQueue() const { return graphicsQueue; }
+		VkQueue getPresentationQueue() const { return presentationQueue; }
+
+		VkCommandPool getGraphicsCommandPool() const { return graphicsCommandPool; }
+
 		void cleanup();
 	private:
 		VkDevice logicalDevice;
