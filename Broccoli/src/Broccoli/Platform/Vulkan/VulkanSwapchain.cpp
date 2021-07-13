@@ -19,6 +19,8 @@ namespace Broccoli {
 		VkDevice device = logicalDevice->getLogicalDevice();
 		VkPhysicalDevice physicalDevice = logicalDevice->getPhysicalDevice()->getVulkanPhysicalDevice();
 
+		VkSwapchainKHR oldSwapchain = swapChain;
+
 		// Get details about the swapchain based on surface and physical device for best settings
 		SwapChainDetails swapChainDetails = getSwapchainDetails(physicalDevice);
 
@@ -27,6 +29,76 @@ namespace Broccoli {
 		VkPresentModeKHR presentMode = chooseBestPresentationMode(swapChainDetails.presentationMode);
 		swapChainExtent = chooseSwapExtent(swapChainDetails.surfaceCapabilities, width, height);
 
+		// How many images are in the swapchain? Get 1 more than minimum to allow triple buffering
+		uint32_t imageCount = swapChainDetails.surfaceCapabilities.minImageCount + 1;
+		// Check that we haven't gone over maximum image count, if 0 then limitless
+		if (swapChainDetails.surfaceCapabilities.maxImageCount > 0 && swapChainDetails.surfaceCapabilities.maxImageCount < imageCount)
+		{
+			imageCount = swapChainDetails.surfaceCapabilities.maxImageCount;
+		}
+
+
+		// Creation information for swap chain
+		VkSwapchainCreateInfoKHR swapChainCreateInfo = {};
+		swapChainCreateInfo.surface = surface;
+		swapChainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+		swapChainCreateInfo.imageFormat = surfaceFormat.format;
+		swapChainCreateInfo.imageColorSpace = surfaceFormat.colorSpace;
+		swapChainCreateInfo.presentMode = presentMode;
+		swapChainCreateInfo.imageExtent = swapChainExtent;
+		swapChainCreateInfo.minImageCount = imageCount; // Number of images in swap chain (min)
+		swapChainCreateInfo.imageArrayLayers = 1; // Number of layers for each image in chain
+		swapChainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // What attachment images will be used as
+		swapChainCreateInfo.preTransform = swapChainDetails.surfaceCapabilities.currentTransform; // Transform to perform on swap chain images
+		swapChainCreateInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR; // How to handle blending images with external graphics (e.g. other windows)
+		swapChainCreateInfo.clipped = VK_TRUE; // Wheher to clip part of images not in view
+		swapChainCreateInfo.oldSwapchain = oldSwapchain;
+
+		// TODO: after staging buffers used see if this is needed
+		// Enable transfer source on swap chain images if supported
+		if (swapChainDetails.surfaceCapabilities.supportedUsageFlags & VK_IMAGE_USAGE_TRANSFER_SRC_BIT) {
+			swapChainCreateInfo.imageUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+		}
+
+		// Enable transfer destination on swap chain images if supported
+		if (swapChainDetails.surfaceCapabilities.supportedUsageFlags & VK_IMAGE_USAGE_TRANSFER_DST_BIT) {
+			swapChainCreateInfo.imageUsage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+		}
+
+		// Create swapchain
+		VkResult result = vkCreateSwapchainKHR(device, &swapChainCreateInfo, nullptr, &swapChain);
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to create swapchain");
+		}
+		else {
+			std::cout << "Created the vulkan swapchain!\n";
+		}
+
+		// Recreation of the swapchain, cleanup the previous images.
+		if (oldSwapchain != VK_NULL_HANDLE)
+		{
+			for (uint32_t i = 0; i < swapChainImageCount; i++)
+			{
+				vkDestroyImageView(device, swapChainImages[i].imageView, nullptr);
+			}
+			vkDestroySwapchainKHR(device, oldSwapchain, nullptr);
+		}
+
+		// Get the swapchain images
+		vkGetSwapchainImagesKHR(device, swapChain, &swapChainImageCount, nullptr);
+		std::vector<VkImage> images(swapChainImageCount);
+		vkGetSwapchainImagesKHR(device, swapChain, &swapChainImageCount, images.data());
+
+		for (VkImage image : images) {
+
+			// Store the image handle
+			SwapChainImage swapChainImage = {};
+			swapChainImage.image = image;
+			swapChainImage.imageView = createImageView(image, surfaceFormat.format, VK_IMAGE_ASPECT_COLOR_BIT);
+
+			// Add image to swapChainImages List in global namespace
+			swapChainImages.push_back(swapChainImage);
+		}
 	}
 
 	SwapChainDetails VulkanSwapchain::getSwapchainDetails(VkPhysicalDevice physicalDevice)
@@ -84,6 +156,7 @@ namespace Broccoli {
 
 	VkPresentModeKHR VulkanSwapchain::chooseBestPresentationMode(const std::vector<VkPresentModeKHR>& presentationModes)
 	{
+		// TODO: Vsync support
 		for (const auto& presentationMode : presentationModes)
 		{
 			if (presentationMode == VK_PRESENT_MODE_MAILBOX_KHR)
@@ -117,6 +190,38 @@ namespace Broccoli {
 
 			return newExtent;
 		}
+	}
+
+	VkImageView VulkanSwapchain::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+	{
+		VkImageViewCreateInfo viewCreateInfo = {};
+		viewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		viewCreateInfo.image = image; // Image to create view for
+		viewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D; // Type of image (1D, 2D, 3D, Cube etc)
+		viewCreateInfo.format = format; // Format of image data
+		viewCreateInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY; // Allows remapping of rgba components to other rgba values
+		viewCreateInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+		viewCreateInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+		viewCreateInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+		// Subresources allow the view to view only a part of an images
+		viewCreateInfo.subresourceRange.aspectMask = aspectFlags; // Which aspect of image to view (e.g. COLOR_BIT for viewing color)
+		viewCreateInfo.subresourceRange.baseMipLevel = 0; // Start mipmap level to view from
+		viewCreateInfo.subresourceRange.levelCount = 1; // Number of mipmap levels to view
+		viewCreateInfo.subresourceRange.baseArrayLayer = 0; // Start array level to view from
+		viewCreateInfo.subresourceRange.layerCount = 1; // How many array levels to view
+
+		// Create image view and return it
+		VkImageView imageView;
+		VkResult result = vkCreateImageView(logicalDevice->getLogicalDevice(), &viewCreateInfo, nullptr, &imageView);
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to create an image view");
+		}
+		else {
+			std::cout << "Created image view\n";
+		}
+
+		return imageView;
 	}
 
 	VulkanSwapchain::~VulkanSwapchain()

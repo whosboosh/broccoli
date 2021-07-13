@@ -18,6 +18,11 @@ namespace Broccoli {
 		std::vector<VkPresentModeKHR> presentationMode; // How images should be presented to screen
 	};
 
+	struct SwapChainImage {
+		VkImage image;
+		VkImageView imageView;
+	};
+
 	class VulkanSwapchain
 	{
 	public:
@@ -31,6 +36,8 @@ namespace Broccoli {
 		VkPresentModeKHR chooseBestPresentationMode(const std::vector<VkPresentModeKHR>& presentationModes);
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities, uint32_t* width, uint32_t* height);
 
+		VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+
 		~VulkanSwapchain();
 
 	private:
@@ -39,6 +46,10 @@ namespace Broccoli {
 		VkSurfaceKHR surface;
 		VkInstance instance;
 		Ref<VulkanLogicalDevice> logicalDevice;
+
+		VkSwapchainKHR swapChain = VK_NULL_HANDLE;
+		uint32_t swapChainImageCount = 0;
+		std::vector<SwapChainImage> swapChainImages;
 
 		VkExtent2D swapChainExtent;
 	};
