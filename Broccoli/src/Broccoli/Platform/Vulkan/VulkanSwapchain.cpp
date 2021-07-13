@@ -120,6 +120,11 @@ namespace Broccoli {
 		// Create synchronisation objects (semaphores & fences)
 		createSynchronisation();
 
+		// Create renderpass
+		renderPass = new VulkanRenderpass(logicalDevice, surfaceFormat.format);
+
+		// Create framebuffer
+		framebuffer = new VulkanFramebuffer();
 	}
 
 	SwapChainDetails VulkanSwapchain::getSwapchainDetails(VkPhysicalDevice physicalDevice)

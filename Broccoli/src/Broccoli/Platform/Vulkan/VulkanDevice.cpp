@@ -41,15 +41,14 @@ namespace Broccoli {
 		}
 		physicalDevice = selectedPhysicalDevice;
 		// TODO: depth format
+		depthFormat = chooseSupportedFormat(
+			{ VK_FORMAT_D16_UNORM, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D32_SFLOAT, VK_FORMAT_D24_UNORM_S8_UINT },
+			VK_IMAGE_TILING_OPTIMAL,
+			VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 	}
 
 	VulkanPhysicalDevice::~VulkanPhysicalDevice()
 	{
-	}
-
-	Ref<VulkanPhysicalDevice> VulkanPhysicalDevice::selectDevice()
-	{
-		return Ref<VulkanPhysicalDevice>::create();
 	}
 
 	bool VulkanPhysicalDevice::checkDeviceSuitable(VkPhysicalDevice device)
@@ -159,6 +158,25 @@ namespace Broccoli {
 			}
 		}
 		return true;
+	}
+
+	VkFormat VulkanPhysicalDevice::chooseSupportedFormat(const std::vector<VkFormat>& formats, VkImageTiling tiling, VkFormatFeatureFlags featureFlags)
+	{
+		// Loop through all formats and find a compatible one
+		for (VkFormat format : formats) {
+			// Get properties for given format on this device
+			VkFormatProperties properties;
+			vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &properties);
+
+			if (tiling == VK_IMAGE_TILING_LINEAR && (properties.linearTilingFeatures & featureFlags) == featureFlags) {
+				return format;
+			}
+			else if (tiling == VK_IMAGE_TILING_OPTIMAL && (properties.optimalTilingFeatures & featureFlags) == featureFlags) {
+				return format;
+			}
+		}
+
+		throw std::runtime_error("Failed to find a matching format!");
 	}
 
 	VkSampleCountFlagBits translateSampleIntToEnum(int level)

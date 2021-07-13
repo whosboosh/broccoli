@@ -43,11 +43,15 @@ namespace Broccoli {
 		QueueFamilyIndicies getQueueFamilies(VkPhysicalDevice device);
 		bool checkDeviceExtensionSupport(VkPhysicalDevice device, std::vector<const char*> deviceExtentions);
 
+		VkFormat chooseSupportedFormat(const std::vector<VkFormat>& formats, VkImageTiling tiling, VkFormatFeatureFlags featureFlags);
+
 		// Getters
 		VkPhysicalDevice getVulkanPhysicalDevice() const { return physicalDevice; }
 		const QueueFamilyIndicies& getQueueFamilyIndicies() const { return deviceIndices; }
 		const VkPhysicalDeviceProperties& getPhysicalDeviceProperties() const { return deviceProperties; }
 		const VkPhysicalDeviceFeatures& getPhysicalDeviceFeatures() const { return deviceFeatures; }
+
+		VkFormat getDepthFormat() const { return depthFormat; }
 
 	private:
 		VkPhysicalDevice physicalDevice = nullptr;
@@ -55,6 +59,8 @@ namespace Broccoli {
 		QueueFamilyIndicies deviceIndices;
 		VkPhysicalDeviceProperties deviceProperties;
 		VkPhysicalDeviceFeatures deviceFeatures;
+
+		VkFormat depthFormat = VK_FORMAT_UNDEFINED;
 
 		friend class VulkanLogicalDevice;
 	};

@@ -5,6 +5,9 @@
 #include "Broccoli/Platform/Vulkan/VulkanDevice.h"
 #include "Broccoli/Core/Ref.h"
 
+#include "VulkanFramebuffer.h"
+#include "VulkanRenderpass.h"
+
 // Vendor
 #include <vulkan/vulkan.h>
 
@@ -12,6 +15,7 @@
 
 namespace Broccoli {
 
+	// TODO: Move this to a global renderer config struct
 	const int MAX_FRAME_DRAWS = 2;
 
 	struct SwapChainDetails {
@@ -63,5 +67,8 @@ namespace Broccoli {
 		std::vector<VkSemaphore> imageAvailable;
 		std::vector<VkSemaphore> renderFinished;
 		std::vector<VkFence> drawFences;
+
+		VulkanRenderpass* renderPass;
+		VulkanFramebuffer* framebuffer;
 	};
 }
