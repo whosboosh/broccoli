@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Broccoli/Core/Ref.h"
-#include "Broccoli/Utilities/VulkanUtilities.hpp"
+#include "Broccoli/Utilities/VulkanUtilities.h"
 
 #include <vulkan/vulkan.h>
 
@@ -15,10 +14,11 @@ struct GLFWwindow;
 
 namespace Broccoli {
 	
+	/*
 	struct VulkanDeviceCollection {
 		VulkanPhysicalDevice physicalDevice;
 		VulkanLogicalDevice logicalDevice;
-	};
+	};*/
 
 	// Indicies (locations) of Queue Families (if they exist at all)
 	struct QueueFamilyIndicies {
@@ -36,7 +36,7 @@ namespace Broccoli {
 	};
 
 	// Provides functionality for creating vulkan device, logical and physical device, device features, queues and buffers
-	class VulkanPhysicalDevice : public RefCounted
+	class VulkanPhysicalDevice
 	{
 	public:
 		VulkanPhysicalDevice();
@@ -66,14 +66,14 @@ namespace Broccoli {
 		friend class VulkanLogicalDevice;
 	};
 
-	class VulkanLogicalDevice : public RefCounted
+	class VulkanLogicalDevice
 	{
 	public:
-		VulkanLogicalDevice(const Ref<VulkanPhysicalDevice>& physicalDevice);
+		VulkanLogicalDevice(VulkanPhysicalDevice* physicalDevice);
 		~VulkanLogicalDevice();
 
 		VkDevice getLogicalDevice() const { return logicalDevice; }
-		const Ref<VulkanPhysicalDevice>& getPhysicalDevice() const { return physicalDevice; }
+		const VulkanPhysicalDevice* getPhysicalDevice() const { return physicalDevice; }
 
 		VkQueue getGraphicsQueue() const { return graphicsQueue; }
 		VkQueue getPresentationQueue() const { return presentationQueue; }
@@ -83,7 +83,7 @@ namespace Broccoli {
 		void cleanup();
 	private:
 		VkDevice logicalDevice;
-		Ref<VulkanPhysicalDevice> physicalDevice;
+		VulkanPhysicalDevice* physicalDevice;
 
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;

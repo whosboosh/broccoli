@@ -98,8 +98,8 @@ namespace Broccoli {
 		std::cout << "Vulkan surface creation successful\n";
 
 		// Create the vulkan devices (logical and physical)
-		deviceCollection.physicalDevice = Ref<VulkanPhysicalDevice>::create();
-		deviceCollection.logicalDevice = Ref<VulkanLogicalDevice>::create(deviceCollection.physicalDevice);
+		physicalDevice = new VulkanPhysicalDevice();
+		logicalDevice = new VulkanLogicalDevice(physicalDevice);
 	}
 
 }

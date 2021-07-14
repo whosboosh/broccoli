@@ -5,11 +5,13 @@
 #include <vector>
 #include <array>
 #include <stdexcept>
-
-#include "Broccoli/Core/Ref.h"
-#include "Broccoli/Platform/Vulkan/VulkanDevice.h"
+#include <iostream>
+#include <stdexcept>
 
 namespace Broccoli {
+	static uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t allowedTypes, VkMemoryPropertyFlags properties);
+
+
 	static VkFormat chooseSupportedFormat(VkPhysicalDevice vulkanDevice, const std::vector<VkFormat>& formats, VkImageTiling tiling, VkFormatFeatureFlags featureFlags)
 	{
 		// Loop through all formats and find a compatible one
@@ -29,11 +31,8 @@ namespace Broccoli {
 		throw std::runtime_error("Failed to find a matching format!");
 	}
 
-	static VkImage createImage(VulkanDeviceCollection* deviceCollection, uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format, VkImageTiling tiling, VkImageUsageFlags useFlags, VkMemoryPropertyFlags propFlags, VkDeviceMemory* imageMemory, VkSampleCountFlagBits numSamples)
+	static VkImage createImage(VkPhysicalDevice physicalDevice, VkDevice logicalDevice, uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format, VkImageTiling tiling, VkImageUsageFlags useFlags, VkMemoryPropertyFlags propFlags, VkDeviceMemory* imageMemory, VkSampleCountFlagBits numSamples)
 	{
-		VkDevice logicalDevice = deviceCollection->logicalDevice->getLogicalDevice();
-		VkPhysicalDevice physicalDevice = deviceCollection->physicalDevice->getVulkanPhysicalDevice();
-
 		// CREATE IMAGE
 		VkImageCreateInfo imageCreateInfo = {};
 		imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -78,6 +77,38 @@ namespace Broccoli {
 		vkBindImageMemory(logicalDevice, image, *imageMemory, 0);
 
 		return image;
+	}
+
+	static VkImageView createImageView(VkDevice logicalDevice, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+	{
+		VkImageViewCreateInfo viewCreateInfo = {};
+		viewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		viewCreateInfo.image = image; // Image to create view for
+		viewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D; // Type of image (1D, 2D, 3D, Cube etc)
+		viewCreateInfo.format = format; // Format of image data
+		viewCreateInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY; // Allows remapping of rgba components to other rgba values
+		viewCreateInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+		viewCreateInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+		viewCreateInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+		// Subresources allow the view to view only a part of an images
+		viewCreateInfo.subresourceRange.aspectMask = aspectFlags; // Which aspect of image to view (e.g. COLOR_BIT for viewing color)
+		viewCreateInfo.subresourceRange.baseMipLevel = 0; // Start mipmap level to view from
+		viewCreateInfo.subresourceRange.levelCount = 1; // Number of mipmap levels to view
+		viewCreateInfo.subresourceRange.baseArrayLayer = 0; // Start array level to view from
+		viewCreateInfo.subresourceRange.layerCount = 1; // How many array levels to view
+
+		// Create image view and return it
+		VkImageView imageView;
+		VkResult result = vkCreateImageView(logicalDevice, &viewCreateInfo, nullptr, &imageView);
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to create an image view");
+		}
+		else {
+			std::cout << "Created image view\n";
+		}
+
+		return imageView;
 	}
 
 	static uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t allowedTypes, VkMemoryPropertyFlags properties)

@@ -160,7 +160,7 @@ namespace Broccoli {
 		return true;
 	}
 
-	VulkanLogicalDevice::VulkanLogicalDevice(const Ref<VulkanPhysicalDevice>& physicalDevice) : physicalDevice(physicalDevice)
+	VulkanLogicalDevice::VulkanLogicalDevice(VulkanPhysicalDevice* physicalDevice) : physicalDevice(physicalDevice)
 	{
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<int> queueFamilyIndicies = { physicalDevice->getQueueFamilyIndicies().graphicsFamily, physicalDevice->getQueueFamilyIndicies().presentationFamily }; // If they both are the same value, only 1 is stored

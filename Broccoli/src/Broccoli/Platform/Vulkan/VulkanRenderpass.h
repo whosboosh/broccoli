@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Broccoli/Core/Ref.h"
 #include "Broccoli/Platform/Vulkan/VulkanDevice.h"
 
 // Vendor
@@ -14,7 +13,7 @@ namespace Broccoli {
 	class VulkanRenderpass
 	{
 	public:
-		VulkanRenderpass(const Ref<VulkanLogicalDevice>& logicalDevice, VkFormat colourFormat);
+		VulkanRenderpass(VulkanLogicalDevice* logicalDevice, VkFormat colourFormat);
 
 		~VulkanRenderpass();
 

@@ -1,7 +1,7 @@
 #include "VulkanRenderpass.h"
 
 namespace Broccoli {
-	VulkanRenderpass::VulkanRenderpass(const Ref<VulkanLogicalDevice>& logicalDevice, VkFormat colourFormat)
+	VulkanRenderpass::VulkanRenderpass(VulkanLogicalDevice* logicalDevice, VkFormat colourFormat)
 	{
 		// TODO: Use colour attachment resolve for multisampling
 		std::array<VkAttachmentDescription, 2> attachments = {};

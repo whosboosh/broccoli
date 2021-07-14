@@ -5,10 +5,10 @@ namespace Broccoli {
 	{
 	}
 
-	void VulkanSwapchain::init(VkInstance instance, VulkanDeviceCollection* deviceCollection, VkSurfaceKHR surface)
+	void VulkanSwapchain::init(VkInstance instance, VulkanLogicalDevice* logicalDevice, VkSurfaceKHR surface)
 	{
 		this->instance = instance;
-		this->deviceCollection = deviceCollection;
+		this->logicalDevice = logicalDevice;
 		this->surface = surface;
 	}
 
@@ -91,7 +91,7 @@ namespace Broccoli {
 			// Store the image handle
 			SwapChainImage swapChainImage = {};
 			swapChainImage.image = image;
-			swapChainImage.imageView = createImageView(image, surfaceFormat.format, VK_IMAGE_ASPECT_COLOR_BIT);
+			swapChainImage.imageView = createImageView(logicalDevice->getLogicalDevice(), image, surfaceFormat.format, VK_IMAGE_ASPECT_COLOR_BIT);
 
 			// Add image to swapChainImages List in global namespace
 			swapChainImages.push_back(swapChainImage);
@@ -100,7 +100,7 @@ namespace Broccoli {
 		// Create command buffers
 		// Command pool first
 		VkCommandPoolCreateInfo cmdPoolCreateInfo = vks::initializers::commandPoolCreateInfo();
-		cmdPoolCreateInfo.queueFamilyIndex = deviceCollection->physicalDevice->getQueueFamilyIndicies().graphicsFamily;
+		cmdPoolCreateInfo.queueFamilyIndex = logicalDevice->getPhysicalDevice()->getQueueFamilyIndicies().graphicsFamily;
 		cmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 		result = vkCreateCommandPool(getLogicalDevice(), &cmdPoolCreateInfo, nullptr, &commandPool);
 		if (result != VK_SUCCESS) {
@@ -121,7 +121,7 @@ namespace Broccoli {
 		createDepthStencil();
 
 		// Create renderpass
-		renderPass = new VulkanRenderpass(deviceCollection->logicalDevice, surfaceFormat.format);
+		renderPass = new VulkanRenderpass(logicalDevice, surfaceFormat.format);
 
 		// Create framebuffer
 		//framebuffer = new VulkanFramebuffer();
@@ -242,42 +242,10 @@ namespace Broccoli {
 		}
 	}
 
-	VkImageView VulkanSwapchain::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
-	{ 
-		VkImageViewCreateInfo viewCreateInfo = {};
-		viewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		viewCreateInfo.image = image; // Image to create view for
-		viewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D; // Type of image (1D, 2D, 3D, Cube etc)
-		viewCreateInfo.format = format; // Format of image data
-		viewCreateInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY; // Allows remapping of rgba components to other rgba values
-		viewCreateInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
-		viewCreateInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-		viewCreateInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-
-		// Subresources allow the view to view only a part of an images
-		viewCreateInfo.subresourceRange.aspectMask = aspectFlags; // Which aspect of image to view (e.g. COLOR_BIT for viewing color)
-		viewCreateInfo.subresourceRange.baseMipLevel = 0; // Start mipmap level to view from
-		viewCreateInfo.subresourceRange.levelCount = 1; // Number of mipmap levels to view
-		viewCreateInfo.subresourceRange.baseArrayLayer = 0; // Start array level to view from
-		viewCreateInfo.subresourceRange.layerCount = 1; // How many array levels to view
-
-		// Create image view and return it
-		VkImageView imageView;
-		VkResult result = vkCreateImageView(getLogicalDevice(), &viewCreateInfo, nullptr, &imageView);
-		if (result != VK_SUCCESS) {
-			throw std::runtime_error("Failed to create an image view");
-		}
-		else {
-			std::cout << "Created image view\n";
-		}
-
-		return imageView;
-	}
-
 	void VulkanSwapchain::createDepthStencil()
 	{
 		// Create the depth buffer image
-		depthStencil.image = createImage(deviceCollection, swapChainExtent.width, swapChainExtent.height, 1, deviceCollection->physicalDevice->getDepthFormat(),
+		depthStencil.image = createImage(getPhysicalDevice(), getLogicalDevice(), swapChainExtent.width, swapChainExtent.height, 1, logicalDevice->getPhysicalDevice()->getDepthFormat(),
 			VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &depthStencil.imageMemory, VK_SAMPLE_COUNT_1_BIT);
 
@@ -285,7 +253,7 @@ namespace Broccoli {
 		//generateMipmaps(mainDevice, graphicsQueue, graphicsCommandPool, depthStencilImage, VK_FORMAT_D16_UNORM, swapChainExtent.width, swapChainExtent.height, mipLevels);
 
 		// Create depth buffer image view
-		depthStencil.imageView = createImageView(depthStencil.image, deviceCollection->physicalDevice->getDepthFormat(), VK_IMAGE_ASPECT_DEPTH_BIT);
+		depthStencil.imageView = createImageView(getLogicalDevice(), depthStencil.image, logicalDevice->getPhysicalDevice()->getDepthFormat(), VK_IMAGE_ASPECT_DEPTH_BIT);
 	}
 
 	void VulkanSwapchain::createSynchronisation()

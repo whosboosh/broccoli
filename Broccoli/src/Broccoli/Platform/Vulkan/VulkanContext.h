@@ -21,10 +21,8 @@ namespace Broccoli {
 		VulkanContext();
 		~VulkanContext();
 	
-		//Ref<VulkanLogicalDevice> getLogicalDevice() { return logicalDevice; };
-		//Ref<VulkanPhysicalDevice> getPhysicalDevice() { return physicalDevice; }
-
-		VulkanDeviceCollection getDevices() { return deviceCollection; }
+		VulkanLogicalDevice* getLogicalDevice() { return logicalDevice; };
+		VulkanPhysicalDevice* getPhysicalDevice() { return physicalDevice; }
 
 		static VkInstance getInstance() { return mainInstance; };
 		static VkSurfaceKHR getSurface() { return surface; }
@@ -32,10 +30,8 @@ namespace Broccoli {
 		virtual void init(GLFWwindow* windowHandle) override;
 
 	private:
-		//Ref<VulkanPhysicalDevice> physicalDevice;
-		//Ref<VulkanLogicalDevice> logicalDevice;
-
-		VulkanDeviceCollection deviceCollection;
+		VulkanPhysicalDevice* physicalDevice;
+		VulkanLogicalDevice* logicalDevice;
 
 		inline static VkInstance mainInstance;
 		inline static VkSurfaceKHR surface;
