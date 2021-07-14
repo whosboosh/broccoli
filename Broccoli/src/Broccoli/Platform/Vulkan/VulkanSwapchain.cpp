@@ -148,7 +148,7 @@ namespace Broccoli {
 				throw std::runtime_error("Failed to create a framebuffer");
 			}
 		}
-		std::cout << "Created " << i+1 << " framebuffers\n";
+		std::cout << "Created " << i << " framebuffers\n";
 	}
 
 	SwapChainDetails VulkanSwapchain::getSwapchainDetails(VkPhysicalDevice physicalDevice)
@@ -245,7 +245,6 @@ namespace Broccoli {
 	void VulkanSwapchain::createDepthStencil()
 	{
 		// Create the depth buffer image
-		// TODO: use format logicalDevice->getPhysicalDevice()->getDepthFormat()
 		depthStencil.image = createImage(getPhysicalDevice(), getLogicalDevice(), swapChainExtent.width, swapChainExtent.height, 1, logicalDevice->getPhysicalDevice()->getDepthFormat(),
 			VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &depthStencil.imageMemory, VK_SAMPLE_COUNT_1_BIT);

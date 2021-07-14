@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Vendor">
+      <UniqueIdentifier>{adeb78c5-f17d-4237-9f86-349b630d87b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utilities">
+      <UniqueIdentifier>{1aa4402a-0dd4-4173-b14d-dc94d4eb5fc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Platform">
+      <UniqueIdentifier>{0b063c09-7602-4b35-9ace-ce3906390a1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Platform\Vulkan">
+      <UniqueIdentifier>{b34a1593-e79b-4274-890c-08538bd7f296}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Platform\OpenGL">
+      <UniqueIdentifier>{c2d52698-7df0-4ad9-9fdc-3aef032d7095}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Renderer">
+      <UniqueIdentifier>{74ec17ab-d5da-42ae-93ff-4154c3889c93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{02ffee71-0fb3-4b3d-862b-e295a716fb85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Platform\GUI">
+      <UniqueIdentifier>{8450f05f-52e7-442c-841a-f437c688ae95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Vendor\imgui">
+      <UniqueIdentifier>{ba733bcf-5f57-47a9-92b1-6a297889a19e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="VulkanInitializers.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanContext.h">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Utilities\VulkanInitializers.hpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Core\Window.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Platform\OpenGL\OpenGLContext.h">
+      <Filter>Source Files\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Core\Application.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Core\Camera.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Renderer\RendererAPI.h">
+      <Filter>Source Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Renderer\RendererContext.h">
+      <Filter>Source Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Core\Ref.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanValidation.h">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanDevice.h">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanSwapchain.h">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanFramebuffer.h">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanRenderpass.h">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Utilities\VulkanUtilities.h">
+      <Filter>Source Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanPipeline.h">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanContext.cpp">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Core\Window.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Platform\OpenGL\OpenGLContext.cpp">
+      <Filter>Source Files\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Core\Application.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Core\Camera.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Vendor\glad.c">
+      <Filter>Source Files\Vendor</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_demo.cpp">
+      <Filter>Source Files\Vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_draw.cpp">
+      <Filter>Source Files\Vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_tables.cpp">
+      <Filter>Source Files\Vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_widgets.cpp">
+      <Filter>Source Files\Vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\backends\imgui_impl_glfw.cpp">
+      <Filter>Source Files\Vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\backends\imgui_impl_opengl3.cpp">
+      <Filter>Source Files\Vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\backends\imgui_impl_vulkan.cpp">
+      <Filter>Source Files\Vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui.cpp">
+      <Filter>Source Files\Vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\EntryPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Renderer\RendererAPI.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Renderer\RendererContext.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanDevice.cpp">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanSwapchain.cpp">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanFramebuffer.cpp">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanRenderpass.cpp">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanPipeline.cpp">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
