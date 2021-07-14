@@ -21,16 +21,21 @@ namespace Broccoli {
 		VulkanContext();
 		~VulkanContext();
 	
-		Ref<VulkanLogicalDevice> getLogicalDevice() { return logicalDevice; };
-		Ref<VulkanPhysicalDevice> getPhysicalDevice() { return physicalDevice; }
+		//Ref<VulkanLogicalDevice> getLogicalDevice() { return logicalDevice; };
+		//Ref<VulkanPhysicalDevice> getPhysicalDevice() { return physicalDevice; }
+
+		VulkanDeviceCollection getDevices() { return deviceCollection; }
+
 		static VkInstance getInstance() { return mainInstance; };
 		static VkSurfaceKHR getSurface() { return surface; }
 
 		virtual void init(GLFWwindow* windowHandle) override;
 
 	private:
-		Ref<VulkanPhysicalDevice> physicalDevice;
-		Ref<VulkanLogicalDevice> logicalDevice;
+		//Ref<VulkanPhysicalDevice> physicalDevice;
+		//Ref<VulkanLogicalDevice> logicalDevice;
+
+		VulkanDeviceCollection deviceCollection;
 
 		inline static VkInstance mainInstance;
 		inline static VkSurfaceKHR surface;

@@ -41,7 +41,7 @@ namespace Broccoli {
 		}
 		physicalDevice = selectedPhysicalDevice;
 		// TODO: depth format
-		depthFormat = chooseSupportedFormat(
+		depthFormat = chooseSupportedFormat(physicalDevice,
 			{ VK_FORMAT_D16_UNORM, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D32_SFLOAT, VK_FORMAT_D24_UNORM_S8_UINT },
 			VK_IMAGE_TILING_OPTIMAL,
 			VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
@@ -158,38 +158,6 @@ namespace Broccoli {
 			}
 		}
 		return true;
-	}
-
-	VkFormat VulkanPhysicalDevice::chooseSupportedFormat(const std::vector<VkFormat>& formats, VkImageTiling tiling, VkFormatFeatureFlags featureFlags)
-	{
-		// Loop through all formats and find a compatible one
-		for (VkFormat format : formats) {
-			// Get properties for given format on this device
-			VkFormatProperties properties;
-			vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &properties);
-
-			if (tiling == VK_IMAGE_TILING_LINEAR && (properties.linearTilingFeatures & featureFlags) == featureFlags) {
-				return format;
-			}
-			else if (tiling == VK_IMAGE_TILING_OPTIMAL && (properties.optimalTilingFeatures & featureFlags) == featureFlags) {
-				return format;
-			}
-		}
-
-		throw std::runtime_error("Failed to find a matching format!");
-	}
-
-	VkSampleCountFlagBits translateSampleIntToEnum(int level)
-	{
-		VkSampleCountFlagBits temp;
-		if (level % 2 == 0 || level == 1) {
-			std::cout << level;
-			if (level == 1) temp = VK_SAMPLE_COUNT_1_BIT;
-			if (level == 2) temp = VK_SAMPLE_COUNT_2_BIT;
-			if (level == 4) temp = VK_SAMPLE_COUNT_4_BIT;
-			if (level == 8) temp = VK_SAMPLE_COUNT_8_BIT;
-		}
-		return temp;
 	}
 
 	VulkanLogicalDevice::VulkanLogicalDevice(const Ref<VulkanPhysicalDevice>& physicalDevice) : physicalDevice(physicalDevice)

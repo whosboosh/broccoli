@@ -4,7 +4,7 @@ namespace Broccoli {
 	VulkanRenderpass::VulkanRenderpass(const Ref<VulkanLogicalDevice>& logicalDevice, VkFormat colourFormat)
 	{
 		// TODO: Use colour attachment resolve for multisampling
-		std::array<VkAttachmentDescription, 1> attachments = {};
+		std::array<VkAttachmentDescription, 2> attachments = {};
 		// Color attachment
 		attachments[0].format = colourFormat;
 		attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
@@ -15,7 +15,6 @@ namespace Broccoli {
 		attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 		
-		/*
 		// Depth attachment
 		attachments[1].format = logicalDevice->getPhysicalDevice()->getDepthFormat();
 		attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
@@ -24,22 +23,21 @@ namespace Broccoli {
 		attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;*/
+		attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
 		VkAttachmentReference colorAttachmentRef{};
 		colorAttachmentRef.attachment = 0;
 		colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-		/*
 		VkAttachmentReference depthAttachmentRef{};
 		depthAttachmentRef.attachment = 1;
-		depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-		*/
+		depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;		
 
 		VkSubpassDescription subpass{};
 		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 		subpass.colorAttachmentCount = 1;
 		subpass.pColorAttachments = &colorAttachmentRef;
+		subpass.pDepthStencilAttachment = &depthAttachmentRef;
 		subpass.preserveAttachmentCount = 0;
 		subpass.pPreserveAttachments = nullptr;
 		subpass.pResolveAttachments = nullptr;

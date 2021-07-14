@@ -2,6 +2,7 @@
 
 // Project dependencies
 #include "Broccoli/Utilities/VulkanInitializers.hpp"
+#include "Broccoli/Utilities/VulkanUtilities.hpp"
 #include "Broccoli/Platform/Vulkan/VulkanDevice.h"
 #include "Broccoli/Core/Ref.h"
 
@@ -34,7 +35,7 @@ namespace Broccoli {
 	public:
 		VulkanSwapchain();
 
-		void init(VkInstance instance, const Ref<VulkanLogicalDevice>& logicalDevice, VkSurfaceKHR surface);
+		void init(VkInstance instance, VulkanDeviceCollection* deviceCollection, VkSurfaceKHR surface);
 		void create(uint32_t* width, uint32_t* height, bool vsync);
 
 		SwapChainDetails getSwapchainDetails(VkPhysicalDevice physicalDevice);
@@ -44,6 +45,7 @@ namespace Broccoli {
 
 		VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 
+		void createDepthStencil();
 		void createSynchronisation();
 
 		~VulkanSwapchain();
@@ -51,9 +53,19 @@ namespace Broccoli {
 	private:
 		bool vsync;
 
+		struct
+		{
+			VkImage image;
+			VkDeviceMemory imageMemory;
+			VkImageView imageView;
+		} depthStencil;
+
 		VkSurfaceKHR surface;
 		VkInstance instance;
-		Ref<VulkanLogicalDevice> logicalDevice;
+
+		VulkanDeviceCollection* deviceCollection;
+		VkDevice getLogicalDevice() { return deviceCollection->logicalDevice->getLogicalDevice(); }
+		VkPhysicalDevice getPhysicalDevice() { return deviceCollection->physicalDevice->getVulkanPhysicalDevice(); }
 
 		VkSwapchainKHR swapChain = VK_NULL_HANDLE;
 		uint32_t swapChainImageCount = 0;
@@ -67,6 +79,8 @@ namespace Broccoli {
 		std::vector<VkSemaphore> imageAvailable;
 		std::vector<VkSemaphore> renderFinished;
 		std::vector<VkFence> drawFences;
+
+		std::vector<VkFramebuffer> swapChainFramebuffers;
 
 		VulkanRenderpass* renderPass;
 		VulkanFramebuffer* framebuffer;

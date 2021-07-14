@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Broccoli/Core/Ref.h"
-
-#include "Broccoli/Core/Ref.h"
+#include "Broccoli/Utilities/VulkanUtilities.hpp"
 
 #include <vulkan/vulkan.h>
 
@@ -16,6 +15,11 @@ struct GLFWwindow;
 
 namespace Broccoli {
 	
+	struct VulkanDeviceCollection {
+		VulkanPhysicalDevice physicalDevice;
+		VulkanLogicalDevice logicalDevice;
+	};
+
 	// Indicies (locations) of Queue Families (if they exist at all)
 	struct QueueFamilyIndicies {
 		int graphicsFamily = -1; // Location of Graphics Queue Family
@@ -38,12 +42,9 @@ namespace Broccoli {
 		VulkanPhysicalDevice();
 		~VulkanPhysicalDevice();
 
-		static Ref<VulkanPhysicalDevice> selectDevice();
 		bool checkDeviceSuitable(VkPhysicalDevice device);
 		QueueFamilyIndicies getQueueFamilies(VkPhysicalDevice device);
 		bool checkDeviceExtensionSupport(VkPhysicalDevice device, std::vector<const char*> deviceExtentions);
-
-		VkFormat chooseSupportedFormat(const std::vector<VkFormat>& formats, VkImageTiling tiling, VkFormatFeatureFlags featureFlags);
 
 		// Getters
 		VkPhysicalDevice getVulkanPhysicalDevice() const { return physicalDevice; }

@@ -5,10 +5,10 @@ namespace Broccoli {
 	{
 	}
 
-	void VulkanSwapchain::init(VkInstance instance, const Ref<VulkanLogicalDevice>& logicalDevice, VkSurfaceKHR surface)
+	void VulkanSwapchain::init(VkInstance instance, VulkanDeviceCollection* deviceCollection, VkSurfaceKHR surface)
 	{
 		this->instance = instance;
-		this->logicalDevice = logicalDevice;
+		this->deviceCollection = deviceCollection;
 		this->surface = surface;
 	}
 
@@ -16,13 +16,10 @@ namespace Broccoli {
 	{
 		this->vsync = vsync;
 
-		VkDevice device = logicalDevice->getLogicalDevice();
-		VkPhysicalDevice physicalDevice = logicalDevice->getPhysicalDevice()->getVulkanPhysicalDevice();
-
 		VkSwapchainKHR oldSwapchain = swapChain;
 
 		// Get details about the swapchain based on surface and physical device for best settings
-		SwapChainDetails swapChainDetails = getSwapchainDetails(physicalDevice);
+		SwapChainDetails swapChainDetails = getSwapchainDetails(getPhysicalDevice());
 
 		// Find optimal surface values for our swapchain
 		VkSurfaceFormatKHR surfaceFormat = chooseBestSurfaceFormat(swapChainDetails.formats);
@@ -66,7 +63,7 @@ namespace Broccoli {
 		}
 
 		// Create swapchain
-		VkResult result = vkCreateSwapchainKHR(device, &swapChainCreateInfo, nullptr, &swapChain);
+		VkResult result = vkCreateSwapchainKHR(getLogicalDevice(), &swapChainCreateInfo, nullptr, &swapChain);
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create swapchain");
 		}
@@ -79,15 +76,15 @@ namespace Broccoli {
 		{
 			for (uint32_t i = 0; i < swapChainImageCount; i++)
 			{
-				vkDestroyImageView(device, swapChainImages[i].imageView, nullptr);
+				vkDestroyImageView(getLogicalDevice(), swapChainImages[i].imageView, nullptr);
 			}
-			vkDestroySwapchainKHR(device, oldSwapchain, nullptr);
+			vkDestroySwapchainKHR(getLogicalDevice(), oldSwapchain, nullptr);
 		}
 
 		// Get the swapchain images
-		vkGetSwapchainImagesKHR(device, swapChain, &swapChainImageCount, nullptr);
+		vkGetSwapchainImagesKHR(getLogicalDevice(), swapChain, &swapChainImageCount, nullptr);
 		std::vector<VkImage> images(swapChainImageCount);
-		vkGetSwapchainImagesKHR(device, swapChain, &swapChainImageCount, images.data());
+		vkGetSwapchainImagesKHR(getLogicalDevice(), swapChain, &swapChainImageCount, images.data());
 
 		for (VkImage image : images) {
 
@@ -103,9 +100,9 @@ namespace Broccoli {
 		// Create command buffers
 		// Command pool first
 		VkCommandPoolCreateInfo cmdPoolCreateInfo = vks::initializers::commandPoolCreateInfo();
-		cmdPoolCreateInfo.queueFamilyIndex = logicalDevice->getPhysicalDevice()->getQueueFamilyIndicies().graphicsFamily;
+		cmdPoolCreateInfo.queueFamilyIndex = deviceCollection->physicalDevice->getQueueFamilyIndicies().graphicsFamily;
 		cmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-		result = vkCreateCommandPool(device, &cmdPoolCreateInfo, nullptr, &commandPool);
+		result = vkCreateCommandPool(getLogicalDevice(), &cmdPoolCreateInfo, nullptr, &commandPool);
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create command pool for swapchain command buffer");
 		}
@@ -115,16 +112,43 @@ namespace Broccoli {
 		// Allocate command buffers (same amount as swapchain images)
 		VkCommandBufferAllocateInfo commandBufferAllocateInfo = vks::initializers::commandBufferAllocateInfo(commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, swapChainImageCount);
 		commandBuffers.resize(swapChainImageCount);
-		vkAllocateCommandBuffers(device, &commandBufferAllocateInfo, commandBuffers.data());
+		vkAllocateCommandBuffers(getLogicalDevice(), &commandBufferAllocateInfo, commandBuffers.data());
 
 		// Create synchronisation objects (semaphores & fences)
 		createSynchronisation();
+		
+		// Create depth stencil for depth buffering
+		createDepthStencil();
 
 		// Create renderpass
-		renderPass = new VulkanRenderpass(logicalDevice, surfaceFormat.format);
+		renderPass = new VulkanRenderpass(deviceCollection->logicalDevice, surfaceFormat.format);
 
 		// Create framebuffer
-		framebuffer = new VulkanFramebuffer();
+		//framebuffer = new VulkanFramebuffer();
+
+		swapChainFramebuffers.resize(swapChainImages.size());
+		size_t i = 0;
+		for (; i < swapChainFramebuffers.size(); i++)
+		{
+			std::array<VkImageView, 2> attachments = {
+				depthStencil.imageView,
+				swapChainImages[i].imageView
+			};
+
+			VkFramebufferCreateInfo frameBufferCreateInfo = vks::initializers::framebufferCreateInfo();
+			frameBufferCreateInfo.renderPass = renderPass->getRenderPass();
+			frameBufferCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+			frameBufferCreateInfo.pAttachments = attachments.data();
+			frameBufferCreateInfo.width = swapChainExtent.width;
+			frameBufferCreateInfo.height = swapChainExtent.height;
+			frameBufferCreateInfo.layers = 1;
+
+			VkResult result = vkCreateFramebuffer(getLogicalDevice(), &frameBufferCreateInfo, nullptr, &swapChainFramebuffers[i]);
+			if (result != VK_SUCCESS) {
+				throw std::runtime_error("Failed to create a framebuffer");
+			}
+		}
+		std::cout << "Created " << i+1 << " framebuffers\n";
 	}
 
 	SwapChainDetails VulkanSwapchain::getSwapchainDetails(VkPhysicalDevice physicalDevice)
@@ -239,7 +263,7 @@ namespace Broccoli {
 
 		// Create image view and return it
 		VkImageView imageView;
-		VkResult result = vkCreateImageView(logicalDevice->getLogicalDevice(), &viewCreateInfo, nullptr, &imageView);
+		VkResult result = vkCreateImageView(getLogicalDevice(), &viewCreateInfo, nullptr, &imageView);
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create an image view");
 		}
@@ -248,6 +272,20 @@ namespace Broccoli {
 		}
 
 		return imageView;
+	}
+
+	void VulkanSwapchain::createDepthStencil()
+	{
+		// Create the depth buffer image
+		depthStencil.image = createImage(deviceCollection, swapChainExtent.width, swapChainExtent.height, 1, deviceCollection->physicalDevice->getDepthFormat(),
+			VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &depthStencil.imageMemory, VK_SAMPLE_COUNT_1_BIT);
+
+		//transitionImageLayout(mainDevice.logicalDevice, graphicsQueue, graphicsCommandPool, depthStencilImage, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
+		//generateMipmaps(mainDevice, graphicsQueue, graphicsCommandPool, depthStencilImage, VK_FORMAT_D16_UNORM, swapChainExtent.width, swapChainExtent.height, mipLevels);
+
+		// Create depth buffer image view
+		depthStencil.imageView = createImageView(depthStencil.image, deviceCollection->physicalDevice->getDepthFormat(), VK_IMAGE_ASPECT_DEPTH_BIT);
 	}
 
 	void VulkanSwapchain::createSynchronisation()
@@ -266,9 +304,9 @@ namespace Broccoli {
 		fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 		for (size_t i = 0; i < MAX_FRAME_DRAWS; i++) {
-			if (vkCreateSemaphore(logicalDevice->getLogicalDevice(), &semaphoreCreateInfo, nullptr, &imageAvailable[i]) != VK_SUCCESS ||
-				vkCreateSemaphore(logicalDevice->getLogicalDevice(), &semaphoreCreateInfo, nullptr, &renderFinished[i]) != VK_SUCCESS ||
-				vkCreateFence(logicalDevice->getLogicalDevice(), &fenceCreateInfo, nullptr, &drawFences[i]) != VK_SUCCESS) {
+			if (vkCreateSemaphore(getLogicalDevice(), &semaphoreCreateInfo, nullptr, &imageAvailable[i]) != VK_SUCCESS ||
+				vkCreateSemaphore(getLogicalDevice(), &semaphoreCreateInfo, nullptr, &renderFinished[i]) != VK_SUCCESS ||
+				vkCreateFence(getLogicalDevice(), &fenceCreateInfo, nullptr, &drawFences[i]) != VK_SUCCESS) {
 				throw std::runtime_error("Failed to create a sempahore and/or Fence!");
 			}
 			std::cout << "Created index count " << i+1 << " synchronisation object!\n";

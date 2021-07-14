@@ -3,6 +3,7 @@
 namespace Broccoli {
 	VulkanFramebuffer::VulkanFramebuffer()
 	{
+
 	}
 	VulkanFramebuffer::~VulkanFramebuffer()
 	{
