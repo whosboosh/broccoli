@@ -57,6 +57,8 @@ namespace Broccoli {
 		void setVsync(bool param);
 		bool isVsync() { return windowSpec.vsync; }
 
+		inline static bool frameBufferResized;
+
 		// Mouse functions
 		float getXChange();
 		float getYChange();

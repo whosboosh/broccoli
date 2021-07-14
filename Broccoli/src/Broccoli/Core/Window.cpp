@@ -10,6 +10,7 @@ namespace Broccoli {
 	Window::Window(WindowSpecification windowSpec)
 	{
 		this->windowSpec = windowSpec;
+		Window::frameBufferResized = false;
 	}
 
 	// Main window initialisation method
@@ -101,8 +102,9 @@ namespace Broccoli {
 
 	void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	{
-		auto app = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+		//auto app = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
 		//app->frameBufferResized = true;
+		Window::frameBufferResized = true;
 	}
 
 	void Window::mouse_callback(GLFWwindow* window, double xpos, double ypos)
