@@ -40,7 +40,7 @@ namespace Broccoli {
 			throw std::runtime_error("No discrete GPU found\n");
 		}
 		physicalDevice = selectedPhysicalDevice;
-		// TODO: depth format
+
 		depthFormat = chooseSupportedFormat(physicalDevice,
 			{ VK_FORMAT_D16_UNORM, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D32_SFLOAT, VK_FORMAT_D24_UNORM_S8_UINT },
 			VK_IMAGE_TILING_OPTIMAL,

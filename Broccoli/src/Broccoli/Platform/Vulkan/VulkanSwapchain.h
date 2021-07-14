@@ -61,6 +61,8 @@ namespace Broccoli {
 		VkSurfaceKHR surface;
 		VkInstance instance;
 
+		VkSurfaceFormatKHR surfaceFormat;
+
 		VulkanLogicalDevice* logicalDevice;
 
 		VkDevice getLogicalDevice() { return logicalDevice->getLogicalDevice(); }

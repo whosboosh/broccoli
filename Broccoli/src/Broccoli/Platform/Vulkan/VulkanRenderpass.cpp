@@ -3,6 +3,7 @@
 namespace Broccoli {
 	VulkanRenderpass::VulkanRenderpass(VulkanLogicalDevice* logicalDevice, VkFormat colourFormat)
 	{
+		// TODO: Investigate using depth buffer for renderpass
 		// TODO: Use colour attachment resolve for multisampling
 		std::array<VkAttachmentDescription, 2> attachments = {};
 		// Color attachment
@@ -37,7 +38,7 @@ namespace Broccoli {
 		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 		subpass.colorAttachmentCount = 1;
 		subpass.pColorAttachments = &colorAttachmentRef;
-		subpass.pDepthStencilAttachment = &depthAttachmentRef;
+		//subpass.pDepthStencilAttachment = &depthAttachmentRef;
 		subpass.preserveAttachmentCount = 0;
 		subpass.pPreserveAttachments = nullptr;
 		subpass.pResolveAttachments = nullptr;
@@ -54,7 +55,7 @@ namespace Broccoli {
 
 		VkRenderPassCreateInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+		renderPassInfo.attachmentCount = 1; // static_cast<uint32_t>(attachments.size());
 		renderPassInfo.pAttachments = attachments.data();
 		renderPassInfo.subpassCount = 1;
 		renderPassInfo.pSubpasses = &subpass;
@@ -64,7 +65,7 @@ namespace Broccoli {
 		if (vkCreateRenderPass(logicalDevice->getLogicalDevice(), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create render pass!");
 		}
-		std::cout << "Created vulkan renderpass with " << attachments.size() << " attachments!";
+		std::cout << "Created vulkan renderpass with " << attachments.size() << " attachments!\n";
 	}
 	VulkanRenderpass::~VulkanRenderpass()
 	{

@@ -22,7 +22,7 @@ namespace Broccoli {
 		SwapChainDetails swapChainDetails = getSwapchainDetails(getPhysicalDevice());
 
 		// Find optimal surface values for our swapchain
-		VkSurfaceFormatKHR surfaceFormat = chooseBestSurfaceFormat(swapChainDetails.formats);
+		surfaceFormat = chooseBestSurfaceFormat(swapChainDetails.formats);
 		VkPresentModeKHR presentMode = chooseBestPresentationMode(swapChainDetails.presentationMode);
 		swapChainExtent = chooseSwapExtent(swapChainDetails.surfaceCapabilities, width, height);
 
@@ -131,13 +131,13 @@ namespace Broccoli {
 		for (; i < swapChainFramebuffers.size(); i++)
 		{
 			std::array<VkImageView, 2> attachments = {
-				depthStencil.imageView,
-				swapChainImages[i].imageView
+				swapChainImages[i].imageView,
+				depthStencil.imageView
 			};
 
 			VkFramebufferCreateInfo frameBufferCreateInfo = vks::initializers::framebufferCreateInfo();
 			frameBufferCreateInfo.renderPass = renderPass->getRenderPass();
-			frameBufferCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+			frameBufferCreateInfo.attachmentCount = 1; // static_cast<uint32_t>(attachments.size());
 			frameBufferCreateInfo.pAttachments = attachments.data();
 			frameBufferCreateInfo.width = swapChainExtent.width;
 			frameBufferCreateInfo.height = swapChainExtent.height;
@@ -245,6 +245,7 @@ namespace Broccoli {
 	void VulkanSwapchain::createDepthStencil()
 	{
 		// Create the depth buffer image
+		// TODO: use format logicalDevice->getPhysicalDevice()->getDepthFormat()
 		depthStencil.image = createImage(getPhysicalDevice(), getLogicalDevice(), swapChainExtent.width, swapChainExtent.height, 1, logicalDevice->getPhysicalDevice()->getDepthFormat(),
 			VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &depthStencil.imageMemory, VK_SAMPLE_COUNT_1_BIT);
