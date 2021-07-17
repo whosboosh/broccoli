@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Application.h"
 
+//extern Broccoli::Application* Broccoli::CreateApplication(int argc, char** argv);
 bool applicationRunning = true;
 
 int main(int argc, char** argv)

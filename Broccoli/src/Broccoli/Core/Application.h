@@ -22,6 +22,11 @@ namespace Broccoli {
 		void OnInit();
 		void Shutdown();
 
+		const ApplicationInfo& getSpecification() const { return appInfo; }
+		static inline Application& get() { return *appInstance; }
+
+		inline Window& getWindow() { return *window; }
+
 	private:
 		Window* window;
 		ApplicationInfo appInfo;
@@ -30,6 +35,6 @@ namespace Broccoli {
 		uint64_t frameCounter = 0, lastFrameTime = 0, deltaTime = 0;
 	};
 
-	Application* CreateApplication(int argc, char** argvv);
+	//Application* CreateApplication(int argc, char** argvv);
 
 }

@@ -18,8 +18,13 @@
 #include <chrono>
 
 namespace Broccoli {
+
+	Application* Application::appInstance = nullptr;
+
 	Application::Application(int argc, char** argvv)
 	{
+		appInstance = this;
+
 		appInfo.Name = "Cloud Gaming Engine";
 		appInfo.windowHeight = 900;
 		appInfo.windowWidth = 1600;
@@ -51,7 +56,7 @@ namespace Broccoli {
 			{
 				//std::cout << "New Frame " << frameCounter << "\n";
 				// Begin render frame
-				
+
 				// Submit imgui
 
 				//Swap buffers

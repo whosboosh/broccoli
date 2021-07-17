@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <stdexcept>
+#include <fstream>
 
 namespace Broccoli {
 	static uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t allowedTypes, VkMemoryPropertyFlags properties);
@@ -137,6 +138,33 @@ namespace Broccoli {
 			if (level == 8) temp = VK_SAMPLE_COUNT_8_BIT;
 		}
 		return temp;
+	}
+
+	static std::vector<char> readFile(const std::string& fileName) {
+		// Open stream from given file
+		// std::ios::binary tells stream to read as binary
+		// std::ios::ate tells stream to start reading from end of file
+		std::ifstream file(fileName, std::ios::binary | std::ios::ate);
+
+		// Check if file stream successfully opened
+		if (!file.is_open())
+		{
+			throw std::runtime_error("Failed to open a file");
+		}
+
+		size_t fileSize = (size_t)file.tellg(); // Get length of the file for creating vector
+		std::vector<char> fileBuffer(fileSize); // Create vector with same size as file
+
+		// Reset pointer to the start of file
+		file.seekg(0);
+
+		// Read the file data into the buffer (stream "fileSize" in total)  
+		file.read(fileBuffer.data(), fileSize);
+
+		// Close the stream
+		file.close();
+
+		return fileBuffer;
 	}
 
 }

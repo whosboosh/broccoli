@@ -4,6 +4,8 @@
 
 #include "Broccoli/Renderer/Shader.h"
 
+#include "Broccoli/Renderer/RendererContext.h"
+
 namespace Broccoli {
 	
 	class Renderer
@@ -12,7 +14,7 @@ namespace Broccoli {
 		Renderer();
 		~Renderer();
 
-		void init();
+		static Ref<RendererContext> getContext();
 
 		ShaderLibrary* getShaderLibrary() { return shaderLibrary; }
 

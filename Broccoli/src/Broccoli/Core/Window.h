@@ -54,6 +54,8 @@ namespace Broccoli {
 		std::pair<uint32_t, uint32_t> getSize() { return { width, height }; }
 		std::pair<uint32_t, uint32_t> getWindowPos();
 
+		Ref<RendererContext> getRenderContext() { return rendererContext; }
+
 		void setVsync(bool param);
 		bool isVsync() { return windowSpec.vsync; }
 
