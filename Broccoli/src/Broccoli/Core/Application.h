@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include "Broccoli/Renderer/Renderer.h"
+
 namespace Broccoli {
 	struct ApplicationInfo
 	{
