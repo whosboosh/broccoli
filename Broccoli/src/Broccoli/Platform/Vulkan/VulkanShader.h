@@ -10,10 +10,12 @@ namespace Broccoli {
 	class VulkanShader : public Shader
 	{
 	public:
-		VulkanShader();
+		VulkanShader(const std::string& filePath);
 		~VulkanShader();
 
+		virtual const std::string& getName() const override { return  name; }
 
 	private:
+		std::string name;
 	};
 }

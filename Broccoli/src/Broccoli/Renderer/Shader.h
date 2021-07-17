@@ -16,9 +16,6 @@ namespace Broccoli {
 		static Ref<Shader> create(const std::string& filePath);
 
 		virtual const std::string& getName() const = 0;
-
-	private:
-
 	};
 
 	class ShaderLibrary

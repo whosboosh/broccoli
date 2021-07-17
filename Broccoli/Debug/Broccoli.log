@@ -1,15 +1,2 @@
-﻿  VulkanShader.cpp
-  Shader.cpp
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Ref.h(134): error C2259: 'Broccoli::VulkanShader': cannot instantiate abstract class
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Platform\Vulkan\VulkanShader.h(10): message : see declaration of 'Broccoli::VulkanShader'
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Ref.h(134): message : due to following members:
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Ref.h(134): message : 'const std::string &Broccoli::Shader::getName(void) const': is abstract
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Renderer\Shader.h(18): message : see declaration of 'Broccoli::Shader::getName'
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Renderer\Shader.cpp(14): message : see reference to function template instantiation 'Broccoli::Ref<Broccoli::VulkanShader> Broccoli::Ref<Broccoli::VulkanShader>::create<>(void)' being compiled
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Renderer\Shader.cpp(14): message : see reference to function template instantiation 'Broccoli::Ref<Broccoli::VulkanShader> Broccoli::Ref<Broccoli::VulkanShader>::create<>(void)' being compiled
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Ref.h(135,23): error C2259: 'Broccoli::VulkanShader': cannot instantiate abstract class
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Platform\Vulkan\VulkanShader.h(10): message : see declaration of 'Broccoli::VulkanShader'
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Ref.h(135,23): message : due to following members:
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Ref.h(135,23): message : 'const std::string &Broccoli::Shader::getName(void) const': is abstract
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Renderer\Shader.h(18): message : see declaration of 'Broccoli::Shader::getName'
-  Generating Code...
+﻿  Shader.cpp
+  Broccoli.vcxproj -> C:\Users\natha\source\repos\Broccoli\Debug\Broccoli.exe
