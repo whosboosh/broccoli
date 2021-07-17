@@ -8,9 +8,9 @@
 
 namespace Broccoli {
 
-	VulkanShader::VulkanShader(const std::string& filePath)
+	VulkanShader::VulkanShader(const std::string& filePath, VkShaderStageFlagBits stageFlags) : stageFlags(stageFlags)
 	{
-		std::cout << "Vulkan shader created: "+filePath+"\n";
+		std::cout << "Vulkan shader created: " + filePath + "\n";
 
 		size_t found = filePath.find_last_of("/\\");
 		name = found != std::string::npos ? filePath.substr(found + 1) : filePath;
