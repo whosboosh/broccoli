@@ -21,6 +21,7 @@ namespace Broccoli {
 
 		// Vulkan specific
 		virtual const VkShaderStageFlagBits getStageFlags() const = 0;
+		virtual const VkPipelineShaderStageCreateInfo getShaderStageInfo() const = 0;
 
 	private:
 		friend class ShaderLibrary;
@@ -33,6 +34,8 @@ namespace Broccoli {
 		~ShaderLibrary();
 
 		const Ref<Shader>& getShader(const std::string& name);
+
+		std::unordered_map<std::string, Ref<Shader>> getCurrentShaders() { return currentShaders; }
 		
 		void loadShader(const std::string& path, VkShaderStageFlagBits stageFlags);
 

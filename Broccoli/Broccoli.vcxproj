@@ -33,6 +33,7 @@
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanShader.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanSwapchain.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanValidation.h" />
+    <ClInclude Include="src\Broccoli\Renderer\Pipeline.h" />
     <ClInclude Include="src\Broccoli\Renderer\Renderer.h" />
     <ClInclude Include="src\Broccoli\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Broccoli\Renderer\RendererContext.h" />
@@ -54,6 +55,7 @@
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanRenderpass.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanShader.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanSwapchain.cpp" />
+    <ClCompile Include="src\Broccoli\Renderer\Pipeline.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\RendererContext.cpp" />

@@ -105,6 +105,9 @@
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanShader.h">
       <Filter>Source Files\Platform\Vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="src\Broccoli\Renderer\Pipeline.h">
+      <Filter>Source Files\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanContext.cpp">
@@ -181,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanShader.cpp">
       <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Renderer\Pipeline.cpp">
+      <Filter>Source Files\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

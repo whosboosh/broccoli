@@ -21,6 +21,12 @@ namespace Broccoli {
 		auto shaderCode = readFile(filePath);
 
 		VkShaderModule shaderModule = createShaderModule(shaderCode);
+
+		shaderStageCreateInfo = {};
+		shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		shaderStageCreateInfo.stage = stageFlags;
+		shaderStageCreateInfo.module = shaderModule;
+		shaderStageCreateInfo.pName = "main";
 	}
 
 	VulkanShader::~VulkanShader()
@@ -39,13 +45,11 @@ namespace Broccoli {
 		shaderModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(code.data()); // Pointer to code (uint32_t pointer type)
 
 		VkShaderModule shaderModule;
-		//Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice()
 
 		VkResult result = vkCreateShaderModule(logicalDevice, &shaderModuleCreateInfo, nullptr, &shaderModule);
-
-		//if (result != VK_SUCCESS) {
-			//throw std::runtime_error("Failed to creata a shader module");
-		//}
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to creata a shader module");
+		}
 
 		return shaderModule;
 	}

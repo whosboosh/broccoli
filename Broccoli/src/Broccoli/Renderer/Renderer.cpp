@@ -6,6 +6,8 @@
 
 #include "Broccoli/Core/Application.h"
 
+#include "Broccoli/Renderer/Pipeline.h"
+
 namespace Broccoli {
 
 	Renderer::Renderer()
@@ -17,7 +19,9 @@ namespace Broccoli {
 
 		//shaderLibrary->loadShader("Broccoli/resources/shaders/geometry.vert");
 		//TODO: Fix relative paths for shaders
-		shaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.vert", VK_SHADER_STAGE_VERTEX_BIT);
+		shaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+		
+		Pipeline* graphicsPipeline = new Pipeline();
 	}
 
 	Renderer::~Renderer()

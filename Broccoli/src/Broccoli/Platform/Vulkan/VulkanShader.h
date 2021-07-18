@@ -18,11 +18,13 @@ namespace Broccoli {
 		virtual const std::string& getName() const override { return name; }
 
 		virtual const VkShaderStageFlagBits getStageFlags() const override { return stageFlags; }
+		virtual const VkPipelineShaderStageCreateInfo getShaderStageInfo() const override { return shaderStageCreateInfo; }
 
 		VkShaderModule createShaderModule(const std::vector<char>& code);
 
 	private:
 		VkShaderStageFlagBits stageFlags;
+		VkPipelineShaderStageCreateInfo shaderStageCreateInfo;
 
 		std::string name;
 	};
