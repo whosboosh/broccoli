@@ -14,8 +14,6 @@ namespace Broccoli {
 
 	VulkanShader::VulkanShader(const std::string& filePath, VkShaderStageFlagBits stageFlags) : stageFlags(stageFlags), filePath(filePath)
 	{
-		std::cout << "Vulkan shader created: " + filePath + "\n";
-
 		size_t found = filePath.find_last_of("/\\");
 		name = found != std::string::npos ? filePath.substr(found + 1) : filePath;
 		//found = name.find_last_of(".");
@@ -40,7 +38,39 @@ namespace Broccoli {
 
 
 		// Load descriptor sets from shader dynamically
-		//spirv_cross::Compiler compiler(shaderCode);
+		spirv_cross::Compiler compiler(outputBinary);
+		auto resources = compiler.get_shader_resources();
+
+		std::cout << "Uniform buffers inside shader: " << name << "\n";
+		for (const auto& resource : resources.uniform_buffers)
+		{
+			const auto& name = resource.name;
+			auto& bufferType = compiler.get_type(resource.base_type_id);
+			int memberCount = (uint32_t)bufferType.member_types.size();
+			uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+			uint32_t descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+			uint32_t size = (uint32_t)compiler.get_declared_struct_size(bufferType);
+
+			if (descriptorSet >= shaderDescriptorSets.size())
+			{
+				shaderDescriptorSets.resize(descriptorSet + 1);
+			}
+
+			ShaderDescriptorSet& shaderDescriptorSet = shaderDescriptorSets[descriptorSet];
+
+			// If no uniform buffer exists yet for this uniform buffer
+			if (uniformBuffers[descriptorSet].find(binding) == uniformBuffers[descriptorSet].end())
+			{
+				UniformBuffer* uniformBuffer = new UniformBuffer();
+				uniformBuffer->bindingPoint = binding;
+				uniformBuffer->size = size;
+				uniformBuffer->name = name;
+				uniformBuffer->shaderStage = stageFlags;
+				uniformBuffers.at(descriptorSet)[binding] = uniformBuffer;
+			}
+
+			std::cout << "Name: " << name << " DescriptorSet: " << descriptorSet << " Binding: " << binding << "\n";
+		}
 	}
 
 	VulkanShader::~VulkanShader()
@@ -99,7 +129,7 @@ namespace Broccoli {
 		options.SetWarningsAsErrors();
 		options.SetGenerateDebugInfo();
 
-		const bool optimise = true;
+		const bool optimise = false;
 		if (optimise) options.SetOptimizationLevel(shaderc_optimization_level_performance);
 
 		// Compile the shader

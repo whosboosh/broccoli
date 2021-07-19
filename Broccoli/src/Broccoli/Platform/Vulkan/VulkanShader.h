@@ -51,6 +51,7 @@ namespace Broccoli {
 		VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};
 
 		std::vector<ShaderDescriptorSet> shaderDescriptorSets;
+		std::unordered_map<uint32_t, std::unordered_map<uint32_t, UniformBuffer*>> uniformBuffers;
 
 		std::string name;
 	};
