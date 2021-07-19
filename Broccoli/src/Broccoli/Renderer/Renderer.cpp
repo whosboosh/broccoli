@@ -19,8 +19,8 @@ namespace Broccoli {
 
 		//TODO: Fix relative paths for shaders
 		//shaderLibrary->loadShader("Broccoli/resources/shaders/geometry.vert");
-		shaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
-		shaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+		shaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.vert", VK_SHADER_STAGE_VERTEX_BIT);
+		shaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
 
 		// Vulkan Pipeline creation requires:
 		// Needs renderpass

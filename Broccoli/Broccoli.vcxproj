@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\Broccoli.h" />
     <ClInclude Include="src\Broccoli\Core\Application.h" />
     <ClInclude Include="src\Broccoli\Core\Camera.h" />
@@ -69,6 +70,9 @@
     <ClCompile Include="vendor\imgui\imgui_draw.cpp" />
     <ClCompile Include="vendor\imgui\imgui_tables.cpp" />
     <ClCompile Include="vendor\imgui\imgui_widgets.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Broccoli.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -140,14 +144,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>vendor/ASSIMP/include;vendor/stb;vendor/GLAD/include;vendor/GLFW/include;vendor/GLM;vendor/VulkanSDK/1.2.176.1/Include;vendor/imgui;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor/ASSIMP/include;vendor/stb;vendor/GLAD/include;vendor/GLFW/include;vendor/GLM;vendor/VulkanSDK/1.2.170.0/Include;vendor/imgui;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>vendor/GLFW/lib-vc2019;vendor/VulkanSDK/1.2.176.1/Lib32;vendor/ASSIMP/lib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;vulkan-1.lib;glfw3.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor/GLFW/lib-vc2019;vendor/ASSIMP/lib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc142-mt.lib;vendor/VulkanSDK/1.2.170.0/Lib32/vulkan-1.lib;vendor/VulkanSDK/VulkanSDK-1.2.170.0-DebugLibs/Lib32/shaderc_sharedd.lib;vendor/VulkanSDK/VulkanSDK-1.2.170.0-DebugLibs/Lib32/shaderc_utild.lib;vendor/VulkanSDK/VulkanSDK-1.2.170.0-DebugLibs/Lib32/spirv-cross-cored.lib;vendor/VulkanSDK/VulkanSDK-1.2.170.0-DebugLibs/Lib32/spirv-cross-glsld.lib;vendor/VulkanSDK/VulkanSDK-1.2.170.0-DebugLibs/Lib32/SPIRV-Toolsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

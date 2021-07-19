@@ -9,6 +9,24 @@
 
 namespace Broccoli {
 
+	struct UniformBuffer
+	{
+		VkDescriptorBufferInfo descriptor;
+		uint32_t size = 0;
+		uint32_t bindingPoint = 0;
+		std::string name;
+		VkShaderStageFlagBits shaderStage = VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
+	};
+
+	struct ShaderDescriptorSet
+	{
+		std::unordered_map<uint32_t, UniformBuffer*> uniformBuffers;
+		//std::unordered_map<uint32_t, ImageSampler> ImageSamplers; // TODO: Add texture sampler support later
+		std::unordered_map<std::string, VkWriteDescriptorSet> writeDescriptorSets;
+
+		operator bool() const { return !(uniformBuffers.empty()); }
+	};
+
 	class VulkanShader : public Shader
 	{
 	public:
@@ -20,11 +38,19 @@ namespace Broccoli {
 		virtual const VkShaderStageFlagBits getStageFlags() const override { return stageFlags; }
 		virtual const VkPipelineShaderStageCreateInfo getShaderStageInfo() const override { return shaderStageCreateInfo; }
 
-		VkShaderModule createShaderModule(const std::vector<char>& code);
+		const std::vector<ShaderDescriptorSet>& getShaderDescriptorSets() const { return shaderDescriptorSets; }
+
+		VkShaderModule createShaderModule(const std::vector<uint32_t>& shaderData);
+
+		void compileGlslToSpirv(std::vector<char> shaderCode, std::vector<uint32_t>& outputBinary);
 
 	private:
+		std::string filePath;
+
 		VkShaderStageFlagBits stageFlags;
 		VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};
+
+		std::vector<ShaderDescriptorSet> shaderDescriptorSets;
 
 		std::string name;
 	};

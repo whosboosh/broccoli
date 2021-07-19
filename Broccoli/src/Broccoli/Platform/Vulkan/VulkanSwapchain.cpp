@@ -113,6 +113,7 @@ namespace Broccoli {
 		VkCommandBufferAllocateInfo commandBufferAllocateInfo = vks::initializers::commandBufferAllocateInfo(commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, swapChainImageCount);
 		commandBuffers.resize(swapChainImageCount);
 		vkAllocateCommandBuffers(getLogicalDevice(), &commandBufferAllocateInfo, commandBuffers.data());
+		std::cout << "Allocated " << swapChainImageCount << " command buffers from swapchain command pool\n";
 
 		// Create synchronisation objects (semaphores & fences)
 		createSynchronisation();
