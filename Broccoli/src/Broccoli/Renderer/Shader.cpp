@@ -30,7 +30,7 @@ namespace Broccoli {
 
 	const Ref<Shader>& ShaderLibrary::getShader(const std::string& name)
 	{
-		if (currentShaders.find(name) != currentShaders.end()) throw std::runtime_error("Failed to find shader " + name + " in list");
+		if (currentShaders.find(name) == currentShaders.end()) throw std::runtime_error("Failed to find shader " + name + " in list");
 		return currentShaders.at(name);
 	}
 

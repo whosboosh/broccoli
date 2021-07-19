@@ -14,6 +14,7 @@
 #include "Broccoli/Platform/Vulkan/VulkanContext.h"
 
 namespace Broccoli {
+
 	VulkanPipeline::VulkanPipeline(const PipelineSpecification& spec, ShaderLibrary* shaderLibrary)
 	{
 		VkDevice logicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice();
@@ -21,8 +22,11 @@ namespace Broccoli {
 		VulkanRenderpass renderPass = swapChain.getRenderPass();
 		std::vector<VkFramebuffer> swapChainFramebuffers = swapChain.getSwapChainFrameBuffers();
 
-
 		std::vector<VkPipelineShaderStageCreateInfo> shaderStages = {};
+
+		//std::cout << "\n\n\n"<< shaderLibrary->getCurrentShaders().at(0).As<Shader>()->getName()<<"\n";
+
+		
 		for (std::pair<std::string, Ref<Shader>> shader : shaderLibrary->getCurrentShaders())
 		{
 			//std::cout << shader.second.As<VulkanShader>()->getName();
