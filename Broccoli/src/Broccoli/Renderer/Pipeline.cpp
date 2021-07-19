@@ -14,7 +14,7 @@ namespace Broccoli {
 
 
 
-	Ref<Pipeline> Pipeline::create(const PipelineSpecification& spec, const ShaderLibrary* shaderLibrary)
+	Ref<Pipeline> Pipeline::create(const PipelineSpecification& spec, ShaderLibrary* shaderLibrary)
 	{
 		switch (RendererAPI::getCurrent())
 		{

@@ -45,6 +45,7 @@ namespace Broccoli {
 
 		VulkanRenderpass getRenderPass() { return *renderPass; }
 		std::vector<VkFramebuffer> getSwapChainFrameBuffers() { return swapChainFramebuffers; }
+		VkExtent2D getSwapExtent() { return swapChainExtent; }
 
 		void createDepthStencil();
 		void createSynchronisation();

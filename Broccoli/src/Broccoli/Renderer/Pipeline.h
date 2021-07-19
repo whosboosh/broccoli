@@ -21,6 +21,7 @@ namespace Broccoli {
 	struct PipelineSpecification {
 		bool backFaceCulling = false;
 		bool depthTest = true;
+		bool depthWrite = true;
 		bool wireFrame = false;
 		float lineWidth = 1.0f;
 		PrimitiveTopology topology = PrimitiveTopology::Triangles;
@@ -32,7 +33,7 @@ namespace Broccoli {
 		Pipeline() = default;
 		virtual ~Pipeline() = default;
 
-		static Ref<Pipeline> create(const PipelineSpecification& spec, const ShaderLibrary* shaderLibrary);
+		static Ref<Pipeline> create(const PipelineSpecification& spec, ShaderLibrary* shaderLibrary);
 	private:
 		
 	};

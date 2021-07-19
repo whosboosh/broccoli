@@ -22,7 +22,6 @@ namespace Broccoli {
 
 		VkShaderModule shaderModule = createShaderModule(shaderCode);
 
-		shaderStageCreateInfo = {};
 		shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		shaderStageCreateInfo.stage = stageFlags;
 		shaderStageCreateInfo.module = shaderModule;

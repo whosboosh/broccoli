@@ -8,8 +8,17 @@
 
 #include "Broccoli/Renderer/Pipeline.h"
 
+#include <glm/glm.hpp>
+
 namespace Broccoli {
 	
+	struct Vertex {
+		glm::vec3 pos; // vertex position (x,y,z)
+		glm::vec3 col; // vertex color (r,g,b)
+		glm::vec2 tex; // Texture coords (u, v)
+		glm::vec3 normal; // Normals
+	};
+
 	class Renderer
 	{
 	public:

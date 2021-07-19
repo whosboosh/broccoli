@@ -13,11 +13,12 @@ namespace Broccoli {
 	class VulkanPipeline : public Pipeline
 	{
 	public:
-		VulkanPipeline(const PipelineSpecification& spec, const ShaderLibrary* shaderLibrary);
+		VulkanPipeline(const PipelineSpecification& spec, ShaderLibrary* shaderLibrary);
 
 		~VulkanPipeline();
 
 	private:
-
+		VkPipelineLayout pipelineLayout;
+		VkPipeline pipeline;
 	};
 }

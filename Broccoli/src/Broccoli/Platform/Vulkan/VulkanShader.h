@@ -24,7 +24,7 @@ namespace Broccoli {
 
 	private:
 		VkShaderStageFlagBits stageFlags;
-		VkPipelineShaderStageCreateInfo shaderStageCreateInfo;
+		VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};
 
 		std::string name;
 	};
