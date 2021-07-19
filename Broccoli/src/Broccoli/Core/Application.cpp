@@ -43,7 +43,7 @@ namespace Broccoli {
 		window->setVsync(false);
 
 		// Initialise renderer (shaders etc) and ImGui
-		Renderer* renderer = new Renderer();
+		renderer = new Renderer();
 	}
 
 

@@ -6,6 +6,8 @@
 
 #include "Broccoli/Renderer/RendererContext.h"
 
+#include "Broccoli/Renderer/Pipeline.h"
+
 namespace Broccoli {
 	
 	class Renderer
@@ -20,6 +22,8 @@ namespace Broccoli {
 
 	private:
 		ShaderLibrary* shaderLibrary;
+
+		Ref<Pipeline> graphicsPipeline;
 	};
 
 }

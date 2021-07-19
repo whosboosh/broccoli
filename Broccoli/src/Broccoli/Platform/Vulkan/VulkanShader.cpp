@@ -27,6 +27,9 @@ namespace Broccoli {
 		shaderStageCreateInfo.stage = stageFlags;
 		shaderStageCreateInfo.module = shaderModule;
 		shaderStageCreateInfo.pName = "main";
+
+
+		std::cout << "Shader created with name: " << name << "\n";
 	}
 
 	VulkanShader::~VulkanShader()

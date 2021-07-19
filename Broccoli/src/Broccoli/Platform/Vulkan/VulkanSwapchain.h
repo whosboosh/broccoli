@@ -43,6 +43,9 @@ namespace Broccoli {
 		VkPresentModeKHR chooseBestPresentationMode(const std::vector<VkPresentModeKHR>& presentationModes);
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities, uint32_t* width, uint32_t* height);
 
+		VulkanRenderpass getRenderPass() { return *renderPass; }
+		std::vector<VkFramebuffer> getSwapChainFrameBuffers() { return swapChainFramebuffers; }
+
 		void createDepthStencil();
 		void createSynchronisation();
 
@@ -84,6 +87,5 @@ namespace Broccoli {
 		std::vector<VkFramebuffer> swapChainFramebuffers;
 
 		VulkanRenderpass* renderPass;
-		VulkanFramebuffer* framebuffer;
 	};
 }

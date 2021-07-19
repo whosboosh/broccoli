@@ -26,9 +26,11 @@ namespace Broccoli {
 		static inline Application& get() { return *appInstance; }
 
 		inline Window& getWindow() { return *window; }
+		inline Renderer& getRenderer() { return *renderer; }
 
 	private:
 		Window* window;
+		Renderer* renderer;
 		ApplicationInfo appInfo;
 		static Application* appInstance;
 		bool isRunning = true, isMinimised = false;

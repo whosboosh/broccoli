@@ -1,2 +1,27 @@
-﻿  Renderer.cpp
+﻿  Application.cpp
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Application.cpp(65,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Camera.cpp
+  Window.cpp
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(115,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(116,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(119,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(120,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(122,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(123,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  EntryPoint.cpp
+  VulkanContext.cpp
+  VulkanDevice.cpp
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Platform\Vulkan\VulkanDevice.cpp(120,61): warning C4805: '==': unsafe mix of type 'VkBool32' and type 'bool' in operation
+  VulkanFramebuffer.cpp
+  VulkanPipeline.cpp
+  VulkanRenderpass.cpp
+  VulkanShader.cpp
+  VulkanSwapchain.cpp
+  Pipeline.cpp
+  Renderer.cpp
+  RendererContext.cpp
+  Shader.cpp
+  Generating Code...
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Utilities\VulkanUtilities.h(130): warning C4715: 'Broccoli::findMemoryTypeIndex': not all control paths return a value
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   Broccoli.vcxproj -> C:\Users\natha\source\repos\Broccoli\Debug\Broccoli.exe

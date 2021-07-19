@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Broccoli/Renderer/Pipeline.h"
+
 // Project dependencies
 #include "Broccoli/Utilities/VulkanInitializers.hpp"
 
@@ -8,10 +10,10 @@
 
 namespace Broccoli {
 
-	class VulkanPipeline
+	class VulkanPipeline : public Pipeline
 	{
 	public:
-		VulkanPipeline();
+		VulkanPipeline(const PipelineSpecification& spec, const ShaderLibrary* shaderLibrary);
 
 		~VulkanPipeline();
 

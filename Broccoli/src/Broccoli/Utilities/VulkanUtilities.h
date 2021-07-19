@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Broccoli/Renderer/Pipeline.h"
+
 #include <vulkan/vulkan.h>
 
 #include <vector>
@@ -165,6 +167,22 @@ namespace Broccoli {
 		file.close();
 
 		return fileBuffer;
+	}
+
+	static VkPrimitiveTopology GetVulkanTopology(PrimitiveTopology topology)
+	{
+		switch (topology)
+		{
+		case PrimitiveTopology::Points:			return VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+		case PrimitiveTopology::Lines:			return VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+		case PrimitiveTopology::Triangles:		return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		case PrimitiveTopology::LineStrip:		return VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
+		case PrimitiveTopology::TriangleStrip:	return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+		case PrimitiveTopology::TriangleFan:	return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN;
+		}
+
+		std::cout << "Unknown toplogy\n";
+		return VK_PRIMITIVE_TOPOLOGY_MAX_ENUM;
 	}
 
 	/*
