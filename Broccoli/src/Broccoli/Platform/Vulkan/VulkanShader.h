@@ -50,8 +50,10 @@ namespace Broccoli {
 		VkShaderStageFlagBits stageFlags;
 		VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};
 
+		std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
 		std::vector<ShaderDescriptorSet> shaderDescriptorSets;
-		std::unordered_map<uint32_t, std::unordered_map<uint32_t, UniformBuffer*>> uniformBuffers;
+		std::unordered_map<uint32_t, std::vector<VkDescriptorPoolSize>> typeCounts;
+		VkDescriptorPool descriptorPool;
 
 		std::string name;
 	};

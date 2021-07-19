@@ -1,7 +1,2 @@
 ﻿  VulkanShader.cpp
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-spirv-cross-cored.lib(spirv_cross.obj) : warning LNK4099: PDB '' was not found with 'spirv-cross-cored.lib(spirv_cross.obj)' or at ''; linking object as if no debug info
-spirv-cross-cored.lib(spirv_parser.obj) : warning LNK4099: PDB 'spirv-cross-core.pdb' was not found with 'spirv-cross-cored.lib(spirv_parser.obj)' or at 'C:\Users\natha\source\repos\Broccoli\Debug\spirv-cross-core.pdb'; linking object as if no debug info
-spirv-cross-cored.lib(spirv_cross_parsed_ir.obj) : warning LNK4099: PDB 'spirv-cross-core.pdb' was not found with 'spirv-cross-cored.lib(spirv_cross_parsed_ir.obj)' or at 'C:\Users\natha\source\repos\Broccoli\Debug\spirv-cross-core.pdb'; linking object as if no debug info
-spirv-cross-cored.lib(spirv_cfg.obj) : warning LNK4099: PDB 'spirv-cross-core.pdb' was not found with 'spirv-cross-cored.lib(spirv_cfg.obj)' or at 'C:\Users\natha\source\repos\Broccoli\Debug\spirv-cross-core.pdb'; linking object as if no debug info
   Broccoli.vcxproj -> C:\Users\natha\source\repos\Broccoli\Debug\Broccoli.exe

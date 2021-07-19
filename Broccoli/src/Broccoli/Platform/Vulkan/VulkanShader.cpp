@@ -47,8 +47,8 @@ namespace Broccoli {
 			const auto& name = resource.name;
 			auto& bufferType = compiler.get_type(resource.base_type_id);
 			int memberCount = (uint32_t)bufferType.member_types.size();
-			uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
-			uint32_t descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+			uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding); // Binding value
+			uint32_t descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet); // Set value
 			uint32_t size = (uint32_t)compiler.get_declared_struct_size(bufferType);
 
 			if (descriptorSet >= shaderDescriptorSets.size())
@@ -58,18 +58,84 @@ namespace Broccoli {
 
 			ShaderDescriptorSet& shaderDescriptorSet = shaderDescriptorSets[descriptorSet];
 
-			// If no uniform buffer exists yet for this uniform buffer
-			if (uniformBuffers[descriptorSet].find(binding) == uniformBuffers[descriptorSet].end())
-			{
-				UniformBuffer* uniformBuffer = new UniformBuffer();
-				uniformBuffer->bindingPoint = binding;
-				uniformBuffer->size = size;
-				uniformBuffer->name = name;
-				uniformBuffer->shaderStage = stageFlags;
-				uniformBuffers.at(descriptorSet)[binding] = uniformBuffer;
-			}
+			UniformBuffer* uniformBuffer = new UniformBuffer();
+			uniformBuffer->bindingPoint = binding;
+			uniformBuffer->size = size;
+			uniformBuffer->name = name;
+			uniformBuffer->shaderStage = stageFlags;
+			shaderDescriptorSet.uniformBuffers[binding] = uniformBuffer;
+			//uniformBuffers.at(descriptorSet)[binding] = uniformBuffer;
+
+			//shaderDescriptorSet.uniformBuffers[binding] = uniformBuffers.at(descriptorSet).at(binding);
 
 			std::cout << "Name: " << name << " DescriptorSet: " << descriptorSet << " Binding: " << binding << "\n";
+		}
+
+		
+		VkDevice logicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice();
+
+		// Create Descriptor Pool
+		// Loop over each set in shader
+		for (size_t set = 0; set < shaderDescriptorSets.size(); set++)
+		{
+			auto& shaderDescriptorSet = shaderDescriptorSets[set];
+
+			if (shaderDescriptorSet.uniformBuffers.size()) // If any uniform buffers exist, calculate pool size
+			{
+				VkDescriptorPoolSize& typeCount = typeCounts[set].emplace_back();
+				typeCount.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+				typeCount.descriptorCount = (uint32_t)shaderDescriptorSet.uniformBuffers.size();
+
+			}
+			// TODO: Do the same ^^ But for image samplers later
+
+			VkDescriptorPoolCreateInfo descriptorPoolInfo = {};
+			descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+			descriptorPoolInfo.pNext = nullptr;
+			descriptorPoolInfo.poolSizeCount = (uint32_t)typeCounts.at(set).size();
+			descriptorPoolInfo.pPoolSizes = typeCounts.at(set).data();
+			descriptorPoolInfo.maxSets = 1;
+
+			VkResult result = vkCreateDescriptorPool(logicalDevice, &descriptorPoolInfo, nullptr, &descriptorPool);
+			if (result != VK_SUCCESS)
+			{
+				throw std::runtime_error("Failed to create descriptor pool!");
+			}
+
+			// Create Descriptor set layout
+			std::vector<VkDescriptorSetLayoutBinding> layoutBindings;
+
+			for (auto& [binding, uniformBuffer] : shaderDescriptorSet.uniformBuffers)
+			{
+				VkDescriptorSetLayoutBinding& layoutBinding = layoutBindings.emplace_back();
+				layoutBinding.binding = binding;
+				layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+				layoutBinding.descriptorCount = 1;
+				layoutBinding.stageFlags = stageFlags; // TODO: Auto compute if vertex/frag/compute shader, depending on what type change the stage flags here
+				layoutBinding.pImmutableSamplers = nullptr;
+
+				VkWriteDescriptorSet& set = shaderDescriptorSet.writeDescriptorSets[uniformBuffer->name];
+				set = {};
+				set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+				set.descriptorType = layoutBinding.descriptorType;
+				set.descriptorCount = 1;
+				set.dstBinding = layoutBinding.binding;
+			}
+
+			VkDescriptorSetLayoutCreateInfo createInfo = {};
+			createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+			createInfo.pNext = nullptr;
+			createInfo.bindingCount = static_cast<uint32_t>(layoutBindings.size()); // Number of binding infos
+			createInfo.pBindings = layoutBindings.data(); // Pointer to binding info
+
+			if (set >= descriptorSetLayouts.size())
+			{
+				descriptorSetLayouts.resize((size_t)(set + 1));
+			}
+			result = vkCreateDescriptorSetLayout(logicalDevice, &createInfo, nullptr, &descriptorSetLayouts[set]);
+			if (result != VK_SUCCESS) {
+				throw std::runtime_error("Failed to create a Descriptor Set Layout!");
+			}
 		}
 	}
 
