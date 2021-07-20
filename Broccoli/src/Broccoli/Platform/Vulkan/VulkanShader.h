@@ -27,13 +27,6 @@ namespace Broccoli {
 		operator bool() const { return !(uniformBuffers.empty()); }
 	};
 
-	struct DescriptorSetObject
-	{
-		;
-		std::vector<VkDescriptorSet> descriptorSets;
-
-	};
-
 	class VulkanShader : public Shader
 	{
 	public:
@@ -47,6 +40,10 @@ namespace Broccoli {
 
 		const std::vector<ShaderDescriptorSet>& getShaderDescriptorSets() const { return shaderDescriptorSets; }
 
+		//VkDescriptorSet GetDescriptorSet() { return m_DescriptorSet; }
+		VkDescriptorSetLayout getDescriptorSetLayout(uint32_t set) { return descriptorSetLayouts.at(set); }
+		std::vector<VkDescriptorSetLayout> getAllDescriptorSetLayouts() { return descriptorSetLayouts; }
+
 		VkShaderModule createShaderModule(const std::vector<uint32_t>& shaderData);
 
 		void compileGlslToSpirv(std::vector<char> shaderCode, std::vector<uint32_t>& outputBinary);
@@ -59,7 +56,9 @@ namespace Broccoli {
 
 		std::vector<VkDescriptorSet> descriptorSets;
 		std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
+
 		std::vector<ShaderDescriptorSet> shaderDescriptorSets;
+
 		std::unordered_map<uint32_t, std::vector<VkDescriptorPoolSize>> typeCounts;
 		VkDescriptorPool descriptorPool;
 

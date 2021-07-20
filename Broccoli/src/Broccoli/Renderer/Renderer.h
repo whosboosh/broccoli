@@ -27,10 +27,10 @@ namespace Broccoli {
 
 		static Ref<RendererContext> getContext();
 
-		ShaderLibrary* getShaderLibrary() { return shaderLibrary; }
+		ShaderLibrary* getShaderLibrary() { return geometryShaderLibrary; }
 
 	private:
-		ShaderLibrary* shaderLibrary;
+		ShaderLibrary* geometryShaderLibrary;
 
 		Ref<Pipeline> graphicsPipeline;
 	};

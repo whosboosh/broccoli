@@ -34,6 +34,17 @@ namespace Broccoli {
 		return currentShaders.at(name);
 	}
 
+	std::array<Ref<Shader>, 2> ShaderLibrary::getShaderGroup(std::string& name)
+	{
+		// If paramaeter is "geometry"
+		// We just have to add the .vert and .frag suffix using the getShader method, add them both to an array and return
+		std::array<Ref<Shader>, 2> shaderGroup = {};
+		shaderGroup[0] = getShader(name + ".vert");
+		shaderGroup[1] = getShader(name + ".frag");
+
+		return shaderGroup;
+	}
+
 	void ShaderLibrary::loadShader(const std::string& filePath, VkShaderStageFlagBits stageFlags)
 	{
 		// With no name, just use the file name

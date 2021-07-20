@@ -1,2 +1,6 @@
-﻿  VulkanShader.cpp
+﻿  VulkanPipeline.cpp
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Platform\Vulkan\VulkanPipeline.cpp(159,22): warning C4018: '<': signed/unsigned mismatch
+  VulkanRenderpass.cpp
+  Shader.cpp
+  Generating Code...
   Broccoli.vcxproj -> C:\Users\natha\source\repos\Broccoli\Debug\Broccoli.exe

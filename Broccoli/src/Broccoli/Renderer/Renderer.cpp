@@ -14,22 +14,6 @@ namespace Broccoli {
 	{
 		std::cout << "Renderer created!\n";
 
-		// Initialise the shader library
-		shaderLibrary = new ShaderLibrary();
-
-		//TODO: Fix relative paths for shaders
-		//shaderLibrary->loadShader("Broccoli/resources/shaders/geometry.vert");
-		shaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.vert", VK_SHADER_STAGE_VERTEX_BIT);
-		shaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
-
-		// Vulkan Pipeline creation requires:
-		// Needs renderpass
-		// Needs shader stages
-		// Needs descriptor sets and layouts (held in shader) - also texture descriptor
-		// Needs swapchain extent
-		// Needs vertex struct
-		// Later could use msaaSamples
-		
 		PipelineSpecification spec = {};
 		spec.backFaceCulling = false;
 		spec.depthTest = true;
@@ -37,12 +21,20 @@ namespace Broccoli {
 		spec.topology = PrimitiveTopology::Triangles;
 		spec.wireFrame = false;
 
-		graphicsPipeline = Pipeline::create(spec, shaderLibrary);
+		// Initialise geometry shader library
+		geometryShaderLibrary = new ShaderLibrary();
+
+		//TODO: Fix relative paths for shaders
+		//shaderLibrary->loadShader("Broccoli/resources/shaders/geometry.vert");
+		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.vert", VK_SHADER_STAGE_VERTEX_BIT);
+		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
+		
+		graphicsPipeline = Pipeline::create(spec, geometryShaderLibrary);
 	}
 
 	Renderer::~Renderer()
 	{
-		delete shaderLibrary;
+		delete geometryShaderLibrary;
 	}
 
 	

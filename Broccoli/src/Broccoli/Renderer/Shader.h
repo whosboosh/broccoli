@@ -36,6 +36,8 @@ namespace Broccoli {
 		const Ref<Shader>& getShader(const std::string& name);
 
 		std::unordered_map<std::string, Ref<Shader>> getCurrentShaders() { return currentShaders; }
+
+		std::array<Ref<Shader>, 2> getShaderGroup(std::string& name);
 		
 		void loadShader(const std::string& path, VkShaderStageFlagBits stageFlags);
 

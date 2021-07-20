@@ -22,17 +22,7 @@ namespace Broccoli {
 		VulkanRenderpass renderPass = swapChain.getRenderPass();
 		std::vector<VkFramebuffer> swapChainFramebuffers = swapChain.getSwapChainFrameBuffers();
 
-		std::vector<VkPipelineShaderStageCreateInfo> shaderStages = {};
-
 		//std::cout << "\n\n\n"<< shaderLibrary->getCurrentShaders().at(0).As<Shader>()->getName()<<"\n";
-
-		
-		for (std::pair<std::string, Ref<Shader>> shader : shaderLibrary->getCurrentShaders())
-		{
-			//std::cout << shader.second.As<VulkanShader>()->getName();
-			std::cout << shader.second.As<Shader>()->getName()<<"\n";
-			shaderStages.push_back(shader.second.As<VulkanShader>()->getShaderStageInfo());
-		}
 
 		// Create the pipeline
 		VkVertexInputBindingDescription bindingDescription = {};
@@ -143,8 +133,39 @@ namespace Broccoli {
 		colorBlending.blendConstants[3] = 0.0f;
 
 		// Descriptor sets and push constants
-		// TODO : Create descriptor sets in shader
-		std::array<VkDescriptorSetLayout, 0> descriptorSetLayouts = { };
+		std::vector<VkDescriptorSetLayout> descriptorSetLayouts = {};
+		std::vector<VkPipelineShaderStageCreateInfo> shaderStages = {};
+
+		for (std::pair<std::string, Ref<Shader>> shader : shaderLibrary->getCurrentShaders())
+		{
+			//std::cout << shader.second.As<VulkanShader>()->getName();
+			//std::cout << shader.second.As<Shader>()->getName() << "\n";
+
+			//Ref<VulkanShader> shaderObject = shader.second.As<VulkanShader>();
+			std::vector<VkDescriptorSetLayout> shaderDescriptorSetLayouts = shader.second.As<VulkanShader>()->getAllDescriptorSetLayouts();
+
+
+			/*
+			std::vector<ShaderDescriptorSet> shaderDescriptorSets = shader.second.As<VulkanShader>()->getShaderDescriptorSets();
+			for (size_t i = 0; i < shaderDescriptorSets.size(); i++)
+			{
+				for (auto& [binding, uniformBuffer] : shaderDescriptorSets[i].uniformBuffers)
+				{
+					descriptorSetLayouts.push_back(shaderDescriptorSets[i].writeDescriptorSets[uniformBuffer->name]);
+
+				}
+			}*/
+
+			for (int i = 0; i < shaderDescriptorSetLayouts.size(); i++)
+			{
+				// TODO: Determine is a shader uniform variable is used across a shader group (Vertex and fragment)
+				// Instead of updating each value separately and own memory, use SHADER_STAGE_ALL to pass to both shaders and update both globally instead of individually
+				descriptorSetLayouts.push_back(shaderDescriptorSetLayouts[i]);
+			}
+
+
+			shaderStages.push_back(shader.second.As<VulkanShader>()->getShaderStageInfo());
+		}
 
 		VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {};
 		pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
