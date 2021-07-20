@@ -89,6 +89,9 @@ namespace Broccoli {
 			}
 			// TODO: Do the same ^^ But for image samplers later
 
+			// TODO: Move this to main renderer so we use the same descriptor pool for every shader
+			// Reduces memory usage and is more optimised. PoolSizeCount will be an aggregation of typeCounts for every shader. But need to know typeCounts for every shader
+			//  before creating the descriptor pool so some refactoring might be necessary
 			VkDescriptorPoolCreateInfo descriptorPoolInfo = {};
 			descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 			descriptorPoolInfo.pNext = nullptr;
@@ -114,12 +117,15 @@ namespace Broccoli {
 				layoutBinding.stageFlags = stageFlags; // TODO: Auto compute if vertex/frag/compute shader, depending on what type change the stage flags here
 				layoutBinding.pImmutableSamplers = nullptr;
 
-				VkWriteDescriptorSet& set = shaderDescriptorSet.writeDescriptorSets[uniformBuffer->name];
-				set = {};
-				set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-				set.descriptorType = layoutBinding.descriptorType;
-				set.descriptorCount = 1;
-				set.dstBinding = layoutBinding.binding;
+				VkWriteDescriptorSet& setWrite = shaderDescriptorSet.writeDescriptorSets[uniformBuffer->name];
+				setWrite = {};
+				setWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+				setWrite.descriptorType = layoutBinding.descriptorType;
+				setWrite.descriptorCount = 1;
+				setWrite.dstBinding = layoutBinding.binding;
+				setWrite.dstSet = set;
+				setWrite.dstArrayElement = 0;
+				setWrite.pBufferInfo = &uniformBuffer->descriptor;
 			}
 
 			VkDescriptorSetLayoutCreateInfo createInfo = {};
@@ -136,6 +142,20 @@ namespace Broccoli {
 			if (result != VK_SUCCESS) {
 				throw std::runtime_error("Failed to create a Descriptor Set Layout!");
 			}
+
+			// Allocate descriptor sets
+			VkDescriptorSetAllocateInfo setAllocInfo = {};
+			setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+			setAllocInfo.descriptorPool = descriptorPool;
+			setAllocInfo.descriptorSetCount = 1; // TODO: Might need to create a descriptor set for each swapchainimage. See how it works with 1 for now? Thonk
+			setAllocInfo.pSetLayouts = &descriptorSetLayouts[set];
+
+			descriptorSets.emplace_back();
+			result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, descriptorSets.data());
+			if (result != VK_SUCCESS) {
+				throw std::runtime_error("Failed to allocate Descriptor Sets");
+			}
+			// Now the descriptor sets are allocated, we can create a function to call vkUpdateDescriptorSets on the specific descriptor setWrite object
 		}
 	}
 

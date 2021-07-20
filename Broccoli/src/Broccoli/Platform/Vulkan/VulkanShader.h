@@ -27,6 +27,13 @@ namespace Broccoli {
 		operator bool() const { return !(uniformBuffers.empty()); }
 	};
 
+	struct DescriptorSetObject
+	{
+		;
+		std::vector<VkDescriptorSet> descriptorSets;
+
+	};
+
 	class VulkanShader : public Shader
 	{
 	public:
@@ -50,6 +57,7 @@ namespace Broccoli {
 		VkShaderStageFlagBits stageFlags;
 		VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};
 
+		std::vector<VkDescriptorSet> descriptorSets;
 		std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
 		std::vector<ShaderDescriptorSet> shaderDescriptorSets;
 		std::unordered_map<uint32_t, std::vector<VkDescriptorPoolSize>> typeCounts;
