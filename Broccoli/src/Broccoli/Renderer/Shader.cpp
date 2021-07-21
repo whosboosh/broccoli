@@ -4,6 +4,8 @@
 
 #include "Broccoli/Platform/Vulkan/VulkanShader.h"
 
+#include "Broccoli/Renderer/RendererAPI.h"
+
 namespace Broccoli {
 
 	// TODO: Auto detect VK stage flags for shader to make generalist with opengl

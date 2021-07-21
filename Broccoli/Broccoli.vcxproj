@@ -30,10 +30,13 @@
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanDevice.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanFramebuffer.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanPipeline.h" />
+    <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanRenderer.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanRenderpass.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanShader.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanSwapchain.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanValidation.h" />
+    <ClInclude Include="src\Broccoli\Renderer\CommandBuffer.h" />
+    <ClInclude Include="src\Broccoli\Renderer\Mesh.h" />
     <ClInclude Include="src\Broccoli\Renderer\Pipeline.h" />
     <ClInclude Include="src\Broccoli\Renderer\Renderer.h" />
     <ClInclude Include="src\Broccoli\Renderer\RendererAPI.h" />
@@ -53,12 +56,14 @@
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanDevice.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanFramebuffer.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanPipeline.cpp" />
+    <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanRenderer.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanRenderpass.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanShader.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanSwapchain.cpp" />
+    <ClCompile Include="src\Broccoli\Renderer\CommandBuffer.cpp" />
+    <ClCompile Include="src\Broccoli\Renderer\Mesh.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Pipeline.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Renderer.cpp" />
-    <ClCompile Include="src\Broccoli\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\RendererContext.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Shader.cpp" />
     <ClCompile Include="src\Broccoli\Vendor\glad.c" />
@@ -151,7 +156,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>vendor/GLFW/lib-vc2019;vendor/ASSIMP/lib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc142-mt.lib;vendor/VulkanSDK/1.2.170.0/Lib32/vulkan-1.lib;vendor/VulkanSDK/VulkanSDK-1.2.170.0-DebugLibs/Lib32/shaderc_sharedd.lib;vendor/VulkanSDK/VulkanSDK-1.2.170.0-DebugLibs/Lib32/shaderc_utild.lib;vendor/VulkanSDK/VulkanSDK-1.2.170.0-DebugLibs/Lib32/spirv-cross-cored.lib;vendor/VulkanSDK/VulkanSDK-1.2.170.0-DebugLibs/Lib32/spirv-cross-glsld.lib;vendor/VulkanSDK/VulkanSDK-1.2.170.0-DebugLibs/Lib32/SPIRV-Toolsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc142-mt.lib;vendor/VulkanSDK/1.2.170.0/Lib32/vulkan-1.lib;vendor/VulkanSDK/Lib32/shaderc_sharedd.lib;vendor/VulkanSDK/Lib32/shaderc_utild.lib;vendor/VulkanSDK/Lib32/spirv-cross-cored.lib;vendor/VulkanSDK/Lib32/spirv-cross-glsld.lib;vendor/VulkanSDK/Lib32/SPIRV-Toolsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

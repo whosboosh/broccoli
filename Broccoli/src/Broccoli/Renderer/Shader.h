@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Broccoli/Core/Ref.h"
-#include "Broccoli/Renderer/RendererAPI.h"
 
 #include <vulkan/vulkan.h>
 

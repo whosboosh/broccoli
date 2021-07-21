@@ -111,6 +111,15 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanRenderer.h">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Renderer\Mesh.h">
+      <Filter>Source Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Renderer\CommandBuffer.h">
+      <Filter>Source Files\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanContext.cpp">
@@ -158,9 +167,6 @@
     <ClCompile Include="src\Broccoli\EntryPoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Broccoli\Renderer\RendererAPI.cpp">
-      <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="src\Broccoli\Renderer\RendererContext.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
@@ -189,6 +195,15 @@
       <Filter>Source Files\Platform\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="src\Broccoli\Renderer\Pipeline.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanRenderer.cpp">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Renderer\Mesh.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Renderer\CommandBuffer.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
   </ItemGroup>

@@ -8,7 +8,17 @@
 
 #include "Broccoli/Renderer/Pipeline.h"
 
+#include "Broccoli/Platform/Vulkan/VulkanRenderer.h"
+
 namespace Broccoli {
+
+	static RendererAPI* initRendererAPI()
+	{
+		switch (RendererAPI::getCurrent())
+		{
+		case RendererAPIType::Vulkan: return new VulkanRenderer();
+		}
+	}
 
 	Renderer::Renderer()
 	{

@@ -144,7 +144,6 @@ namespace Broccoli {
 			//Ref<VulkanShader> shaderObject = shader.second.As<VulkanShader>();
 			std::vector<VkDescriptorSetLayout> shaderDescriptorSetLayouts = shader.second.As<VulkanShader>()->getAllDescriptorSetLayouts();
 
-
 			/*
 			std::vector<ShaderDescriptorSet> shaderDescriptorSets = shader.second.As<VulkanShader>()->getShaderDescriptorSets();
 			for (size_t i = 0; i < shaderDescriptorSets.size(); i++)

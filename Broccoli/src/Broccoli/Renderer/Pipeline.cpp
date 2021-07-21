@@ -5,7 +5,7 @@
 #include "Broccoli/Platform/Vulkan/VulkanPipeline.h"
 #include "Broccoli/Core/Ref.h"
 
-//#include "Broccoli/Renderer/RendererAPI.h"
+#include "Broccoli/Renderer/RendererAPI.h"
 
 #include <iostream>
 
