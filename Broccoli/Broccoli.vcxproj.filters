@@ -129,6 +129,12 @@
     <ClInclude Include="src\Broccoli\Asset\Asset.h">
       <Filter>Source Files\Asset</Filter>
     </ClInclude>
+    <ClInclude Include="src\Broccoli\Renderer\VertexBuffer.h">
+      <Filter>Source Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanVertexBuffer.h">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanContext.cpp">
@@ -214,6 +220,12 @@
     </ClCompile>
     <ClCompile Include="src\Broccoli\Renderer\CommandBuffer.cpp">
       <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Renderer\VertexBuffer.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanVertexBuffer.cpp">
+      <Filter>Source Files\Platform\Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
