@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Broccoli/Core/Ref.h"
+#include "Broccoli/Asset/Asset.h"
 
 struct GLFWwindow;
 
 namespace Broccoli {
-	class Mesh : public RefCounted
+	class Mesh : public Asset
 	{
 	public:
 		Mesh();

@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\Broccoli.h" />
+    <ClInclude Include="src\Broccoli\Asset\Asset.h" />
+    <ClInclude Include="src\Broccoli\Asset\AssetType.h" />
     <ClInclude Include="src\Broccoli\Core\Application.h" />
     <ClInclude Include="src\Broccoli\Core\Camera.h" />
     <ClInclude Include="src\Broccoli\Core\Ref.h" />

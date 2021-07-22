@@ -40,6 +40,9 @@
     <Filter Include="Source Files\Vendor\imgui">
       <UniqueIdentifier>{ba733bcf-5f57-47a9-92b1-6a297889a19e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Asset">
+      <UniqueIdentifier>{765c68af-3bfe-4dff-9f97-f10931af7e75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VulkanInitializers.hpp">
@@ -119,6 +122,12 @@
     </ClInclude>
     <ClInclude Include="src\Broccoli\Renderer\CommandBuffer.h">
       <Filter>Source Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Asset\AssetType.h">
+      <Filter>Source Files\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Asset\Asset.h">
+      <Filter>Source Files\Asset</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
