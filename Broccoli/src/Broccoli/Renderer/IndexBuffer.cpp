@@ -1,25 +1,24 @@
 #pragma once
 
-#include <stdint.h>
+#include "IndexBuffer.h"
 
+#include <stdint.h>
 #include <iostream>
 #include <string>
 
+#include "Broccoli/Platform/Vulkan/VulkanIndexBuffer.h"
+
+#include "Broccoli/Renderer/RendererAPI.h"
 #include "Broccoli/Core/Ref.h"
 
-#include "Broccoli/Asset/AssetType.h"
-
 namespace Broccoli {
-	class Asset : public RefCounted
+	Ref<IndexBuffer> IndexBuffer::create(const std::vector<uint32_t>& indices)
 	{
-	public:
-		
-		virtual ~Asset() {}
-
-		virtual AssetType getAssetType() const { return assetType; }
-		virtual void setAssetType(AssetType assetType) { this->assetType = assetType; }
-
-	private:
-		AssetType assetType = AssetType::None;
-	};
+		switch (RendererAPI::getCurrent())
+		{
+		case RendererAPIType::None: return nullptr;
+		case RendererAPIType::Vulkan: return Ref<VulkanIndexBuffer>::create(indices);
+		//case RendererAPIType::OpenGL: return Ref<OpenGLIndexBuffer>::create(indices);
+		}
+	}
 }

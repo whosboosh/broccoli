@@ -31,6 +31,7 @@
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanContext.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanDevice.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanFramebuffer.h" />
+    <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanIndexBuffer.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanPipeline.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanRenderer.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanRenderpass.h" />
@@ -39,6 +40,7 @@
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanValidation.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanVertexBuffer.h" />
     <ClInclude Include="src\Broccoli\Renderer\CommandBuffer.h" />
+    <ClInclude Include="src\Broccoli\Renderer\IndexBuffer.h" />
     <ClInclude Include="src\Broccoli\Renderer\Mesh.h" />
     <ClInclude Include="src\Broccoli\Renderer\Pipeline.h" />
     <ClInclude Include="src\Broccoli\Renderer\Renderer.h" />
@@ -59,6 +61,7 @@
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanContext.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanDevice.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanFramebuffer.cpp" />
+    <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanIndexBuffer.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanPipeline.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanRenderer.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanRenderpass.cpp" />
@@ -66,6 +69,7 @@
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanSwapchain.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanVertexBuffer.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\CommandBuffer.cpp" />
+    <ClCompile Include="src\Broccoli\Renderer\IndexBuffer.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Mesh.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Pipeline.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Renderer.cpp" />

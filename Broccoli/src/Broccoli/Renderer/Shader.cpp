@@ -8,7 +8,7 @@
 
 namespace Broccoli {
 
-	// TODO: Auto detect VK stage flags for shader to make generalist with opengl
+	// TODO: Auto detect VK stage flags from shader to make generalist with opengl
 	Ref<Shader> Shader::create(const std::string& filePath, VkShaderStageFlagBits stageFlags)
 	{
 		switch (RendererAPI::getCurrent())

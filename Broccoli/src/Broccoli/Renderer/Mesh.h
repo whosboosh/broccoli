@@ -2,7 +2,13 @@
 
 #include "Broccoli/Asset/Asset.h"
 
-struct GLFWwindow;
+#include "Broccoli/Renderer/Renderer.h"
+#include "Broccoli/Renderer/VertexBuffer.h"
+#include "Broccoli/Renderer/IndexBuffer.h"
+
+#include <vector>
+
+#include <glm/glm.hpp>
 
 namespace Broccoli {
 
@@ -11,8 +17,14 @@ namespace Broccoli {
 	class Mesh : public Asset
 	{
 	public:
-		Mesh();
+		Mesh(const std::vector<Vertex> vertices, std::vector<uint32_t> indices, const glm::mat4& transform);
+
 		~Mesh();
+
+
+	private:
+		Ref<VertexBuffer> vertexBuffer;
+		Ref<IndexBuffer> indexBuffer;
 	};
 
 }

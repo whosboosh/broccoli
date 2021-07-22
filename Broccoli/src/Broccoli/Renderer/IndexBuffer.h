@@ -7,19 +7,18 @@
 
 #include "Broccoli/Core/Ref.h"
 
-#include "Broccoli/Asset/AssetType.h"
+#include <vector>
 
 namespace Broccoli {
-	class Asset : public RefCounted
+
+	class IndexBuffer : public RefCounted
 	{
 	public:
-		
-		virtual ~Asset() {}
+		virtual ~IndexBuffer() {}
 
-		virtual AssetType getAssetType() const { return assetType; }
-		virtual void setAssetType(AssetType assetType) { this->assetType = assetType; }
+		virtual void bind() = 0;
+		virtual unsigned int getSize() = 0;
 
-	private:
-		AssetType assetType = AssetType::None;
+		static Ref<IndexBuffer> create(const std::vector<uint32_t>& indices);
 	};
 }

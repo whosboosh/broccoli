@@ -1,8 +1,24 @@
-﻿  VulkanVertexBuffer.cpp
+﻿  Window.cpp
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(115,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(116,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(119,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(120,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(122,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Core\Window.cpp(123,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  VulkanIndexBuffer.cpp
+  VulkanRenderer.cpp
+  VulkanVertexBuffer.cpp
+  IndexBuffer.cpp
+  Mesh.cpp
+  Pipeline.cpp
+  Renderer.cpp
+  RendererContext.cpp
+  Shader.cpp
   VertexBuffer.cpp
   Generating Code...
-C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Renderer\VertexBuffer.cpp(31): warning C4715: 'Broccoli::VertexBuffer::create': not all control paths return a value
 C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Renderer\VertexBuffer.cpp(21): warning C4715: 'Broccoli::VertexBuffer::create': not all control paths return a value
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Renderer\VertexBuffer.cpp(31): warning C4715: 'Broccoli::VertexBuffer::create': not all control paths return a value
+C:\Users\natha\source\repos\Broccoli\Broccoli\src\Broccoli\Renderer\IndexBuffer.cpp(23): warning C4715: 'Broccoli::IndexBuffer::create': not all control paths return a value
 LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
 spirv-cross-cored.lib(spirv_cross.obj) : warning LNK4099: PDB 'spirv-cross-core.pdb' was not found with 'spirv-cross-cored.lib(spirv_cross.obj)' or at 'C:\Users\natha\source\repos\Broccoli\Debug\spirv-cross-core.pdb'; linking object as if no debug info
 spirv-cross-cored.lib(spirv_parser.obj) : warning LNK4099: PDB 'spirv-cross-core.pdb' was not found with 'spirv-cross-cored.lib(spirv_parser.obj)' or at 'C:\Users\natha\source\repos\Broccoli\Debug\spirv-cross-core.pdb'; linking object as if no debug info
