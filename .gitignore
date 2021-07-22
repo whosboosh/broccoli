@@ -1,12 +1,27 @@
 # Prerequisites
 *.d
 
-API Wrapper/models/assets/*
+/build/
+*.suo
+*.user
+_ReSharper.*/
+*.sdf
+bin/
+obj/
+Debug/
+Release/
+*.opensdf
+*.tlog
+*.log
+TestResult.xml
+*.VisualState.xml
+Version.cs
+Version.h
+Version.cpp
 
-externals/*
-LearnOpenGL/Debug
+Broccoli/Debug/
+
 .vs/*
-.vs/LearnOpenGL/v16/Browse.VC.db
 
 # Compiled Object files
 *.slo
