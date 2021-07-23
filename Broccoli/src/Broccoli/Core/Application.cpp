@@ -17,6 +17,8 @@
 #include <ctime>
 #include <chrono>
 
+#include "Broccoli/Platform/Vulkan/VulkanRenderer.h"
+
 namespace Broccoli {
 
 	Application* Application::appInstance = nullptr;
@@ -44,6 +46,27 @@ namespace Broccoli {
 
 		// Initialise renderer (shaders etc) and ImGui
 		renderer = new Renderer();
+
+
+		// TODO: All of this is just test code to run the engine
+		Ref<CommandBuffer> commandBuffer = Ref<CommandBuffer>::create();
+
+		std::vector<Vertex> floorVertices = {
+			{ { -40, 0, -40}, { 1.0f, 0.0f, 1.0f}, { 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f} }, //BL
+			{ { 40, 0, -40}, { 1.0f, .0f, 0.0f}, { 1.0f, 0.0f }, { 0.0f, 0.0f, 0.0f} },//BR
+			{ { -40, 0, 40 }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f} },//FL
+			{ { 40, 0, 40 }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f} }//FR
+		};
+
+		std::vector<uint32_t> floorIndices = {
+			0, 2, 1,
+			1, 2, 3
+		};
+
+		glm::mat4 transformTest(1.0f);
+
+		Ref<Mesh> meshTest = Ref<Mesh>::create(floorVertices, floorIndices, transformTest);
+		renderer->renderMesh(commandBuffer, renderer->getGraphicsPipeline(), meshTest, transformTest);
 	}
 
 

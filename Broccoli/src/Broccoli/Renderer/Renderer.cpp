@@ -10,7 +10,12 @@
 
 #include "Broccoli/Platform/Vulkan/VulkanRenderer.h"
 
+//#include "Broccoli/Renderer/VertexBuffer.h"
+
 namespace Broccoli {
+
+	static RendererAPI* renderAPI = nullptr;
+
 
 	static RendererAPI* initRendererAPI()
 	{
@@ -23,6 +28,8 @@ namespace Broccoli {
 	Renderer::Renderer()
 	{
 		std::cout << "Renderer created!\n";
+
+		renderAPI = initRendererAPI();
 
 		PipelineSpecification spec = {};
 		spec.backFaceCulling = false;
@@ -40,6 +47,8 @@ namespace Broccoli {
 		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
 		
 		graphicsPipeline = Pipeline::create(spec, geometryShaderLibrary);
+
+
 	}
 
 	Renderer::~Renderer()
@@ -47,6 +56,11 @@ namespace Broccoli {
 		delete geometryShaderLibrary;
 	}
 
+
+	void Renderer::renderMesh(Ref<CommandBuffer> commandBuffer, Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)
+	{
+		renderAPI->renderMesh(commandBuffer, pipeline, mesh, transform);
+	}
 	
 	Ref<RendererContext> Renderer::getContext()
 	{

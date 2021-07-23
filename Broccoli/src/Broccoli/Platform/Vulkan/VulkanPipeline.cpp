@@ -13,6 +13,8 @@
 #include "Broccoli/Platform/Vulkan/VulkanShader.h"
 #include "Broccoli/Platform/Vulkan/VulkanContext.h"
 
+#include "Broccoli/Renderer/VertexBuffer.h"
+
 namespace Broccoli {
 
 	VulkanPipeline::VulkanPipeline(const PipelineSpecification& spec, ShaderLibrary* shaderLibrary)
@@ -216,7 +218,7 @@ namespace Broccoli {
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create scene graphics pipeline");
 		}
-		std::cout << "Pipeline created!";
+		std::cout << "Pipeline created!\n";
 	}
 	VulkanPipeline::~VulkanPipeline()
 	{

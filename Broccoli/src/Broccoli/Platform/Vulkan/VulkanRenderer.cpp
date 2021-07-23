@@ -1,5 +1,8 @@
 #include "VulkanRenderer.h"
 
+#include "Broccoli/Renderer/VertexBuffer.h"
+#include <vector>
+
 namespace Broccoli {
 	VulkanRenderer::VulkanRenderer()
 	{

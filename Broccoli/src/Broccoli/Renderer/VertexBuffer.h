@@ -4,10 +4,20 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+
+#include <glm/glm.hpp>
 
 #include "Broccoli/Core/Ref.h"
 
 namespace Broccoli {
+
+	struct Vertex {
+		glm::vec3 pos; // vertex position (x,y,z)
+		glm::vec3 col; // vertex color (r,g,b)
+		glm::vec2 tex; // Texture coords (u, v)
+		glm::vec3 normal; // Normals
+	};
 	
 	enum class VertexBufferUsage
 	{
@@ -19,12 +29,13 @@ namespace Broccoli {
 	class VertexBuffer : public RefCounted
 	{
 	public:
+		
 		virtual void setData(void* buffer, uint32_t size, uint32_t offset = 0) = 0;
 		virtual void bind() = 0;
 
 		virtual unsigned int getSize() = 0;
+		
 
-		static Ref<VertexBuffer> create(void* data, uint32_t size, VertexBufferUsage usage = VertexBufferUsage::Static);
-		static Ref<VertexBuffer> create(void* data, VertexBufferUsage usage = VertexBufferUsage::Dynamic);
+		static Ref<VertexBuffer> create(const std::vector<Vertex>& vertices, VertexBufferUsage usage = VertexBufferUsage::Dynamic);
 	};
 }

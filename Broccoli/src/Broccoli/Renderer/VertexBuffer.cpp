@@ -10,23 +10,14 @@
 
 namespace Broccoli {
 
-	// Static buffer usage
-	Ref<VertexBuffer> VertexBuffer::create(void* data, uint32_t size, VertexBufferUsage usage)
+	
+	Ref<VertexBuffer> VertexBuffer::create(const std::vector<Vertex>& vertices, VertexBufferUsage usage)
 	{
 		switch (RendererAPI::getCurrent()) {
-		case RendererAPIType::None: return nullptr;
-		case RendererAPIType::Vulkan: return Ref<VulkanVertexBuffer>::create(data, size, usage);
-		//case RendererAPIType::OpenGL: return ;
-		}
-	}
-
-	// Dynamic buffer usage
-	Ref<VertexBuffer> VertexBuffer::create(void* data, VertexBufferUsage usage)
-	{
-		switch (RendererAPI::getCurrent()) {
-		case RendererAPIType::None: return nullptr;
-		case RendererAPIType::Vulkan: return Ref<VulkanVertexBuffer>::create(data, usage);
+			case RendererAPIType::None: return nullptr;
+			case RendererAPIType::Vulkan: return Ref<VulkanVertexBuffer>::create(vertices, usage);
 			//case RendererAPIType::OpenGL: return ;
 		}
+		return nullptr;
 	}
 }

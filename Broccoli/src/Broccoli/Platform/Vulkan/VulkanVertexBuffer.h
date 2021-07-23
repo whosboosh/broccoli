@@ -14,9 +14,9 @@ namespace Broccoli {
 	class VulkanVertexBuffer : public VertexBuffer
 	{
 	public:
-		VulkanVertexBuffer(void* data, uint32_t size, VertexBufferUsage usage = VertexBufferUsage::Static);
-		VulkanVertexBuffer(void* data, VertexBufferUsage usage = VertexBufferUsage::Dynamic);
+		VulkanVertexBuffer(const std::vector<Vertex>& vertices, VertexBufferUsage usage);
 
+		
 		virtual void setData(void* buffer, uint32_t size, uint32_t offset = 0) override;
 		virtual void bind() override;
 

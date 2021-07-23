@@ -7,17 +7,12 @@
 #include "Broccoli/Renderer/RendererContext.h"
 
 #include "Broccoli/Renderer/Pipeline.h"
+#include "Broccoli/Renderer/Mesh.h"
+#include "Broccoli/Renderer/CommandBuffer.h"
 
 #include <glm/glm.hpp>
 
 namespace Broccoli {
-	
-	struct Vertex {
-		glm::vec3 pos; // vertex position (x,y,z)
-		glm::vec3 col; // vertex color (r,g,b)
-		glm::vec2 tex; // Texture coords (u, v)
-		glm::vec3 normal; // Normals
-	};
 
 	class Renderer
 	{
@@ -28,6 +23,9 @@ namespace Broccoli {
 		static Ref<RendererContext> getContext();
 
 		ShaderLibrary* getShaderLibrary() { return geometryShaderLibrary; }
+		Ref<Pipeline> getGraphicsPipeline() { return graphicsPipeline; }
+
+		void renderMesh(Ref<CommandBuffer> commandBuffer, Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform);
 
 	private:
 		ShaderLibrary* geometryShaderLibrary;
