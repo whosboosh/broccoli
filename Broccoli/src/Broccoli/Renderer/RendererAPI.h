@@ -34,7 +34,7 @@ namespace Broccoli {
 		virtual void beginRenderPass() = 0;
 		virtual void endRenderPass() = 0;
 
-		virtual void renderMesh(Ref<CommandBuffer>, Ref<Pipeline>, Ref<Mesh> mesh, const glm::mat4& transform) = 0;
+		virtual void renderMesh(Ref<Pipeline>, Ref<Mesh> mesh, const glm::mat4& transform) = 0;
 
 		// Render mesh etc...
 		static RendererAPIType getCurrent() { return currentRenderer; }

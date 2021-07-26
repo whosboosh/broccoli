@@ -25,6 +25,11 @@ namespace Broccoli {
 		}
 	}
 
+	void Renderer::init()
+	{
+
+	}
+
 	Renderer::Renderer()
 	{
 		std::cout << "Renderer created!\n";
@@ -57,9 +62,9 @@ namespace Broccoli {
 	}
 
 
-	void Renderer::renderMesh(Ref<CommandBuffer> commandBuffer, Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)
+	void Renderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)
 	{
-		renderAPI->renderMesh(commandBuffer, pipeline, mesh, transform);
+		renderAPI->renderMesh(pipeline, mesh, transform);
 	}
 	
 	Ref<RendererContext> Renderer::getContext()

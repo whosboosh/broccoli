@@ -8,6 +8,8 @@
 
 #include <glm/glm.hpp>
 
+#include <vulkan/vulkan.h>
+
 #include "Broccoli/Core/Ref.h"
 
 namespace Broccoli {
@@ -29,7 +31,6 @@ namespace Broccoli {
 	class VertexBuffer : public RefCounted
 	{
 	public:
-		
 		virtual void setData(void* buffer, uint32_t size, uint32_t offset = 0) = 0;
 		virtual void bind() = 0;
 
@@ -37,5 +38,8 @@ namespace Broccoli {
 		
 
 		static Ref<VertexBuffer> create(const std::vector<Vertex>& vertices, VertexBufferUsage usage = VertexBufferUsage::Dynamic);
+
+		// Vulkan Specific
+		virtual VkBuffer getVertexBuffer() = 0;
 	};
 }

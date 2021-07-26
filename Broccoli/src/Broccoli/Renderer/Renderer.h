@@ -25,7 +25,16 @@ namespace Broccoli {
 		ShaderLibrary* getShaderLibrary() { return geometryShaderLibrary; }
 		Ref<Pipeline> getGraphicsPipeline() { return graphicsPipeline; }
 
-		void renderMesh(Ref<CommandBuffer> commandBuffer, Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform);
+		void init();
+		void shutdown();
+
+		void beginFrame();
+		void endFrame();
+
+		void beginRenderPass();
+		void endRenderPass();
+
+		void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform);
 
 	private:
 		ShaderLibrary* geometryShaderLibrary;

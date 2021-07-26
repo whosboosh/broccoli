@@ -5,6 +5,9 @@
 #include <iostream>
 #include <string>
 
+
+#include <vulkan/vulkan.h>
+
 #include "Broccoli/Core/Ref.h"
 
 #include <vector>
@@ -20,5 +23,8 @@ namespace Broccoli {
 		virtual unsigned int getSize() = 0;
 
 		static Ref<IndexBuffer> create(const std::vector<uint32_t>& indices);
+
+		// Vulkan Specific
+		virtual VkBuffer getIndexBuffer() = 0;
 	};
 }

@@ -66,7 +66,7 @@ namespace Broccoli {
 		glm::mat4 transformTest(1.0f);
 
 		Ref<Mesh> meshTest = Ref<Mesh>::create(floorVertices, floorIndices, transformTest);
-		renderer->renderMesh(commandBuffer, renderer->getGraphicsPipeline(), meshTest, transformTest);
+		renderer->renderMesh(renderer->getGraphicsPipeline(), meshTest, transformTest);
 	}
 
 

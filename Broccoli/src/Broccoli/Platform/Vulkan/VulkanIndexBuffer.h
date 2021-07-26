@@ -4,7 +4,6 @@
 
 #include "Broccoli/Core/Ref.h"
 
-
 #include <stdint.h>
 #include <iostream>
 #include <string>
@@ -19,5 +18,11 @@ namespace Broccoli {
 		virtual void bind() override;
 
 		virtual unsigned int getSize() override;
+
+		virtual VkBuffer getIndexBuffer() override { return indexBuffer; };
+
+	private:
+		VkBuffer indexBuffer;
+		VkDeviceMemory indexBufferMemory;
 	};
 }

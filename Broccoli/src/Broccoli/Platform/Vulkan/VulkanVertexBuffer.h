@@ -15,11 +15,16 @@ namespace Broccoli {
 	{
 	public:
 		VulkanVertexBuffer(const std::vector<Vertex>& vertices, VertexBufferUsage usage);
-
 		
 		virtual void setData(void* buffer, uint32_t size, uint32_t offset = 0) override;
 		virtual void bind() override;
 
 		virtual unsigned int getSize() override;
+
+		virtual VkBuffer getVertexBuffer() override { return vertexBuffer; }
+
+	private:
+		VkBuffer vertexBuffer;
+		VkDeviceMemory vertexBufferMemory;
 	};
 }
