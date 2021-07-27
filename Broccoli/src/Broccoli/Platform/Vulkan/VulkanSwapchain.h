@@ -48,6 +48,8 @@ namespace Broccoli {
 		std::vector<VkFramebuffer> getSwapChainFrameBuffers() { return swapChainFramebuffers; }
 		VkExtent2D getSwapExtent() { return swapChainExtent; }
 
+		uint32_t getSwapChainImageCount() { return swapChainImageCount; }
+
 		VkCommandBuffer getCurrentCommandBuffer()
 		{
 			return commandBuffers[currentBufferIndex];

@@ -12,10 +12,13 @@ namespace Broccoli {
 	struct UniformBuffer
 	{
 		VkDescriptorBufferInfo descriptor;
+		VkDeviceSize descriptorSize = 0;
 		uint32_t size = 0;
 		uint32_t bindingPoint = 0;
 		std::string name;
 		VkShaderStageFlagBits shaderStage = VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
+		VkDeviceMemory uniformMemory;
+		VkBuffer uniformBuffer;
 	};
 
 	struct ShaderDescriptorSet
@@ -23,6 +26,8 @@ namespace Broccoli {
 		std::unordered_map<uint32_t, UniformBuffer*> uniformBuffers;
 		//std::unordered_map<uint32_t, ImageSampler> ImageSamplers; // TODO: Add texture sampler support later
 		std::unordered_map<std::string, VkWriteDescriptorSet> writeDescriptorSets;
+		VkDescriptorSet descriptorSet;
+		VkDescriptorSetLayout descriptorSetLayout;
 
 		operator bool() const { return !(uniformBuffers.empty()); }
 	};
@@ -40,11 +45,13 @@ namespace Broccoli {
 
 		const std::vector<ShaderDescriptorSet>& getShaderDescriptorSets() const { return shaderDescriptorSets; }
 
-		std::vector<VkDescriptorSet> getAllDescriptorSets() { return descriptorSets; }
+		//std::vector<VkDescriptorSet> getAllDescriptorSets() { return descriptorSets; }
 
 		//VkDescriptorSet GetDescriptorSet() { return m_DescriptorSet; }
-		VkDescriptorSetLayout getDescriptorSetLayout(uint32_t set) { return descriptorSetLayouts.at(set); }
-		std::vector<VkDescriptorSetLayout> getAllDescriptorSetLayouts() { return descriptorSetLayouts; }
+		//VkDescriptorSetLayout getDescriptorSetLayout(uint32_t set) { return descriptorSetLayouts.at(set); }
+		//std::vector<VkDescriptorSetLayout> getAllDescriptorSetLayouts() { return descriptorSetLayouts; }
+
+		void updateDescriptorSet(int set, int binding);
 
 		VkShaderModule createShaderModule(const std::vector<uint32_t>& shaderData);
 
@@ -56,8 +63,8 @@ namespace Broccoli {
 		VkShaderStageFlagBits stageFlags;
 		VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};
 
-		std::vector<VkDescriptorSet> descriptorSets;
-		std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
+		//std::vector<VkDescriptorSet> descriptorSets;
+		//std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
 
 		std::vector<ShaderDescriptorSet> shaderDescriptorSets;
 

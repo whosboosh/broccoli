@@ -12,8 +12,16 @@
 
 namespace Broccoli {
 
+	VulkanShader::~VulkanShader()
+	{
+	}
+
 	VulkanShader::VulkanShader(const std::string& filePath, VkShaderStageFlagBits stageFlags) : stageFlags(stageFlags), filePath(filePath)
 	{
+		VkDevice logicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice();
+		VkPhysicalDevice physicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getPhysicalDevice()->getVulkanPhysicalDevice();
+		VulkanSwapchain swapChain = Application::get().getWindow().getVulkanSwapChain();
+
 		size_t found = filePath.find_last_of("/\\");
 		name = found != std::string::npos ? filePath.substr(found + 1) : filePath;
 		//found = name.find_last_of(".");
@@ -60,19 +68,28 @@ namespace Broccoli {
 
 			UniformBuffer* uniformBuffer = new UniformBuffer();
 			uniformBuffer->bindingPoint = binding;
-			uniformBuffer->size = size;
+			uniformBuffer->size = size; // This might be redundant TODO
 			uniformBuffer->name = name;
 			uniformBuffer->shaderStage = stageFlags;
-			shaderDescriptorSet.uniformBuffers[binding] = uniformBuffer;
-			//uniformBuffers.at(descriptorSet)[binding] = uniformBuffer;
+			uniformBuffer->descriptorSize = size;
 
-			//shaderDescriptorSet.uniformBuffers[binding] = uniformBuffers.at(descriptorSet).at(binding);
+			// Create memory for uniform buffer
+			createBuffer(physicalDevice, logicalDevice, uniformBuffer->descriptorSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &uniformBuffer->uniformBuffer, &uniformBuffer->uniformMemory);
+
+			VkDescriptorBufferInfo bufferInfo = {};
+			bufferInfo.buffer = uniformBuffer->uniformBuffer; // Buffer to get data from
+			bufferInfo.offset = 0; // Position where data starts
+			bufferInfo.range = size; // Size of data 
+
+			uniformBuffer->descriptor = bufferInfo;
+
+			shaderDescriptorSet.uniformBuffers[binding] = uniformBuffer;
 
 			std::cout << "Name: " << name << " DescriptorSet: " << descriptorSet << " Binding: " << binding << "\n";
 		}
 
-		
-		VkDevice logicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice();
+
 
 		// Create Descriptor Pool
 		// Loop over each set in shader
@@ -105,40 +122,41 @@ namespace Broccoli {
 				throw std::runtime_error("Failed to create descriptor pool!");
 			}
 
-			// Create Descriptor set layout
-			std::vector<VkDescriptorSetLayoutBinding> layoutBindings;
+			// Create Descriptor set layout for this set
+			std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {};
 
 			for (auto& [binding, uniformBuffer] : shaderDescriptorSet.uniformBuffers)
 			{
-				VkDescriptorSetLayoutBinding& layoutBinding = layoutBindings.emplace_back();
+				VkDescriptorSetLayoutBinding layoutBinding = {};
 				layoutBinding.binding = binding;
 				layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 				layoutBinding.descriptorCount = 1;
 				layoutBinding.stageFlags = stageFlags; // TODO: Auto compute if vertex/frag/compute shader, depending on what type change the stage flags here
 				layoutBinding.pImmutableSamplers = nullptr;
 
+				layoutBindings.push_back(layoutBinding);
+
 				VkWriteDescriptorSet& setWrite = shaderDescriptorSet.writeDescriptorSets[uniformBuffer->name];
-				setWrite = {};
+				//setWrite = {};
 				setWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 				setWrite.descriptorType = layoutBinding.descriptorType;
 				setWrite.descriptorCount = 1;
 				setWrite.dstBinding = layoutBinding.binding;
 				setWrite.dstSet = set;
 				setWrite.dstArrayElement = 0;
-				setWrite.pBufferInfo = &uniformBuffer->descriptor;
+				setWrite.pBufferInfo = &uniformBuffer->descriptor; // Use later when we actually write info to this binding value VkDescriptorBufferInfo
 			}
 
+			std::cout << "LAYOUT BINDING SIZE: " << layoutBindings.size() << "\n";
+
+			// Create the descriptor set layout for this set
 			VkDescriptorSetLayoutCreateInfo createInfo = {};
 			createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-			createInfo.pNext = nullptr;
+			//createInfo.pNext = nullptr;
 			createInfo.bindingCount = static_cast<uint32_t>(layoutBindings.size()); // Number of binding infos
 			createInfo.pBindings = layoutBindings.data(); // Pointer to binding info
 
-			if (set >= descriptorSetLayouts.size())
-			{
-				descriptorSetLayouts.resize((size_t)(set + 1));
-			}
-			result = vkCreateDescriptorSetLayout(logicalDevice, &createInfo, nullptr, &descriptorSetLayouts[set]);
+			result = vkCreateDescriptorSetLayout(logicalDevice, &createInfo, nullptr, &shaderDescriptorSet.descriptorSetLayout);
 			if (result != VK_SUCCESS) {
 				throw std::runtime_error("Failed to create a Descriptor Set Layout!");
 			}
@@ -148,30 +166,29 @@ namespace Broccoli {
 			setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 			setAllocInfo.descriptorPool = descriptorPool;
 			setAllocInfo.descriptorSetCount = 1; // TODO: Might need to create a descriptor set for each swapchainimage. See how it works with 1 for now? Thonk
-			setAllocInfo.pSetLayouts = &descriptorSetLayouts[set];
+			setAllocInfo.pSetLayouts = &shaderDescriptorSet.descriptorSetLayout;
 
-			// THIS IS BORKED, FIX IT REE
-			descriptorSets.emplace_back();
-			result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, descriptorSets.data());
+			result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, &shaderDescriptorSet.descriptorSet);
 			if (result != VK_SUCCESS) {
 				throw std::runtime_error("Failed to allocate Descriptor Sets");
 			}
-			// Now the descriptor sets are allocated, we can create a function to call vkUpdateDescriptorSets on the specific descriptor setWrite object
 
+			// Now the descriptor sets are allocated, we can create a function to call vkUpdateDescriptorSets on the specific descriptor setWrite object
 			std::vector<VkWriteDescriptorSet> setWrites = {};
 			for (auto& [binding, uniformBuffer] : shaderDescriptorSet.uniformBuffers)
 			{
 				setWrites.push_back(shaderDescriptorSet.writeDescriptorSets[uniformBuffer->name]);
 			}
 
-			vkUpdateDescriptorSets(logicalDevice, 1, setWrites.data(), 0, nullptr);
+			vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(setWrites.size()), setWrites.data(), 0, nullptr);
+			
 		}
 	}
 
-	VulkanShader::~VulkanShader()
+	void VulkanShader::updateDescriptorSet(int set, int binding)
 	{
-	}
 
+	}
 	
 	VkShaderModule VulkanShader::createShaderModule(const std::vector<uint32_t>& shaderData)
 	{

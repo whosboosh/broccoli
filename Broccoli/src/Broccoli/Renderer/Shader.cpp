@@ -52,9 +52,9 @@ namespace Broccoli {
 		std::vector<VkDescriptorSet> descriptorSets = {};
 		for (std::pair<std::string, Ref<Shader>> shader : currentShaders)
 		{
-			for (VkDescriptorSet descriptor : shader.second.As<VulkanShader>()->getAllDescriptorSets())
+			for (ShaderDescriptorSet shaderDescriptor : shader.second.As<VulkanShader>()->getShaderDescriptorSets())
 			{
-				descriptorSets.push_back(descriptor);
+				descriptorSets.push_back(shaderDescriptor.descriptorSet);
 			}
 		}
 
