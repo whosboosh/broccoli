@@ -150,12 +150,21 @@ namespace Broccoli {
 			setAllocInfo.descriptorSetCount = 1; // TODO: Might need to create a descriptor set for each swapchainimage. See how it works with 1 for now? Thonk
 			setAllocInfo.pSetLayouts = &descriptorSetLayouts[set];
 
+			// THIS IS BORKED, FIX IT REE
 			descriptorSets.emplace_back();
 			result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, descriptorSets.data());
 			if (result != VK_SUCCESS) {
 				throw std::runtime_error("Failed to allocate Descriptor Sets");
 			}
 			// Now the descriptor sets are allocated, we can create a function to call vkUpdateDescriptorSets on the specific descriptor setWrite object
+
+			std::vector<VkWriteDescriptorSet> setWrites = {};
+			for (auto& [binding, uniformBuffer] : shaderDescriptorSet.uniformBuffers)
+			{
+				setWrites.push_back(shaderDescriptorSet.writeDescriptorSets[uniformBuffer->name]);
+			}
+
+			vkUpdateDescriptorSets(logicalDevice, 1, setWrites.data(), 0, nullptr);
 		}
 	}
 

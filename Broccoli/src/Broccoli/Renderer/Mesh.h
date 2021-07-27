@@ -28,6 +28,9 @@ namespace Broccoli {
 		Ref<VertexBuffer>* getVertexBuffer() { return &vertexBuffer; }
 		Ref<IndexBuffer>* getIndexBuffer() { return &indexBuffer; }
 
+		int getIndexCount() { return indexCount; };
+		int getVertexCount() { return vertexCount; };
+		
 		void setTransform(glm::mat4 newModel);
 		MeshInfo getMeshInfo() { return meshInfo; }
 
@@ -36,6 +39,9 @@ namespace Broccoli {
 
 	private:
 		MeshInfo meshInfo;
+
+		int vertexCount;
+		int indexCount;
 
 		Ref<VertexBuffer> vertexBuffer;
 		Ref<IndexBuffer> indexBuffer;
