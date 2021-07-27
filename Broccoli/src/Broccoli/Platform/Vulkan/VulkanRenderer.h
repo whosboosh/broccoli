@@ -8,6 +8,8 @@
 #include "Broccoli/Renderer/Mesh.h"
 #include "Broccoli/Renderer/CommandBuffer.h"
 
+#include "Broccoli/Platform/Vulkan/VulkanSwapchain.h"
+
 #include <glm/glm.hpp>
 
 namespace Broccoli {
@@ -30,7 +32,7 @@ namespace Broccoli {
 		virtual void renderMesh(Ref<Pipeline>, Ref<Mesh> mesh, const glm::mat4& transform) override;
 
 	private:
-
+		VulkanSwapchain* swapChain;
 	};
 
 }

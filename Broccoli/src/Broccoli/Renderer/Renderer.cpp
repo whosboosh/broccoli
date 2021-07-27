@@ -25,11 +25,6 @@ namespace Broccoli {
 		}
 	}
 
-	void Renderer::init()
-	{
-
-	}
-
 	Renderer::Renderer()
 	{
 		std::cout << "Renderer created!\n";
@@ -59,6 +54,11 @@ namespace Broccoli {
 	Renderer::~Renderer()
 	{
 		delete geometryShaderLibrary;
+	}
+
+	void Renderer::init()
+	{
+		renderAPI->init();
 	}
 
 	void Renderer::beginFrame()

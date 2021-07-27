@@ -46,7 +46,7 @@ namespace Broccoli {
 
 		// Initialise renderer (shaders etc) and ImGui
 		renderer = new Renderer();
-
+		renderer->init();
 
 		// TODO: All of this is just test code to run the engine
 		Ref<CommandBuffer> commandBuffer = Ref<CommandBuffer>::create();
