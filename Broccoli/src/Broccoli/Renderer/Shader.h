@@ -37,6 +37,9 @@ namespace Broccoli {
 		std::unordered_map<std::string, Ref<Shader>> getCurrentShaders() { return currentShaders; }
 
 		std::array<Ref<Shader>, 2> getShaderGroup(std::string& name);
+
+		// Vulkan specific
+		std::vector<VkDescriptorSet> getShaderDescriptorSets();
 		
 		void loadShader(const std::string& path, VkShaderStageFlagBits stageFlags);
 

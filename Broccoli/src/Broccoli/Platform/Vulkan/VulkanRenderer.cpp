@@ -2,9 +2,16 @@
 
 #include "Broccoli/Platform/Vulkan/VulkanContext.h"
 #include "Broccoli/Platform/Vulkan/VulkanSwapchain.h"
+#include "Broccoli/Platform/Vulkan/VulkanPipeline.h"
+
 #include "Broccoli/Core/Application.h"
 
 #include "Broccoli/Renderer/VertexBuffer.h"
+#include "Broccoli/Platform/Vulkan/VulkanVertexBuffer.h"
+#include "Broccoli/Renderer/IndexBuffer.h"
+#include "Broccoli/Platform/Vulkan/VulkanIndexBuffer.h"
+#include "Broccoli/Platform/Vulkan/VulkanShader.h"
+
 #include <vector>
 
 namespace Broccoli {
@@ -88,7 +95,22 @@ namespace Broccoli {
 
 	void VulkanRenderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)
 	{
-		VulkanSwapchain& swapChain = Application::get().getWindow().getVulkanSwapChain();
+		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
 
+		// Potentially move binding pipeline out to its own function if multiple meshes all use the same pipeline, dont need to keep rebinding it
+		vkCmdBindPipeline(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipeline());
+		
+		mesh->getVertexBuffer();
+
+		VkBuffer vertexBuffer[] = { mesh->getVertexBuffer()->As<VulkanVertexBuffer>()->getVertexBuffer() };
+		VkDeviceSize offsets[] = { 0 }; // Offsets into buffers being bound
+
+		vkCmdBindVertexBuffers(swapChain->getCurrentCommandBuffer(), 0, 1, vertexBuffer, offsets); // Command to bind vertex buffer before drawing with them
+		vkCmdBindIndexBuffer(swapChain->getCurrentCommandBuffer(), mesh->getIndexBuffer()->As<VulkanIndexBuffer>()->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32); // Bind mesh index buffer with 0 offset and using uint32 type
+
+		// TODO make a function in shader library that combines all descriptorSets in a group
+
+		vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),
+			0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets().size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets().data(), 0, nullptr);
 	}
 }

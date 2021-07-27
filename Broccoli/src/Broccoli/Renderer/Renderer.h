@@ -22,7 +22,7 @@ namespace Broccoli {
 
 		static Ref<RendererContext> getContext();
 
-		ShaderLibrary* getShaderLibrary() { return geometryShaderLibrary; }
+		//ShaderLibrary* getShaderLibrary() { return geometryShaderLibrary; }
 		Ref<Pipeline> getGraphicsPipeline() { return graphicsPipeline; }
 
 		void init();
@@ -37,8 +37,6 @@ namespace Broccoli {
 		void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform);
 
 	private:
-		ShaderLibrary* geometryShaderLibrary;
-
 		Ref<Pipeline> graphicsPipeline;
 	};
 

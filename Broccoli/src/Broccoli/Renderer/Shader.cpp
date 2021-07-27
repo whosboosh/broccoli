@@ -47,6 +47,20 @@ namespace Broccoli {
 		return shaderGroup;
 	}
 
+	std::vector<VkDescriptorSet> ShaderLibrary::getShaderDescriptorSets()
+	{
+		std::vector<VkDescriptorSet> descriptorSets = {};
+		for (std::pair<std::string, Ref<Shader>> shader : currentShaders)
+		{
+			for (VkDescriptorSet descriptor : shader.second.As<VulkanShader>()->getAllDescriptorSets())
+			{
+				descriptorSets.push_back(descriptor);
+			}
+		}
+
+		return descriptorSets;
+	}
+
 	void ShaderLibrary::loadShader(const std::string& filePath, VkShaderStageFlagBits stageFlags)
 	{
 		// With no name, just use the file name

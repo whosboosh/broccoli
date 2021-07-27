@@ -39,7 +39,7 @@ namespace Broccoli {
 		spec.wireFrame = false;
 
 		// Initialise geometry shader library
-		geometryShaderLibrary = new ShaderLibrary();
+		ShaderLibrary* geometryShaderLibrary = new ShaderLibrary();
 
 		//TODO: Fix relative paths for shaders
 		//shaderLibrary->loadShader("Broccoli/resources/shaders/geometry.vert");
@@ -47,13 +47,10 @@ namespace Broccoli {
 		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
 		
 		graphicsPipeline = Pipeline::create(spec, geometryShaderLibrary);
-
-
 	}
 
 	Renderer::~Renderer()
 	{
-		delete geometryShaderLibrary;
 	}
 
 	void Renderer::init()

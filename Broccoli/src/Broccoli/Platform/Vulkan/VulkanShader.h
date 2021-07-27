@@ -40,6 +40,8 @@ namespace Broccoli {
 
 		const std::vector<ShaderDescriptorSet>& getShaderDescriptorSets() const { return shaderDescriptorSets; }
 
+		std::vector<VkDescriptorSet> getAllDescriptorSets() { return descriptorSets; }
+
 		//VkDescriptorSet GetDescriptorSet() { return m_DescriptorSet; }
 		VkDescriptorSetLayout getDescriptorSetLayout(uint32_t set) { return descriptorSetLayouts.at(set); }
 		std::vector<VkDescriptorSetLayout> getAllDescriptorSetLayouts() { return descriptorSetLayouts; }
