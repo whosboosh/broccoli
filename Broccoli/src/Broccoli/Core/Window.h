@@ -55,7 +55,7 @@ namespace Broccoli {
 		std::pair<uint32_t, uint32_t> getWindowPos();
 
 		Ref<RendererContext> getRenderContext() { return rendererContext; }
-		VulkanSwapchain getVulkanSwapChain() { return vulkanSwapchain; }
+		VulkanSwapchain& getVulkanSwapChain() { return vulkanSwapchain; }
 
 		void setVsync(bool param);
 		bool isVsync() { return windowSpec.vsync; }

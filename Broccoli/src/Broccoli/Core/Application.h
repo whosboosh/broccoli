@@ -29,6 +29,8 @@ namespace Broccoli {
 		inline Renderer& getRenderer() { return *renderer; }
 
 	private:
+		Ref<Mesh> mesh;
+
 		Window* window;
 		Renderer* renderer;
 		ApplicationInfo appInfo;

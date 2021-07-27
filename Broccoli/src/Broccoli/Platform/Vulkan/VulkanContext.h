@@ -7,6 +7,7 @@
 
 #include "VulkanDevice.h"
 #include "Broccoli/Utilities/VulkanInitializers.hpp"
+#include "Broccoli/Renderer/Renderer.h"
 
 // Vendor
 #include <vulkan/vulkan.h>
@@ -23,6 +24,9 @@ namespace Broccoli {
 	
 		VulkanLogicalDevice* getLogicalDevice() { return logicalDevice; };
 		VulkanPhysicalDevice* getPhysicalDevice() { return physicalDevice; }
+
+
+		static Ref<VulkanContext> get() { return Ref<VulkanContext>(Renderer::getContext()); }
 
 		static VkInstance getInstance() { return mainInstance; };
 		static VkSurfaceKHR getSurface() { return surface; }

@@ -44,9 +44,22 @@ namespace Broccoli {
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities, uint32_t* width, uint32_t* height);
 
 		std::vector<VkCommandBuffer> getCommandBuffers() { return commandBuffers; }
-		VulkanRenderpass getRenderPass() { return *renderPass; }
+		VulkanRenderpass& getRenderPass() { return *renderPass; }
 		std::vector<VkFramebuffer> getSwapChainFrameBuffers() { return swapChainFramebuffers; }
 		VkExtent2D getSwapExtent() { return swapChainExtent; }
+
+		VkCommandBuffer getCurrentCommandBuffer()
+		{
+			return commandBuffers[currentBufferIndex];
+		}
+
+		VkFramebuffer getCurrentFrameBuffer()
+		{ 
+			if (currentBufferIndex < swapChainFramebuffers.size()) 	return swapChainFramebuffers[currentBufferIndex];
+			else throw std::runtime_error("Referenced Framebuffer is out of bounds!");
+		}
+
+		uint32_t getCurrentBufferIndex() { return currentBufferIndex; }
 
 		void createDepthStencil();
 		void createSynchronisation();
@@ -87,6 +100,8 @@ namespace Broccoli {
 		std::vector<VkFence> drawFences;
 
 		std::vector<VkFramebuffer> swapChainFramebuffers;
+
+		uint32_t currentBufferIndex = 0;
 
 		VulkanRenderpass* renderPass;
 	};

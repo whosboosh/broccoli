@@ -13,7 +13,6 @@ namespace Broccoli {
 	
 	VulkanVertexBuffer::VulkanVertexBuffer(const std::vector<Vertex>& vertices, VertexBufferUsage usage)
 	{
-		std::cout << "Vertex buffer created!\n";
 		VulkanLogicalDevice* device = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice();
 		VkDevice logicalDevice = device->getLogicalDevice();
 		VkPhysicalDevice physicalDevice = device->getPhysicalDevice()->getVulkanPhysicalDevice();
@@ -47,7 +46,7 @@ namespace Broccoli {
 		vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
 		vkFreeMemory(logicalDevice, stagingBufferMemory, nullptr);
 
-
+		std::cout << "Vertex buffer created!\n";
 	}
 	void VulkanVertexBuffer::setData(void* buffer, uint32_t size, uint32_t offset)
 	{

@@ -65,8 +65,7 @@ namespace Broccoli {
 
 		glm::mat4 transformTest(1.0f);
 
-		Ref<Mesh> meshTest = Ref<Mesh>::create(floorVertices, floorIndices, transformTest);
-		renderer->renderMesh(renderer->getGraphicsPipeline(), meshTest, transformTest);
+		mesh = Ref<Mesh>::create(floorVertices, floorIndices, transformTest);
 	}
 
 
@@ -79,10 +78,15 @@ namespace Broccoli {
 			{
 				//std::cout << "New Frame " << frameCounter << "\n";
 				// Begin render frame
+				renderer->beginFrame();
+				
+				renderer->beginRenderPass();
 
-				// Submit imgui
+				renderer->renderMesh(renderer->getGraphicsPipeline(), mesh, glm::mat4(1.0f));
 
-				//Swap buffers
+				renderer->endRenderPass();
+
+				renderer->endFrame();
 			}
 
 			float time = glfwGetTime();

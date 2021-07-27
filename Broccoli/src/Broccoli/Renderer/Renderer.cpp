@@ -61,6 +61,25 @@ namespace Broccoli {
 		delete geometryShaderLibrary;
 	}
 
+	void Renderer::beginFrame()
+	{
+		renderAPI->beginFrame();
+	}
+
+	void Renderer::endFrame()
+	{
+		renderAPI->endFrame();
+	}
+
+	void Renderer::beginRenderPass()
+	{
+		renderAPI->beginRenderPass();
+	}
+
+	void Renderer::endRenderPass()
+	{
+		renderAPI->endRenderPass();
+	}
 
 	void Renderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)
 	{

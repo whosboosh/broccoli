@@ -1,16 +1,24 @@
 #include "Mesh.h"
 
 namespace Broccoli {
-	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, const glm::mat4& transform)
+	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, glm::mat4& transform)
 	{
-		std::cout << vertices[0].pos.x;
+		vertexBuffer = VertexBuffer::create(vertices);
+		indexBuffer = IndexBuffer::create(indices);
 
-		Ref<VertexBuffer> vertexBuffer = VertexBuffer::create(vertices);
-		Ref<IndexBuffer> indexBuffer = IndexBuffer::create(indices);
-
+		meshInfo.transform = transform;
+		meshInfo.inverseTransform = glm::transpose(glm::inverse(transform));
+		meshInfo.hasTexture = false;
 	}
 
 	Mesh::~Mesh()
 	{
+	}
+
+
+	void Mesh::setTransform(glm::mat4 newModel)
+	{
+		meshInfo.transform = newModel;
+		meshInfo.inverseTransform = glm::transpose(glm::inverse(newModel));
 	}
 }
