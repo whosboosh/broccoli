@@ -17,16 +17,17 @@ namespace Broccoli {
 		uint32_t bindingPoint = 0;
 		std::string name;
 		VkShaderStageFlagBits shaderStage = VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
-		VkDeviceMemory uniformMemory;
-		VkBuffer uniformBuffer;
+		std::vector<VkDeviceMemory> uniformMemory;
+		std::vector<VkBuffer> uniformBuffer;
+		VkDescriptorSetLayoutBinding layoutBinding;
 	};
 
 	struct ShaderDescriptorSet
 	{
 		std::unordered_map<uint32_t, UniformBuffer*> uniformBuffers;
 		//std::unordered_map<uint32_t, ImageSampler> ImageSamplers; // TODO: Add texture sampler support later
-		std::unordered_map<std::string, VkWriteDescriptorSet> writeDescriptorSets;
-		VkDescriptorSet descriptorSet;
+		std::vector<std::unordered_map<std::string, VkWriteDescriptorSet>> writeDescriptorSets;
+		std::vector<VkDescriptorSet> descriptorSets;
 		VkDescriptorSetLayout descriptorSetLayout;
 
 		operator bool() const { return !(uniformBuffers.empty()); }
@@ -68,7 +69,8 @@ namespace Broccoli {
 
 		std::vector<ShaderDescriptorSet> shaderDescriptorSets;
 
-		std::unordered_map<uint32_t, std::vector<VkDescriptorPoolSize>> typeCounts;
+		std::vector<VkDescriptorPoolSize> poolSizes;
+		//std::unordered_map<uint32_t, std::vector<VkDescriptorPoolSize>> typeCounts;
 		VkDescriptorPool descriptorPool;
 
 		std::string name;

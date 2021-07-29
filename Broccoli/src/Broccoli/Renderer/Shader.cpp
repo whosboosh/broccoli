@@ -3,6 +3,8 @@
 #include "Shader.h"
 
 #include "Broccoli/Platform/Vulkan/VulkanShader.h"
+#include "Broccoli/Platform/Vulkan/VulkanSwapchain.h"
+#include "Broccoli/Core/Application.h"
 
 #include "Broccoli/Renderer/RendererAPI.h"
 
@@ -49,12 +51,17 @@ namespace Broccoli {
 
 	std::vector<VkDescriptorSet> ShaderLibrary::getShaderDescriptorSets()
 	{
+		VulkanSwapchain swapChain = Application::get().getWindow().getVulkanSwapChain();
+
 		std::vector<VkDescriptorSet> descriptorSets = {};
 		for (std::pair<std::string, Ref<Shader>> shader : currentShaders)
 		{
 			for (ShaderDescriptorSet shaderDescriptor : shader.second.As<VulkanShader>()->getShaderDescriptorSets())
 			{
-				descriptorSets.push_back(shaderDescriptor.descriptorSet);
+				for (int i = 0; i < swapChain.getSwapChainImageCount(); i++)
+				{
+					descriptorSets.push_back(shaderDescriptor.descriptorSets[i]);
+				}
 			}
 		}
 

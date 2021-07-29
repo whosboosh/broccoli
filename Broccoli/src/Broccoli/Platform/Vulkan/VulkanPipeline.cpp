@@ -164,7 +164,11 @@ namespace Broccoli {
 			{
 				// TODO: Determine is a shader uniform variable is used across a shader group (Vertex and fragment)
 				// Instead of updating each value separately and own memory, use SHADER_STAGE_ALL to pass to both shaders and update both globally instead of individually
-				descriptorSetLayouts.push_back(shaderDescriptors[i].descriptorSetLayout);
+				//for (int j = 0; j < swapChain.getSwapChainImageCount(); j++)
+				//{
+					descriptorSetLayouts.push_back(shaderDescriptors[i].descriptorSetLayout);
+				//}
+
 			}
 
 

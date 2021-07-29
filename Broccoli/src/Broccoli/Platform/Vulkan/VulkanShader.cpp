@@ -44,11 +44,13 @@ namespace Broccoli {
 
 		std::cout << "Shader created with name: " << name << "\n";
 
-
 		// Load descriptor sets from shader dynamically
 		spirv_cross::Compiler compiler(outputBinary);
 		auto resources = compiler.get_shader_resources();
 
+		std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {};
+
+		// Generate uniform buffers based on shader content
 		std::cout << "Uniform buffers inside shader: " << name << "\n";
 		for (const auto& resource : resources.uniform_buffers)
 		{
@@ -74,85 +76,63 @@ namespace Broccoli {
 			uniformBuffer->descriptorSize = size;
 
 			// Create memory for uniform buffer
-			createBuffer(physicalDevice, logicalDevice, uniformBuffer->descriptorSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &uniformBuffer->uniformBuffer, &uniformBuffer->uniformMemory);
+			uniformBuffer->uniformBuffer.resize(swapChain.getSwapChainImageCount());
+			uniformBuffer->uniformMemory.resize(swapChain.getSwapChainImageCount());
 
-			VkDescriptorBufferInfo bufferInfo = {};
-			bufferInfo.buffer = uniformBuffer->uniformBuffer; // Buffer to get data from
-			bufferInfo.offset = 0; // Position where data starts
-			bufferInfo.range = size; // Size of data 
+			for (size_t i = 0; i < swapChain.getSwapChainImageCount(); i++)
+			{
+				createBuffer(physicalDevice, logicalDevice, uniformBuffer->descriptorSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+					VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &uniformBuffer->uniformBuffer[i], &uniformBuffer->uniformMemory[i]);
 
-			uniformBuffer->descriptor = bufferInfo;
+				VkDescriptorBufferInfo bufferInfo = {};
+				bufferInfo.buffer = uniformBuffer->uniformBuffer[i]; // Buffer to get data from
+				bufferInfo.offset = 0; // Position where data starts
+				bufferInfo.range = size; // Size of data 
+
+				uniformBuffer->descriptor = bufferInfo;
+			}
+
+			// Create descriptor set layout for this uniform
+			VkDescriptorSetLayoutBinding& layoutBinding = uniformBuffer->layoutBinding;
+			layoutBinding.binding = binding;
+			layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			layoutBinding.descriptorCount = 1;
+			layoutBinding.stageFlags = stageFlags; // TODO: Auto compute if vertex/frag/compute shader, depending on what type change the stage flags here
+			layoutBinding.pImmutableSamplers = nullptr;
+			layoutBindings.push_back(layoutBinding);
+
+			// Create pool size for this uniform buffer (Used when we create the descriptor pool)
+			VkDescriptorPoolSize poolSize = {};
+			poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			poolSize.descriptorCount = static_cast<uint32_t>(uniformBuffer->uniformBuffer.size());
+			poolSizes.push_back(poolSize);
 
 			shaderDescriptorSet.uniformBuffers[binding] = uniformBuffer;
 
 			std::cout << "Name: " << name << " DescriptorSet: " << descriptorSet << " Binding: " << binding << "\n";
 		}
 
-
-
 		// Create Descriptor Pool
-		// Loop over each set in shader
+		// TODO: Move this to main renderer so we use the same descriptor pool for every shader
+		VkDescriptorPoolCreateInfo descriptorPoolInfo = {};
+		descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+		descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size()); //(uint32_t)typeCounts.at(set).size();
+		descriptorPoolInfo.pPoolSizes = poolSizes.data();
+		descriptorPoolInfo.maxSets = static_cast<uint32_t>(swapChain.getSwapChainImageCount());
+		VkResult result = vkCreateDescriptorPool(logicalDevice, &descriptorPoolInfo, nullptr, &descriptorPool);
+		if (result != VK_SUCCESS)
+		{
+			throw std::runtime_error("Failed to create descriptor pool!");
+		}
+
+		// Loop over each descriptor "set" for creation
 		for (size_t set = 0; set < shaderDescriptorSets.size(); set++)
 		{
 			auto& shaderDescriptorSet = shaderDescriptorSets[set];
 
-			if (shaderDescriptorSet.uniformBuffers.size()) // If any uniform buffers exist, calculate pool size
-			{
-				VkDescriptorPoolSize& typeCount = typeCounts[set].emplace_back();
-				typeCount.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-				typeCount.descriptorCount = (uint32_t)shaderDescriptorSet.uniformBuffers.size();
-
-			}
-			// TODO: Do the same ^^ But for image samplers later
-
-			// TODO: Move this to main renderer so we use the same descriptor pool for every shader
-			// Reduces memory usage and is more optimised. PoolSizeCount will be an aggregation of typeCounts for every shader. But need to know typeCounts for every shader
-			//  before creating the descriptor pool so some refactoring might be necessary
-			VkDescriptorPoolCreateInfo descriptorPoolInfo = {};
-			descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-			descriptorPoolInfo.pNext = nullptr;
-			descriptorPoolInfo.poolSizeCount = (uint32_t)typeCounts.at(set).size();
-			descriptorPoolInfo.pPoolSizes = typeCounts.at(set).data();
-			descriptorPoolInfo.maxSets = 1;
-
-			VkResult result = vkCreateDescriptorPool(logicalDevice, &descriptorPoolInfo, nullptr, &descriptorPool);
-			if (result != VK_SUCCESS)
-			{
-				throw std::runtime_error("Failed to create descriptor pool!");
-			}
-
-			// Create Descriptor set layout for this set
-			std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {};
-
-			for (auto& [binding, uniformBuffer] : shaderDescriptorSet.uniformBuffers)
-			{
-				VkDescriptorSetLayoutBinding layoutBinding = {};
-				layoutBinding.binding = binding;
-				layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-				layoutBinding.descriptorCount = 1;
-				layoutBinding.stageFlags = stageFlags; // TODO: Auto compute if vertex/frag/compute shader, depending on what type change the stage flags here
-				layoutBinding.pImmutableSamplers = nullptr;
-
-				layoutBindings.push_back(layoutBinding);
-
-				VkWriteDescriptorSet& setWrite = shaderDescriptorSet.writeDescriptorSets[uniformBuffer->name];
-				//setWrite = {};
-				setWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-				setWrite.descriptorType = layoutBinding.descriptorType;
-				setWrite.descriptorCount = 1;
-				setWrite.dstBinding = layoutBinding.binding;
-				setWrite.dstSet = set;
-				setWrite.dstArrayElement = 0;
-				setWrite.pBufferInfo = &uniformBuffer->descriptor; // Use later when we actually write info to this binding value VkDescriptorBufferInfo
-			}
-
-			std::cout << "LAYOUT BINDING SIZE: " << layoutBindings.size() << "\n";
-
-			// Create the descriptor set layout for this set
+			// Create Descriptor Set Layout with given bindings
 			VkDescriptorSetLayoutCreateInfo createInfo = {};
 			createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-			//createInfo.pNext = nullptr;
 			createInfo.bindingCount = static_cast<uint32_t>(layoutBindings.size()); // Number of binding infos
 			createInfo.pBindings = layoutBindings.data(); // Pointer to binding info
 
@@ -161,27 +141,43 @@ namespace Broccoli {
 				throw std::runtime_error("Failed to create a Descriptor Set Layout!");
 			}
 
-			// Allocate descriptor sets
+			shaderDescriptorSet.descriptorSets.resize(swapChain.getSwapChainImageCount());
+			shaderDescriptorSet.writeDescriptorSets.resize(swapChain.getSwapChainImageCount());
+
+			std::vector<VkDescriptorSetLayout> setLayouts(swapChain.getSwapChainImageCount(), shaderDescriptorSet.descriptorSetLayout);
+
 			VkDescriptorSetAllocateInfo setAllocInfo = {};
 			setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-			setAllocInfo.descriptorPool = descriptorPool;
-			setAllocInfo.descriptorSetCount = 1; // TODO: Might need to create a descriptor set for each swapchainimage. See how it works with 1 for now? Thonk
-			setAllocInfo.pSetLayouts = &shaderDescriptorSet.descriptorSetLayout;
+			setAllocInfo.descriptorPool = descriptorPool; // Pool to allocate descriptor set from
+			setAllocInfo.descriptorSetCount = static_cast<uint32_t>(swapChain.getSwapChainImageCount()); // Number of sets to allocate
+			setAllocInfo.pSetLayouts = setLayouts.data(); // Layouts to use to allocate sets (1:1 relationship)
 
-			result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, &shaderDescriptorSet.descriptorSet);
+			// Allocate descriptor sets
+			VkResult result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, shaderDescriptorSet.descriptorSets.data());
 			if (result != VK_SUCCESS) {
 				throw std::runtime_error("Failed to allocate Descriptor Sets");
 			}
 
-			// Now the descriptor sets are allocated, we can create a function to call vkUpdateDescriptorSets on the specific descriptor setWrite object
-			std::vector<VkWriteDescriptorSet> setWrites = {};
-			for (auto& [binding, uniformBuffer] : shaderDescriptorSet.uniformBuffers)
+			for (size_t i = 0; i < swapChain.getSwapChainImageCount(); i++)
 			{
-				setWrites.push_back(shaderDescriptorSet.writeDescriptorSets[uniformBuffer->name]);
+				std::vector<VkWriteDescriptorSet> setWrites = {};
+				for (auto& [binding, uniformBuffer] : shaderDescriptorSet.uniformBuffers)
+				{
+					VkWriteDescriptorSet& writeSet = shaderDescriptorSet.writeDescriptorSets[i][uniformBuffer->name];
+					writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+					writeSet.dstSet = shaderDescriptorSet.descriptorSets[i]; // Descriptor set to update
+					writeSet.dstBinding = binding; // Binding to update (matches with binding on layout/shader)
+					writeSet.dstArrayElement = 0; // Index in array to update
+					writeSet.descriptorType = uniformBuffer->layoutBinding.descriptorType; // TODO hacky fix, might need to use a different data structure to store layout bindings
+					writeSet.descriptorCount = 1;
+					writeSet.pBufferInfo = &uniformBuffer->descriptor; // Information about buffer data to bind
+
+					setWrites.push_back(writeSet);
+				}
+				vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(setWrites.size()), setWrites.data(), 0, nullptr);
 			}
 
-			vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(setWrites.size()), setWrites.data(), 0, nullptr);
-			
+
 		}
 	}
 
