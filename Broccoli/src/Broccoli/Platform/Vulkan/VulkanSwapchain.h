@@ -118,7 +118,6 @@ namespace Broccoli {
 
 		VkExtent2D swapChainExtent;
 
-		VkCommandPool commandPool;
 		std::vector<VkCommandBuffer> commandBuffers;
 
 		std::vector<VkSemaphore> imageAvailable;

@@ -176,6 +176,5 @@ namespace Broccoli {
 		// Call recreate cleanups to vulkan objects
 		Application::get().getWindow().getVulkanSwapChain().recreateSwapChain();
 		Application::get().getRenderer().getGraphicsPipeline().As<VulkanPipeline>()->recreateSwapChain();
-
 	}
 }

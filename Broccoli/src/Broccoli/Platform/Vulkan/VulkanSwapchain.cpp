@@ -83,6 +83,7 @@ namespace Broccoli {
 		}
 
 		// Recreation of the swapchain, cleanup the previous images.
+		/*
 		if (oldSwapchain != VK_NULL_HANDLE)
 		{
 			for (uint32_t i = 0; i < swapChainImageCount; i++)
@@ -90,7 +91,7 @@ namespace Broccoli {
 				vkDestroyImageView(getLogicalDevice(), swapChainImages[i].imageView, nullptr);
 			}
 			vkDestroySwapchainKHR(getLogicalDevice(), oldSwapchain, nullptr);
-		}
+		}*/
 
 		// Get the swapchain images
 		vkGetSwapchainImagesKHR(getLogicalDevice(), swapChain, &swapChainImageCount, nullptr);
@@ -108,20 +109,8 @@ namespace Broccoli {
 			swapChainImages.push_back(swapChainImage);
 		}
 
-		// Create command buffers
-		// Command pool first
-		VkCommandPoolCreateInfo cmdPoolCreateInfo = vks::initializers::commandPoolCreateInfo();
-		cmdPoolCreateInfo.queueFamilyIndex = logicalDevice->getPhysicalDevice()->getQueueFamilyIndicies().graphicsFamily;
-		cmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-		result = vkCreateCommandPool(getLogicalDevice(), &cmdPoolCreateInfo, nullptr, &commandPool);
-		if (result != VK_SUCCESS) {
-			throw std::runtime_error("Failed to create command pool for swapchain command buffer");
-		}
-		else {
-			std::cout << "Created swapchain command pool\n";
-		}
 		// Allocate command buffers (same amount as swapchain images)
-		VkCommandBufferAllocateInfo commandBufferAllocateInfo = vks::initializers::commandBufferAllocateInfo(commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, swapChainImageCount);
+		VkCommandBufferAllocateInfo commandBufferAllocateInfo = vks::initializers::commandBufferAllocateInfo(logicalDevice->getGraphicsCommandPool(), VK_COMMAND_BUFFER_LEVEL_PRIMARY, swapChainImageCount);
 		commandBuffers.resize(swapChainImageCount);
 		vkAllocateCommandBuffers(getLogicalDevice(), &commandBufferAllocateInfo, commandBuffers.data());
 		std::cout << "Allocated " << swapChainImageCount << " command buffers from swapchain command pool\n";
@@ -299,14 +288,13 @@ namespace Broccoli {
 	void VulkanSwapchain::cleanup()
 	{
 		recreateSwapChain();
-		vkDestroyCommandPool(getLogicalDevice(), commandPool, nullptr);
 	}
 
 	void VulkanSwapchain::recreateSwapChain()
 	{
 		vkDeviceWaitIdle(getLogicalDevice());
 
-		vkFreeCommandBuffers(getLogicalDevice(), commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
+		vkFreeCommandBuffers(getLogicalDevice(), logicalDevice->getGraphicsCommandPool(), static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
 
 		for (auto frameBuffer : swapChainFramebuffers)
 		{
@@ -321,7 +309,7 @@ namespace Broccoli {
 		vkFreeMemory(getLogicalDevice(), depthStencil.imageMemory, nullptr);
 
 		for (auto image : swapChainImages) {
-			vkDestroyImage(getLogicalDevice(), image.image, nullptr);
+			//vkDestroyImage(getLogicalDevice(), image.image, nullptr);
 			vkDestroyImageView(getLogicalDevice(), image.imageView, nullptr);
 		}
 		swapChainImages.clear();
@@ -329,6 +317,7 @@ namespace Broccoli {
 
 		// Recreate
 		create(vsync);
+		createDepthStencil();
 	}
 
 	VulkanSwapchain::~VulkanSwapchain()
