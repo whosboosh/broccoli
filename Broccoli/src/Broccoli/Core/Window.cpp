@@ -135,6 +135,13 @@ namespace Broccoli {
 	void Window::processEvents()
 	{
 		glfwPollEvents();
+
+		if (isControllingGame)
+		{
+			glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		} else {
+			glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
 	}
 
 	std::pair<uint32_t, uint32_t> Window::getWindowPos()

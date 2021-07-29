@@ -78,7 +78,7 @@ namespace Broccoli {
 			{
 				// TODO: Recreation of the vulkan swapchain if framebuffer is resized
 
-				//std::cout << "New Frame " << frameCounter << "\n";
+				std::cout << "New Frame " << frameCounter << "\n";
 
 				// Record commands
 				renderer->beginFrame();
@@ -99,11 +99,11 @@ namespace Broccoli {
 				renderer->presentQueue();
 
 				window->swapBuffers();
-			}
 
-			float time = glfwGetTime();
-			float delta = time - lastFrameTime;
-			frameCounter++;
+				float time = glfwGetTime();
+				float delta = time - lastFrameTime;
+				frameCounter++;
+			}
 		}
 	}
 }
