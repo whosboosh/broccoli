@@ -34,6 +34,9 @@ namespace Broccoli {
 		void beginRenderPass();
 		void endRenderPass();
 
+		void submitQueue();
+		void presentQueue();
+
 		void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform);
 
 	private:

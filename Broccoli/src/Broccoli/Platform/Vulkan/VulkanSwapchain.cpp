@@ -243,11 +243,10 @@ namespace Broccoli {
 		}
 	}
 
-	uint32_t VulkanSwapchain::acquireNextImage()
+	void VulkanSwapchain::waitForFrences()
 	{
-		vkAcquireNextImageKHR(getLogicalDevice(), swapChain, std::numeric_limits<uint64_t>::max(), imageAvailable[currentFrame], VK_NULL_HANDLE, &currentBufferIndex);
-
-		return currentBufferIndex;
+		vkWaitForFences(getLogicalDevice(), 1, &drawFences[currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
+		vkResetFences(getLogicalDevice(), 1, &drawFences[currentFrame]); // Unsignal fence (close it so other frames can't enter)
 	}
 
 	void VulkanSwapchain::createDepthStencil()

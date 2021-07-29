@@ -29,6 +29,9 @@ namespace Broccoli {
 		virtual void beginRenderPass() override;
 		virtual void endRenderPass() override;
 
+		virtual void submitQueue() override;
+		virtual void presentQueue() override;
+
 		virtual void renderMesh(Ref<Pipeline>, Ref<Mesh> mesh, const glm::mat4& transform) override;
 
 	private:

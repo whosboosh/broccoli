@@ -78,6 +78,16 @@ namespace Broccoli {
 		renderAPI->endRenderPass();
 	}
 
+	void Renderer::submitQueue()
+	{
+		renderAPI->submitQueue();
+	}
+
+	void Renderer::presentQueue()
+	{
+		renderAPI->presentQueue();
+	}
+
 	void Renderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)
 	{
 		renderAPI->renderMesh(pipeline, mesh, transform);

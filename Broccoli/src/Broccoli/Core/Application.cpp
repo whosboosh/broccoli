@@ -73,21 +73,11 @@ namespace Broccoli {
 
 	void Application::Run()
 	{
-		VkDevice logicalDevice = window->getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice();
-		VulkanSwapchain swapChain = window->getVulkanSwapChain();
-
 		while (isRunning)
 		{
 			window->processEvents();
 			if (!isMinimised)
 			{
-				// Stop running code until the fence is opened, only opened when the frame is finished drawing
-				vkWaitForFences(logicalDevice, 1, &swapChain.getCurrentDrawFence(), VK_TRUE, std::numeric_limits<uint64_t>::max());
-				vkResetFences(logicalDevice, 1, &swapChain.getCurrentDrawFence()); // Unsignal fence (close it so other frames can't enter)
-
-				// Increments the currentBufferIndex
-				swapChain.acquireNextImage();
-
 				// TODO: Recreation of the vulkan swapchain if framebuffer is resized
 
 				//std::cout << "New Frame " << frameCounter << "\n";
@@ -103,42 +93,11 @@ namespace Broccoli {
 
 				renderer->endFrame();
 
-				VkSubmitInfo submitInfo = {};
-				submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-				submitInfo.waitSemaphoreCount = 1;
-				submitInfo.pWaitSemaphores = &swapChain.getCurrentImageAvailableSemaphore(); // ?
+				// Submit the recorded command buffer to the graphics queue
+				renderer->submitQueue();
 
-				VkPipelineStageFlags waitStages[] = {
-					VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
-				};
-
-				std::array<VkCommandBuffer, 1> submitCommandBuffers =
-				{ swapChain.getCurrentCommandBuffer() };
-
-				submitInfo.pWaitDstStageMask = waitStages;
-				submitInfo.commandBufferCount = static_cast<uint32_t>(submitCommandBuffers.size());
-				submitInfo.pCommandBuffers = submitCommandBuffers.data();
-				submitInfo.signalSemaphoreCount = 1;
-				submitInfo.pSignalSemaphores = &swapChain.getCurrentRenderFinishedSemaphore();
-
-				// TODO: Use static Ref to VulkanContext to get queue
-				VkResult result = vkQueueSubmit(window->getRenderContext().As<VulkanContext>()->getLogicalDevice()->getGraphicsQueue(), 1, &submitInfo, swapChain.getCurrentDrawFence());
-				if (result != VK_SUCCESS) {
-					throw std::runtime_error("Failed to submit command buffer to queue");
-				}
-
-				// PRESENT RENDERED IMAGE TO SCREEN
-				VkPresentInfoKHR presentInfo = {};
-				presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-				presentInfo.waitSemaphoreCount = 1; // Number of semaphores to wait on
-				presentInfo.pWaitSemaphores = &swapChain.getCurrentRenderFinishedSemaphore(); // Semaphores to wait on
-				presentInfo.swapchainCount = 1; // Number of swapchains to present to
-				presentInfo.pSwapchains = &swapChain.getSwapChain(); // Swapchains to present images to
-				presentInfo.pImageIndices = &swapChain.getCurrentBufferIndex(); // Index of images in swapchains to present
-
-				result = vkQueuePresentKHR(window->getRenderContext().As<VulkanContext>()->getLogicalDevice()->getPresentationQueue(), &presentInfo);
-
-				swapChain.incrementCurrentFrame();
+				// Present the rendered image to the screen
+				renderer->presentQueue();
 
 				window->swapBuffers();
 			}

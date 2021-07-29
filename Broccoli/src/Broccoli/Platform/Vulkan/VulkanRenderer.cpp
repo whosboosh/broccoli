@@ -33,8 +33,13 @@ namespace Broccoli {
 
 	void VulkanRenderer::beginFrame()
 	{
-		//VulkanSwapchain& swapChain = Application::get().getWindow().getVulkanSwapChain();
-		VkDevice device = VulkanContext::get()->getLogicalDevice()->getLogicalDevice(); // TODO update all other logical device refs with new static ref to vulkancontext
+		//VkDevice device = VulkanContext::get()->getLogicalDevice()->getLogicalDevice(); // TODO update all other logical device refs with new static ref to vulkancontext
+
+		// Stop code until fence is open
+		swapChain->waitForFrences();
+
+		// Increments the currentBufferIndex
+		swapChain->acquireNextImage();
 
 		// Begin command buffer
 		VkCommandBufferBeginInfo cmdBufferBeginInfo = {};
@@ -91,6 +96,58 @@ namespace Broccoli {
 		VulkanSwapchain& swapChain = Application::get().getWindow().getVulkanSwapChain();
 
 		vkCmdEndRenderPass(swapChain.getCurrentCommandBuffer());
+	}
+
+	void VulkanRenderer::submitQueue()
+	{
+		VkSubmitInfo submitInfo = {};
+		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		submitInfo.waitSemaphoreCount = 1;
+		submitInfo.pWaitSemaphores = &swapChain->getCurrentImageAvailableSemaphore();
+
+		VkPipelineStageFlags waitStages[] = {
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+		};
+
+		std::array<VkCommandBuffer, 1> submitCommandBuffers =
+		{ swapChain->getCurrentCommandBuffer() };
+
+		submitInfo.pWaitDstStageMask = waitStages;
+		submitInfo.commandBufferCount = static_cast<uint32_t>(submitCommandBuffers.size());
+		submitInfo.pCommandBuffers = submitCommandBuffers.data();
+		submitInfo.signalSemaphoreCount = 1;
+		submitInfo.pSignalSemaphores = &swapChain->getCurrentRenderFinishedSemaphore();
+
+		// TODO: Use static Ref to VulkanContext to get queue
+		VkResult result = vkQueueSubmit(Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getGraphicsQueue(), 1, &submitInfo, swapChain->getCurrentDrawFence());
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to submit command buffer to queue");
+		}
+	}
+
+	void VulkanRenderer::presentQueue()
+	{
+		// PRESENT RENDERED IMAGE TO SCREEN
+		VkPresentInfoKHR presentInfo = {};
+		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+		presentInfo.waitSemaphoreCount = 1; // Number of semaphores to wait on
+		presentInfo.pWaitSemaphores = &swapChain->getCurrentRenderFinishedSemaphore(); // Semaphores to wait on
+		presentInfo.swapchainCount = 1; // Number of swapchains to present to
+		presentInfo.pSwapchains = &swapChain->getSwapChain(); // Swapchains to present images to
+		presentInfo.pImageIndices = &swapChain->getCurrentBufferIndex(); // Index of images in swapchains to present
+
+		VkResult result = vkQueuePresentKHR(Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getPresentationQueue(), &presentInfo);
+		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR /* || frameBufferResized*/) {
+			//frameBufferResized = false;
+			//recreateSwapChain();
+			std::cout << "Frame buffer out of date\n";
+		}
+		else if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to present image!");
+		}
+
+		// Increments the currentFrame in swapchain, value between 0 and 1 (double buffering)
+		swapChain->incrementCurrentFrame();
 	}
 
 	void VulkanRenderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)

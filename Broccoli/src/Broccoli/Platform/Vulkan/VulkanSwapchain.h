@@ -51,8 +51,11 @@ namespace Broccoli {
 
 		uint32_t getSwapChainImageCount() { return swapChainImageCount; }
 
-		uint32_t acquireNextImage();
+		void acquireNextImage() { vkAcquireNextImageKHR(getLogicalDevice(), swapChain, std::numeric_limits<uint64_t>::max(), imageAvailable[currentFrame], VK_NULL_HANDLE, &currentBufferIndex); }
+
 		void incrementCurrentFrame() { currentFrame = (currentFrame + 1) % MAX_FRAME_DRAWS; }
+
+		void waitForFrences();
 
 		VkFence& getCurrentDrawFence()
 		{
