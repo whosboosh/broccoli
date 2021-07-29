@@ -27,7 +27,7 @@ namespace Broccoli {
 
 	void VulkanSwapchain::create(bool vsync)
 	{
-		VkSwapchainKHR oldSwapchain = swapChain;
+		//VkSwapchainKHR oldSwapchain = swapChain;
 
 		// Get details about the swapchain based on surface and physical device for best settings
 		SwapChainDetails swapChainDetails = getSwapchainDetails(getPhysicalDevice());
@@ -60,7 +60,7 @@ namespace Broccoli {
 		swapChainCreateInfo.preTransform = swapChainDetails.surfaceCapabilities.currentTransform; // Transform to perform on swap chain images
 		swapChainCreateInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR; // How to handle blending images with external graphics (e.g. other windows)
 		swapChainCreateInfo.clipped = VK_TRUE; // Wheher to clip part of images not in view
-		swapChainCreateInfo.oldSwapchain = oldSwapchain;
+		swapChainCreateInfo.oldSwapchain = VK_NULL_HANDLE;
 
 		// TODO: after staging buffers used see if this is needed
 		// Enable transfer source on swap chain images if supported
