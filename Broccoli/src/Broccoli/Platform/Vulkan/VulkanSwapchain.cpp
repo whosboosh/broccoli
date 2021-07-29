@@ -243,6 +243,13 @@ namespace Broccoli {
 		}
 	}
 
+	uint32_t VulkanSwapchain::acquireNextImage()
+	{
+		vkAcquireNextImageKHR(getLogicalDevice(), swapChain, std::numeric_limits<uint64_t>::max(), imageAvailable[currentFrame], VK_NULL_HANDLE, &currentBufferIndex);
+
+		return currentBufferIndex;
+	}
+
 	void VulkanSwapchain::createDepthStencil()
 	{
 		// Create the depth buffer image
