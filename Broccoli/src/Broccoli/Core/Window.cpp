@@ -1,6 +1,7 @@
 #include "Broccoli/Core/Window.h"
 #include "Broccoli/Renderer/RendererAPI.h"
 
+#include "Broccoli/Core/Application.h"
 #include "Broccoli/Platform/Vulkan/VulkanContext.h"
 
 namespace Broccoli {
@@ -104,6 +105,15 @@ namespace Broccoli {
 		//auto app = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
 		//app->frameBufferResized = true;
 		Window::frameBufferResized = true;
+		
+		glfwGetFramebufferSize(window, &width, &height);
+		if ((width == 0) || (height == 0))
+		{
+			Application::get().setMinimise(true);
+		}
+		else {
+			Application::get().setMinimise(false);
+		}
 	}
 
 	void Window::mouse_callback(GLFWwindow* window, double xpos, double ypos)

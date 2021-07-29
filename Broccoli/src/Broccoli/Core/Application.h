@@ -28,6 +28,8 @@ namespace Broccoli {
 		inline Window& getWindow() { return *window; }
 		inline Renderer& getRenderer() { return *renderer; }
 
+		void setMinimise(bool state) { isMinimised = state; }
+
 	private:
 		Ref<Mesh> mesh;
 
