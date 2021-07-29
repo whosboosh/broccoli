@@ -20,7 +20,13 @@ namespace Broccoli {
 	VulkanPipeline::VulkanPipeline(const PipelineSpecification& spec, ShaderLibrary* shaderLibrary)
 	{
 		this->shaderLibrary = shaderLibrary;
+		this->spec = spec;
 
+		create();
+	}
+
+	void VulkanPipeline::create()
+	{
 		VkDevice logicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice();
 		VulkanSwapchain& swapChain = Application::get().getWindow().getVulkanSwapChain();
 		VulkanRenderpass renderPass = swapChain.getRenderPass();
@@ -166,7 +172,7 @@ namespace Broccoli {
 				// Instead of updating each value separately and own memory, use SHADER_STAGE_ALL to pass to both shaders and update both globally instead of individually
 				//for (int j = 0; j < swapChain.getSwapChainImageCount(); j++)
 				//{
-					descriptorSetLayouts.push_back(shaderDescriptors[i].descriptorSetLayout);
+				descriptorSetLayouts.push_back(shaderDescriptors[i].descriptorSetLayout);
 				//}
 
 			}
@@ -227,7 +233,25 @@ namespace Broccoli {
 		}
 		std::cout << "Pipeline created!\n";
 	}
+
 	VulkanPipeline::~VulkanPipeline()
 	{
+		//cleanup();
+	}
+	void VulkanPipeline::cleanup()
+	{
+		recreateSwapChain();
+		shaderLibrary->cleanup();
+	}
+	void VulkanPipeline::recreateSwapChain()
+	{
+		VkDevice logicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice();
+		vkDeviceWaitIdle(logicalDevice);
+
+		vkDestroyPipeline(logicalDevice, pipeline, nullptr);
+		vkDestroyPipelineLayout(logicalDevice, pipelineLayout, nullptr);
+
+		// Recreate the pipeline
+		create();
 	}
 }

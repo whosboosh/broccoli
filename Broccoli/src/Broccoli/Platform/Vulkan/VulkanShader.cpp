@@ -16,6 +16,11 @@ namespace Broccoli {
 	{
 	}
 
+	void VulkanShader::cleanup()
+	{
+		std::cout << "Cleanup for vulkan shader\n";
+	}
+
 	VulkanShader::VulkanShader(const std::string& filePath, VkShaderStageFlagBits stageFlags) : stageFlags(stageFlags), filePath(filePath)
 	{
 		VkDevice logicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice();

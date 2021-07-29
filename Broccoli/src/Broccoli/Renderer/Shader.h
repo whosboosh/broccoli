@@ -14,6 +14,8 @@ namespace Broccoli {
 		Shader() = default;
 		virtual ~Shader() = default;
 
+		virtual void cleanup() = 0;
+
 		static Ref<Shader> create(const std::string& filePath, VkShaderStageFlagBits stageFlags);
 
 		virtual const std::string& getName() const = 0;
@@ -31,6 +33,8 @@ namespace Broccoli {
 	public:
 		ShaderLibrary();
 		~ShaderLibrary();
+
+		void cleanup();
 
 		const Ref<Shader>& getShader(const std::string& name);
 

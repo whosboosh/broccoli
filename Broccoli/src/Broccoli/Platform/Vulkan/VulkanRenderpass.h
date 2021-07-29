@@ -17,9 +17,13 @@ namespace Broccoli {
 
 		~VulkanRenderpass();
 
+		void cleanup();
+
 		VkRenderPass getRenderPass() const { return renderPass; }
 
 	private:
 		VkRenderPass renderPass;
+
+		VulkanLogicalDevice* logicalDevice;
 	};
 }

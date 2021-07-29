@@ -32,6 +32,14 @@ namespace Broccoli {
 	{
 	}
 
+	void ShaderLibrary::cleanup()
+	{
+		for (std::pair<std::string, Ref<Shader>> shader : getCurrentShaders())
+		{
+			shader.second.As<Shader>()->cleanup();
+		}
+	}
+
 	const Ref<Shader>& ShaderLibrary::getShader(const std::string& name)
 	{
 		if (currentShaders.find(name) == currentShaders.end()) throw std::runtime_error("Failed to find shader " + name + " in list");

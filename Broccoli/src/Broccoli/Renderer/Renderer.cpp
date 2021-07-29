@@ -45,7 +45,7 @@ namespace Broccoli {
 		//shaderLibrary->loadShader("Broccoli/resources/shaders/geometry.vert");
 		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.vert", VK_SHADER_STAGE_VERTEX_BIT);
 		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
-		
+
 		graphicsPipeline = Pipeline::create(spec, geometryShaderLibrary);
 	}
 
@@ -92,7 +92,7 @@ namespace Broccoli {
 	{
 		renderAPI->renderMesh(pipeline, mesh, transform);
 	}
-	
+
 	Ref<RendererContext> Renderer::getContext()
 	{
 		return Application::get().getWindow().getRenderContext();

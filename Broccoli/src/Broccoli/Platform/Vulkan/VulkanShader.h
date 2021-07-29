@@ -39,6 +39,8 @@ namespace Broccoli {
 		VulkanShader(const std::string& filePath, VkShaderStageFlagBits stageFlags);
 		~VulkanShader();
 
+		virtual void cleanup() override;
+
 		virtual const std::string& getName() const override { return name; }
 
 		virtual const VkShaderStageFlagBits getStageFlags() const override { return stageFlags; }

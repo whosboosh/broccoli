@@ -35,14 +35,14 @@ namespace Broccoli {
 	public:
 		VulkanSwapchain();
 
-		void init(VkInstance instance, VulkanLogicalDevice* logicalDevice, VkSurfaceKHR surface);
-		void create(uint32_t* width, uint32_t* height, bool vsync);
+		void init(VkInstance instance, VulkanLogicalDevice* logicalDevice, VkSurfaceKHR surface, bool vsync);
+		void create(bool vsync);
 
 		VkSwapchainKHR& getSwapChain() { return swapChain; }
 		SwapChainDetails getSwapchainDetails(VkPhysicalDevice physicalDevice);
 		VkSurfaceFormatKHR chooseBestSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& formats);
 		VkPresentModeKHR chooseBestPresentationMode(const std::vector<VkPresentModeKHR>& presentationModes);
-		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities, uint32_t* width, uint32_t* height);
+		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities);
 
 		std::vector<VkCommandBuffer> getCommandBuffers() { return commandBuffers; }
 		VulkanRenderpass& getRenderPass() { return *renderPass; }
@@ -86,6 +86,9 @@ namespace Broccoli {
 
 		void createDepthStencil();
 		void createSynchronisation();
+
+		void cleanup();
+		void recreateSwapChain();
 
 		~VulkanSwapchain();
 

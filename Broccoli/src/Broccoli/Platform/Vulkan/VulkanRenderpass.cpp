@@ -1,7 +1,7 @@
 #include "VulkanRenderpass.h"
 
 namespace Broccoli {
-	VulkanRenderpass::VulkanRenderpass(VulkanLogicalDevice* logicalDevice, VkFormat colourFormat)
+	VulkanRenderpass::VulkanRenderpass(VulkanLogicalDevice* logicalDevice, VkFormat colourFormat) : logicalDevice(logicalDevice)
 	{
 		// TODO: Investigate using depth buffer for renderpass
 		// TODO: Use colour attachment resolve for multisampling
@@ -69,5 +69,10 @@ namespace Broccoli {
 	}
 	VulkanRenderpass::~VulkanRenderpass()
 	{
+	}
+
+	void VulkanRenderpass::cleanup()
+	{
+		vkDestroyRenderPass(logicalDevice->getLogicalDevice(), renderPass, nullptr);
 	}
 }

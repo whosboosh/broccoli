@@ -1,21 +1,32 @@
 #include "VulkanSwapchain.h"
 
+#include "Broccoli/Core/Application.h"
+
+#include <GLFW/glfw3.h>
+
 namespace Broccoli {
 	VulkanSwapchain::VulkanSwapchain()
 	{
 	}
 
-	void VulkanSwapchain::init(VkInstance instance, VulkanLogicalDevice* logicalDevice, VkSurfaceKHR surface)
+	void VulkanSwapchain::init(VkInstance instance, VulkanLogicalDevice* logicalDevice, VkSurfaceKHR surface, bool vsync)
 	{
 		this->instance = instance;
 		this->logicalDevice = logicalDevice;
 		this->surface = surface;
-	}
-
-	void VulkanSwapchain::create(uint32_t* width, uint32_t* height, bool vsync)
-	{
 		this->vsync = vsync;
 
+		create(vsync);
+
+		// Create synchronisation objects (semaphores & fences)
+		createSynchronisation();
+
+		// Create depth stencil for depth buffering
+		createDepthStencil();
+	}
+
+	void VulkanSwapchain::create(bool vsync)
+	{
 		VkSwapchainKHR oldSwapchain = swapChain;
 
 		// Get details about the swapchain based on surface and physical device for best settings
@@ -24,7 +35,7 @@ namespace Broccoli {
 		// Find optimal surface values for our swapchain
 		surfaceFormat = chooseBestSurfaceFormat(swapChainDetails.formats);
 		VkPresentModeKHR presentMode = chooseBestPresentationMode(swapChainDetails.presentationMode);
-		swapChainExtent = chooseSwapExtent(swapChainDetails.surfaceCapabilities, width, height);
+		swapChainExtent = chooseSwapExtent(swapChainDetails.surfaceCapabilities);
 
 		// How many images are in the swapchain? Get 1 more than minimum to allow triple buffering
 		uint32_t imageCount = swapChainDetails.surfaceCapabilities.minImageCount + 1;
@@ -114,12 +125,6 @@ namespace Broccoli {
 		commandBuffers.resize(swapChainImageCount);
 		vkAllocateCommandBuffers(getLogicalDevice(), &commandBufferAllocateInfo, commandBuffers.data());
 		std::cout << "Allocated " << swapChainImageCount << " command buffers from swapchain command pool\n";
-
-		// Create synchronisation objects (semaphores & fences)
-		createSynchronisation();
-		
-		// Create depth stencil for depth buffering
-		createDepthStencil();
 
 		// Create renderpass
 		renderPass = new VulkanRenderpass(logicalDevice, surfaceFormat.format);
@@ -220,20 +225,23 @@ namespace Broccoli {
 		return VK_PRESENT_MODE_FIFO_KHR;
 	}
 
-	VkExtent2D VulkanSwapchain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities, uint32_t* width, uint32_t* height)
+	VkExtent2D VulkanSwapchain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities)
 	{
+		int width, height;
+		glfwGetFramebufferSize(Application::get().getWindow().getWindow(), &width, &height); // Get width and height from window (glfw)
+
 		if (surfaceCapabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) // If current extend is at numeric limits, the extend van vary. Otherwise it is the size of the window.
 		{
-			*width = surfaceCapabilities.currentExtent.width;
-			*height = surfaceCapabilities.currentExtent.height;
+			width = surfaceCapabilities.currentExtent.width;
+			height = surfaceCapabilities.currentExtent.height;
 			return surfaceCapabilities.currentExtent;
 		}
 		else {
 			// If value can vary, need to set manually
 			// Create new extent using window size
 			VkExtent2D newExtent = {};
-			newExtent.width = *width;
-			newExtent.height = *height;
+			newExtent.width = static_cast<uint32_t>(width);
+			newExtent.height = static_cast<uint32_t>(height);
 
 			// Surface also defines max and min, make sure inside boundaries by clamping value
 			newExtent.width = std::max(surfaceCapabilities.minImageExtent.width, std::min(surfaceCapabilities.maxImageExtent.width, newExtent.width)); // Keeps width within the boundaries
@@ -288,7 +296,43 @@ namespace Broccoli {
 		}
 	}
 
+	void VulkanSwapchain::cleanup()
+	{
+		recreateSwapChain();
+		vkDestroyCommandPool(getLogicalDevice(), commandPool, nullptr);
+	}
+
+	void VulkanSwapchain::recreateSwapChain()
+	{
+		vkDeviceWaitIdle(getLogicalDevice());
+
+		vkFreeCommandBuffers(getLogicalDevice(), commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
+
+		for (auto frameBuffer : swapChainFramebuffers)
+		{
+			vkDestroyFramebuffer(getLogicalDevice(), frameBuffer, nullptr);
+		}
+
+		renderPass->cleanup();
+		delete renderPass;
+
+		vkDestroyImage(getLogicalDevice(), depthStencil.image, nullptr);
+		vkDestroyImageView(getLogicalDevice(), depthStencil.imageView, nullptr);
+		vkFreeMemory(getLogicalDevice(), depthStencil.imageMemory, nullptr);
+
+		for (auto image : swapChainImages) {
+			vkDestroyImage(getLogicalDevice(), image.image, nullptr);
+			vkDestroyImageView(getLogicalDevice(), image.imageView, nullptr);
+		}
+		swapChainImages.clear();
+		vkDestroySwapchainKHR(getLogicalDevice(), swapChain, nullptr);
+
+		// Recreate
+		create(vsync);
+	}
+
 	VulkanSwapchain::~VulkanSwapchain()
 	{
+
 	}
 }

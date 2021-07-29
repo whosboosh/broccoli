@@ -18,8 +18,6 @@
 #include <chrono>
 
 #include "Broccoli/Platform/Vulkan/VulkanRenderer.h"
-#include "Broccoli/Platform/Vulkan/VulkanContext.h"
-#include "Broccoli/Platform/Vulkan/VulkanSwapchain.h"
 
 namespace Broccoli {
 
@@ -97,6 +95,7 @@ namespace Broccoli {
 				renderer->submitQueue();
 
 				// Present the rendered image to the screen
+				// Also increments the image index for vulkan and other low level synchronisation stuff
 				renderer->presentQueue();
 
 				window->swapBuffers();

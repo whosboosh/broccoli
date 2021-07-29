@@ -137,9 +137,9 @@ namespace Broccoli {
 		presentInfo.pImageIndices = &swapChain->getCurrentBufferIndex(); // Index of images in swapchains to present
 
 		VkResult result = vkQueuePresentKHR(Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getPresentationQueue(), &presentInfo);
-		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR /* || frameBufferResized*/) {
-			//frameBufferResized = false;
-			//recreateSwapChain();
+		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR  || Window::frameBufferResized) {
+			Window::frameBufferResized = false;
+			recreateSwapChain();
 			std::cout << "Frame buffer out of date\n";
 		}
 		else if (result != VK_SUCCESS) {
@@ -169,5 +169,13 @@ namespace Broccoli {
 			0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentBufferIndex()).size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentBufferIndex()).data(), 0, nullptr);
 
 		vkCmdDrawIndexed(swapChain->getCurrentCommandBuffer(), mesh->getIndexCount(), 1, 0, 0, 0);
+	}
+
+	void VulkanRenderer::recreateSwapChain()
+	{
+		// Call recreate cleanups to vulkan objects
+		Application::get().getWindow().getVulkanSwapChain().recreateSwapChain();
+		Application::get().getRenderer().getGraphicsPipeline().As<VulkanPipeline>()->recreateSwapChain();
+
 	}
 }

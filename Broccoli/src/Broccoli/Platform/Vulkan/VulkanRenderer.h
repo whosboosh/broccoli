@@ -34,6 +34,8 @@ namespace Broccoli {
 
 		virtual void renderMesh(Ref<Pipeline>, Ref<Mesh> mesh, const glm::mat4& transform) override;
 
+		void recreateSwapChain();
+
 	private:
 		VulkanSwapchain* swapChain;
 	};

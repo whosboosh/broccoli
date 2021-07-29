@@ -17,6 +17,11 @@ namespace Broccoli {
 		VulkanPipeline(const PipelineSpecification& spec, ShaderLibrary* shaderLibrary);
 		~VulkanPipeline();
 
+		void create();
+
+		void cleanup();
+		void recreateSwapChain();
+
 		ShaderLibrary* getShaderLibrary() { return shaderLibrary; }
 
 		VkPipeline getVulkanPipeline() { return pipeline; }
@@ -24,6 +29,7 @@ namespace Broccoli {
 
 	private:
 		ShaderLibrary* shaderLibrary;
+		PipelineSpecification spec;
 
 		VkPipelineLayout pipelineLayout;
 		VkPipeline pipeline;
