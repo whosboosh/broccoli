@@ -39,7 +39,7 @@ namespace Broccoli {
 		std::array<Ref<Shader>, 2> getShaderGroup(std::string& name);
 
 		// Vulkan specific
-		std::vector<VkDescriptorSet> getShaderDescriptorSets();
+		std::vector<VkDescriptorSet> getShaderDescriptorSets(int imageIndex);
 		
 		void loadShader(const std::string& path, VkShaderStageFlagBits stageFlags);
 

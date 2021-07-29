@@ -109,7 +109,7 @@ namespace Broccoli {
 		vkCmdBindIndexBuffer(swapChain->getCurrentCommandBuffer(), mesh->getIndexBuffer()->As<VulkanIndexBuffer>()->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32); // Bind mesh index buffer with 0 offset and using uint32 type
 
 		vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),
-			0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets().size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets().data(), 0, nullptr);
+			0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentBufferIndex()).size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentBufferIndex()).data(), 0, nullptr);
 
 		vkCmdDrawIndexed(swapChain->getCurrentCommandBuffer(), mesh->getIndexCount(), 1, 0, 0, 0);
 	}
