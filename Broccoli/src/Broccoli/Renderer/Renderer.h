@@ -36,6 +36,8 @@ namespace Broccoli {
 		void submitQueue();
 		void presentQueue();
 
+		void updateUniform(std::string& name, int set, int binding, void* data);
+
 		void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform);
 
 	private:

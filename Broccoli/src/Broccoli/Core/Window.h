@@ -57,6 +57,7 @@ namespace Broccoli {
 		Ref<RendererContext> getRenderContext() { return rendererContext; }
 
 		void setVsync(bool param);
+		bool getIsControllingGame() { return isControllingGame; }
 
 		static WindowSpecification getWindowSpec() { return windowSpec; }
 

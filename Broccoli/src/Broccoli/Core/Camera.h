@@ -10,7 +10,7 @@ namespace Broccoli {
 		Camera();
 		Camera(glm::vec3 startPos, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed);
 
-		void keyControl(KeyAction* keys, GLfloat deltaTime, Window* window);
+		void keyControl(KeyAction* keys, GLfloat deltaTime);
 		void mouseControl(GLfloat xChange, GLfloat yChange);
 		glm::mat4 calculateViewMatrix();
 		glm::vec3* getCameraPosition();

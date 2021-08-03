@@ -148,6 +148,17 @@ namespace Broccoli {
 		swapChain->incrementCurrentFrame();
 	}
 
+	void VulkanRenderer::updateUniform(std::string& name, int set, int binding, void* data)
+	{
+		Ref<Pipeline> pipeline = Application::get().getRenderer().getGraphicsPipeline();
+		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
+
+		uint32_t imageIndex = swapChain->getCurrentBufferIndex();
+
+		Ref<VulkanShader> shader = vulkanPipeline->getShaderLibrary()->getShader(name).As<VulkanShader>();
+		shader->updateDescriptorSet(set, binding, imageIndex, data);
+	}
+
 	void VulkanRenderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)
 	{
 		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();

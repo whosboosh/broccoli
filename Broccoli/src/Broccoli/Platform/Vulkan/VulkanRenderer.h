@@ -32,6 +32,8 @@ namespace Broccoli {
 		virtual void submitQueue() override;
 		virtual void presentQueue() override;
 
+		virtual void updateUniform(std::string& name, int set, int binding, void* data) override;
+
 		virtual void renderMesh(Ref<Pipeline>, Ref<Mesh> mesh, const glm::mat4& transform) override;
 
 		void recreateSwapChain();

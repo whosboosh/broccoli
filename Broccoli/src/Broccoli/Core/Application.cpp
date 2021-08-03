@@ -44,6 +44,8 @@ namespace Broccoli {
 		window->init();
 		window->setVsync(false);
 
+		camera = new Camera(glm::vec3(42.0f, 28.0f, 16.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -10.0f, 10.0f, 0.05f);
+
 		// Initialise renderer (shaders etc) and ImGui
 		renderer = new Renderer();
 		renderer->init();
@@ -66,6 +68,29 @@ namespace Broccoli {
 		glm::mat4 transformTest(1.0f);
 
 		mesh = Ref<Mesh>::create(floorVertices, floorIndices, transformTest);
+
+		viewProjection.projection = glm::perspective(glm::radians(70.0f), (float)windowSpec.width / (float)windowSpec.height, 0.1f, 100.0f);
+		viewProjection.projection[1][1] *= -1; // Invert the y axis for vulkan (GLM was made for opengl which uses +y as up)
+		viewProjection.view = camera->calculateViewMatrix();
+	}
+
+	void Application::updateUniforms()
+	{
+		std::string geom = "geometry.vert";
+
+
+		renderer->updateUniform(geom, 0, 0, &viewProjection);
+		renderer->updateUniform(geom, 0, 1, &mesh->getMeshInfo());
+	}
+
+	void Application::processEvents()
+	{
+		if (window->getIsControllingGame())
+		{
+			camera->mouseControl(window->getXChange(), window->getYChange());
+			camera->keyControl(window->getKeys(), deltaTime);
+		}
+		window->processEvents();
 	}
 
 
@@ -73,12 +98,13 @@ namespace Broccoli {
 	{
 		while (isRunning)
 		{
-			window->processEvents();
+			processEvents();
 			if (!isMinimised)
 			{
-				// TODO: Recreation of the vulkan swapchain if framebuffer is resized
+				// Update descriptor sets
+				updateUniforms();
 
-				std::cout << "New Frame " << frameCounter << "\n";
+				//std::cout << "New Frame " << frameCounter << "\n";
 
 				// Record commands
 				renderer->beginFrame();

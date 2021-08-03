@@ -5,17 +5,20 @@ layout(location = 1) in vec3 col;
 layout(location = 2) in vec2 tex;
 layout(location = 3) in vec3 normal;
 
-layout(set = 0, binding = 0) uniform UboViewProjection {
+layout(set = 0, binding = 0) uniform ViewProjection {
 	mat4 projection;
 	mat4 view;
-	mat4 lightSpace;
-} uboViewProjection;
+} viewProjection;
 
 layout(set = 0, binding = 1) uniform PushModel {
 	mat4 model;
 	mat4 inverseModel;
 	bool hasTexture;
 } pushModel;
+
+layout(set = 0, binding = 2) uniform LightSpace {
+	mat4 lightSpace;
+} lightSpace;
 
 layout(location = 0) out vec3 fragCol;
 layout(location = 1) out vec2 fragTex;
@@ -24,7 +27,7 @@ layout(location = 3) out vec3 FragPos;
 layout(location = 4) out vec4 outShadowCoord;
 
 void main() {
-	gl_Position = uboViewProjection.projection * uboViewProjection.view * pushModel.model * vec4(pos, 1.0);
+	gl_Position = viewProjection.projection * viewProjection.view * pushModel.model * vec4(pos, 1.0);
 	
 	Normal = mat3(pushModel.inverseModel) * normal;  
 	
@@ -32,5 +35,5 @@ void main() {
 	fragCol = col;
 	fragTex = tex;
 
-	outShadowCoord = uboViewProjection.lightSpace * pushModel.model * vec4(pos, 1.0);	
+	outShadowCoord = lightSpace.lightSpace * pushModel.model * vec4(pos, 1.0);	
 }

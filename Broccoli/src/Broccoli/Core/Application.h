@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Camera.h"
 
 #include "Broccoli/Renderer/Renderer.h"
 
@@ -9,6 +10,11 @@ namespace Broccoli {
 		uint32_t windowWidth = 1600, windowHeight = 1600;
 		bool fullscreen = false;
 		bool vsync = false;
+	};
+
+	struct ViewProjection {
+		glm::mat4 projection;
+		glm::mat4 view;
 	};
 
 	class Application
@@ -22,6 +28,9 @@ namespace Broccoli {
 		void OnInit();
 		void Shutdown();
 
+		void updateUniforms();
+		void processEvents();
+
 		const ApplicationInfo& getSpecification() const { return appInfo; }
 		static inline Application& get() { return *appInstance; }
 
@@ -32,7 +41,9 @@ namespace Broccoli {
 
 	private:
 		Ref<Mesh> mesh;
-
+		ViewProjection viewProjection;
+		
+		Camera* camera;
 		Window* window;
 		Renderer* renderer;
 		ApplicationInfo appInfo;

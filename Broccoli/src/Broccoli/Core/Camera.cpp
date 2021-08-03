@@ -21,7 +21,7 @@ namespace Broccoli {
 		update();
 	}
 
-	void Camera::keyControl(KeyAction* keys, GLfloat deltaTime, Window* window)
+	void Camera::keyControl(KeyAction* keys, GLfloat deltaTime)
 	{
 		//std::cout << position.x << " " << position.y << " " << position.z << "\n";
 

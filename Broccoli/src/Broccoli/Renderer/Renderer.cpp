@@ -88,6 +88,11 @@ namespace Broccoli {
 		renderAPI->presentQueue();
 	}
 
+	void Renderer::updateUniform(std::string& name, int set, int binding, void* data)
+	{
+		renderAPI->updateUniform(name, set, binding, data);
+	}
+
 	void Renderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)
 	{
 		renderAPI->renderMesh(pipeline, mesh, transform);
