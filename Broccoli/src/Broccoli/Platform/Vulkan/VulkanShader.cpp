@@ -25,7 +25,7 @@ namespace Broccoli {
 	{
 		VkDevice logicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice();
 		VkPhysicalDevice physicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getPhysicalDevice()->getVulkanPhysicalDevice();
-		VulkanSwapchain swapChain = Application::get().getWindow().getVulkanSwapChain();
+		VulkanSwapchain swapChain = VulkanContext::get()->getVulkanSwapChain();
 
 		size_t found = filePath.find_last_of("/\\");
 		name = found != std::string::npos ? filePath.substr(found + 1) : filePath;

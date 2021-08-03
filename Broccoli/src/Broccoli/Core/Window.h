@@ -9,7 +9,7 @@
 #include "backends/imgui_impl_vulkan.h"
 
 #if defined(IMGUI_IMPL_OPENGL_LOADER_GLAD)
-#include <glad/glad.h>
+//#include <glad/glad.h>
 #else
 #include IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 #endif
@@ -55,10 +55,10 @@ namespace Broccoli {
 		std::pair<uint32_t, uint32_t> getWindowPos();
 
 		Ref<RendererContext> getRenderContext() { return rendererContext; }
-		VulkanSwapchain& getVulkanSwapChain() { return vulkanSwapchain; }
 
 		void setVsync(bool param);
-		bool isVsync() { return windowSpec.vsync; }
+
+		static WindowSpecification getWindowSpec() { return windowSpec; }
 
 		inline static bool frameBufferResized;
 
@@ -71,7 +71,7 @@ namespace Broccoli {
 	private:
 		GLFWwindow* mainWindow;
 		
-		WindowSpecification windowSpec;
+		inline static WindowSpecification windowSpec;
 
 		bool glfwInitialised = false;
 		bool isControllingGame = true;
@@ -93,6 +93,5 @@ namespace Broccoli {
 
 
 		Ref<RendererContext> rendererContext;
-		VulkanSwapchain vulkanSwapchain;
 	};
 }

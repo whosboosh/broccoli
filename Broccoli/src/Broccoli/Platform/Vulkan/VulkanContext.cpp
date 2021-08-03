@@ -2,6 +2,9 @@
 
 #include "VulkanValidation.h"
 
+#include "Broccoli/Core/Application.h"
+#include "Broccoli/Core/Window.h"
+
 #include <GLFW/glfw3.h>
 
 namespace Broccoli {
@@ -100,6 +103,8 @@ namespace Broccoli {
 		// Create the vulkan devices (logical and physical)
 		physicalDevice = new VulkanPhysicalDevice();
 		logicalDevice = new VulkanLogicalDevice(physicalDevice);
+		
+		swapChain.init(mainInstance, logicalDevice, surface, Window::getWindowSpec().vsync);
 	}
 
 }

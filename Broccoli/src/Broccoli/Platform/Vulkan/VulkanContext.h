@@ -9,6 +9,8 @@
 #include "Broccoli/Utilities/VulkanInitializers.hpp"
 #include "Broccoli/Renderer/Renderer.h"
 
+#include "Broccoli/Platform/Vulkan/VulkanSwapchain.h"
+
 // Vendor
 #include <vulkan/vulkan.h>
 
@@ -25,6 +27,7 @@ namespace Broccoli {
 		VulkanLogicalDevice* getLogicalDevice() { return logicalDevice; };
 		VulkanPhysicalDevice* getPhysicalDevice() { return physicalDevice; }
 
+		VulkanSwapchain& getVulkanSwapChain() { return swapChain; }
 
 		static Ref<VulkanContext> get() { return Ref<VulkanContext>(Renderer::getContext()); }
 
@@ -36,6 +39,8 @@ namespace Broccoli {
 	private:
 		VulkanPhysicalDevice* physicalDevice;
 		VulkanLogicalDevice* logicalDevice;
+
+		VulkanSwapchain swapChain;
 
 		inline static VkInstance mainInstance;
 		inline static VkSurfaceKHR surface;

@@ -25,7 +25,7 @@ namespace Broccoli {
 	}
 	void VulkanRenderer::init()
 	{
-		swapChain = &Application::get().getWindow().getVulkanSwapChain();
+		swapChain = &VulkanContext::get()->getVulkanSwapChain();
 	}
 	void VulkanRenderer::shutdown()
 	{
@@ -93,9 +93,7 @@ namespace Broccoli {
 
 	void VulkanRenderer::endRenderPass()
 	{
-		VulkanSwapchain& swapChain = Application::get().getWindow().getVulkanSwapChain();
-
-		vkCmdEndRenderPass(swapChain.getCurrentCommandBuffer());
+		vkCmdEndRenderPass(swapChain->getCurrentCommandBuffer());
 	}
 
 	void VulkanRenderer::submitQueue()
@@ -174,7 +172,7 @@ namespace Broccoli {
 	void VulkanRenderer::recreateSwapChain()
 	{
 		// Call recreate cleanups to vulkan objects
-		Application::get().getWindow().getVulkanSwapChain().recreateSwapChain();
+		swapChain->recreateSwapChain();
 		Application::get().getRenderer().getGraphicsPipeline().As<VulkanPipeline>()->recreateSwapChain();
 	}
 }
