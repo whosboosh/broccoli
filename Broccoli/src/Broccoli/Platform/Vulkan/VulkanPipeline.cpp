@@ -27,7 +27,7 @@ namespace Broccoli {
 
 	void VulkanPipeline::create()
 	{
-		VkDevice logicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice();
+		VkDevice logicalDevice = VulkanContext::get()->getLogicalDevice()->getLogicalDevice();
 		VulkanSwapchain& swapChain = VulkanContext::get()->getVulkanSwapChain();
 		VulkanRenderpass renderPass = swapChain.getRenderPass();
 		std::vector<VkFramebuffer> swapChainFramebuffers = swapChain.getSwapChainFrameBuffers();
@@ -245,7 +245,7 @@ namespace Broccoli {
 	}
 	void VulkanPipeline::recreateSwapChain()
 	{
-		VkDevice logicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice();
+		VkDevice logicalDevice = VulkanContext::get()->getLogicalDevice()->getLogicalDevice();
 		vkDeviceWaitIdle(logicalDevice);
 
 		vkDestroyPipeline(logicalDevice, pipeline, nullptr);

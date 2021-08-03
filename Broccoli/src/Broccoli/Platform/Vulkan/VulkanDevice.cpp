@@ -12,7 +12,7 @@ namespace Broccoli {
 		// Enumerate the physical devices the vkInstance can access
 		// Get the count of devices
 		uint32_t deviceCount = 0;
-		vkEnumeratePhysicalDevices(VulkanContext::getInstance(), &deviceCount, nullptr);
+		vkEnumeratePhysicalDevices(VulkanContext::get()->getInstance(), &deviceCount, nullptr);
 		// If deviceCount = 0 then no devices support vulkan
 		if (deviceCount == 0)
 		{
@@ -21,7 +21,7 @@ namespace Broccoli {
 
 		// Get list of physical devices
 		std::vector<VkPhysicalDevice> deviceList(deviceCount);
-		vkEnumeratePhysicalDevices(VulkanContext::getInstance(), &deviceCount, deviceList.data());
+		vkEnumeratePhysicalDevices(VulkanContext::get()->getInstance(), &deviceCount, deviceList.data());
 
 		// TEMP: get first device
 		VkPhysicalDevice selectedPhysicalDevice = nullptr;
@@ -115,7 +115,7 @@ namespace Broccoli {
 
 			// Check if the queue family supports presentation
 			VkBool32 presentationSupport = false;
-			vkGetPhysicalDeviceSurfaceSupportKHR(device, i, VulkanContext::getSurface(), &presentationSupport);
+			vkGetPhysicalDeviceSurfaceSupportKHR(device, i, VulkanContext::get()->getSurface(), &presentationSupport);
 			// Check if queue is presentation type (can be both graphics and presentation)
 			if (queueFamily.queueCount > 0 && presentationSupport == true)
 			{

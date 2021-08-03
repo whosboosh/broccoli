@@ -10,7 +10,7 @@
 namespace Broccoli {
 	VulkanIndexBuffer::VulkanIndexBuffer(const std::vector<uint32_t>& indices)
 	{
-		VulkanLogicalDevice* device = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice();
+		VulkanLogicalDevice* device = VulkanContext::get()->getLogicalDevice();
 		VkDevice logicalDevice = device->getLogicalDevice();
 		VkPhysicalDevice physicalDevice = device->getPhysicalDevice()->getVulkanPhysicalDevice();
 

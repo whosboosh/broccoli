@@ -23,8 +23,8 @@ namespace Broccoli {
 
 	VulkanShader::VulkanShader(const std::string& filePath, VkShaderStageFlagBits stageFlags) : stageFlags(stageFlags), filePath(filePath)
 	{
-		VkDevice logicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice();
-		VkPhysicalDevice physicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getPhysicalDevice()->getVulkanPhysicalDevice();
+		VkDevice logicalDevice = VulkanContext::get()->getLogicalDevice()->getLogicalDevice();
+		VkPhysicalDevice physicalDevice = VulkanContext::get()->getLogicalDevice()->getPhysicalDevice()->getVulkanPhysicalDevice();
 		VulkanSwapchain swapChain = VulkanContext::get()->getVulkanSwapChain();
 
 		size_t found = filePath.find_last_of("/\\");
@@ -186,14 +186,14 @@ namespace Broccoli {
 		}
 	}
 
-	void VulkanShader::updateDescriptorSet(int set, int binding)
+	void VulkanShader::updateDescriptorSet(int set, int binding, uint32_t imageIndex, void* data)
 	{
-
+		//vkMapMemory(mainDevice.logicalDevice, vpUniformBufferMemory[imageIndex], 0, sizeof(UboViewProjection), 0, &data);
 	}
 	
 	VkShaderModule VulkanShader::createShaderModule(const std::vector<uint32_t>& shaderData)
 	{
-		VkDevice logicalDevice = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getLogicalDevice();
+		VkDevice logicalDevice = VulkanContext::get()->getLogicalDevice()->getLogicalDevice();
 
 		// Shader module creation info
 		VkShaderModuleCreateInfo shaderModuleCreateInfo = {};

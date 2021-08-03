@@ -49,9 +49,9 @@ namespace Broccoli {
 
 	VkResult createDebugMessenger(const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator)
 	{
-		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(VulkanContext::getInstance(), "vkCreateDebugUtilsMessengerEXT");
+		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(VulkanContext::get()->getInstance(), "vkCreateDebugUtilsMessengerEXT");
 		if (func != nullptr) {
-			return func(VulkanContext::getInstance(), pCreateInfo, pAllocator, &debugMessenger);
+			return func(VulkanContext::get()->getInstance(), pCreateInfo, pAllocator, &debugMessenger);
 		}
 		else {
 			return VK_ERROR_EXTENSION_NOT_PRESENT;
@@ -72,9 +72,9 @@ namespace Broccoli {
 
 	void destroyDebugMessenger(VkAllocationCallbacks* pAllocator)
 	{
-		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(VulkanContext::getInstance(), "vkDestroyDebugUtilsMessengerEXT");
+		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(VulkanContext::get()->getInstance(), "vkDestroyDebugUtilsMessengerEXT");
 		if (func != nullptr) {
-			func(VulkanContext::getInstance(), debugMessenger, pAllocator);
+			func(VulkanContext::get()->getInstance(), debugMessenger, pAllocator);
 		}
 	}
 

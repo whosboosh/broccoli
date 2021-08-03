@@ -31,8 +31,8 @@ namespace Broccoli {
 
 		static Ref<VulkanContext> get() { return Ref<VulkanContext>(Renderer::getContext()); }
 
-		static VkInstance getInstance() { return mainInstance; };
-		static VkSurfaceKHR getSurface() { return surface; }
+		VkInstance getInstance() { return mainInstance; };
+		VkSurfaceKHR getSurface() { return surface; }
 
 		virtual void init(GLFWwindow* windowHandle) override;
 
@@ -42,7 +42,7 @@ namespace Broccoli {
 
 		VulkanSwapchain swapChain;
 
-		inline static VkInstance mainInstance;
-		inline static VkSurfaceKHR surface;
+		VkInstance mainInstance;
+		VkSurfaceKHR surface;
 	};
 }

@@ -117,7 +117,7 @@ namespace Broccoli {
 		submitInfo.pSignalSemaphores = &swapChain->getCurrentRenderFinishedSemaphore();
 
 		// TODO: Use static Ref to VulkanContext to get queue
-		VkResult result = vkQueueSubmit(Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getGraphicsQueue(), 1, &submitInfo, swapChain->getCurrentDrawFence());
+		VkResult result = vkQueueSubmit(VulkanContext::get()->getLogicalDevice()->getGraphicsQueue(), 1, &submitInfo, swapChain->getCurrentDrawFence());
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to submit command buffer to queue");
 		}
@@ -134,7 +134,7 @@ namespace Broccoli {
 		presentInfo.pSwapchains = &swapChain->getSwapChain(); // Swapchains to present images to
 		presentInfo.pImageIndices = &swapChain->getCurrentBufferIndex(); // Index of images in swapchains to present
 
-		VkResult result = vkQueuePresentKHR(Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice()->getPresentationQueue(), &presentInfo);
+		VkResult result = vkQueuePresentKHR(VulkanContext::get()->getLogicalDevice()->getPresentationQueue(), &presentInfo);
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR  || Window::frameBufferResized) {
 			Window::frameBufferResized = false;
 			recreateSwapChain();

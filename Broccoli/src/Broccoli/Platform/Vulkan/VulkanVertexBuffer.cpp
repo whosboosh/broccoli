@@ -13,7 +13,7 @@ namespace Broccoli {
 	
 	VulkanVertexBuffer::VulkanVertexBuffer(const std::vector<Vertex>& vertices, VertexBufferUsage usage)
 	{
-		VulkanLogicalDevice* device = Application::get().getWindow().getRenderContext().As<VulkanContext>()->getLogicalDevice();
+		VulkanLogicalDevice* device = VulkanContext::get()->getLogicalDevice();
 		VkDevice logicalDevice = device->getLogicalDevice();
 		VkPhysicalDevice physicalDevice = device->getPhysicalDevice()->getVulkanPhysicalDevice();
 
