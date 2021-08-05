@@ -148,35 +148,12 @@ namespace Broccoli {
 
 		for (std::pair<std::string, Ref<Shader>> shader : shaderLibrary->getCurrentShaders())
 		{
-			//std::cout << shader.second.As<VulkanShader>()->getName();
-			//std::cout << shader.second.As<Shader>()->getName() << "\n";
-
-			//Ref<VulkanShader> shaderObject = shader.second.As<VulkanShader>();
 			std::vector<ShaderDescriptorSet> shaderDescriptors = shader.second.As<VulkanShader>()->getShaderDescriptorSets();
-
-
-			/*
-			std::vector<ShaderDescriptorSet> shaderDescriptorSets = shader.second.As<VulkanShader>()->getShaderDescriptorSets();
-			for (size_t i = 0; i < shaderDescriptorSets.size(); i++)
-			{
-				for (auto& [binding, uniformBuffer] : shaderDescriptorSets[i].uniformBuffers)
-				{
-					descriptorSetLayouts.push_back(shaderDescriptorSets[i].writeDescriptorSets[uniformBuffer->name]);
-
-				}
-			}*/
 
 			for (int i = 0; i < shaderDescriptors.size(); i++)
 			{
-				// TODO: Determine is a shader uniform variable is used across a shader group (Vertex and fragment)
-				// Instead of updating each value separately and own memory, use SHADER_STAGE_ALL to pass to both shaders and update both globally instead of individually
-				//for (int j = 0; j < swapChain.getSwapChainImageCount(); j++)
-				//{
 				descriptorSetLayouts.push_back(shaderDescriptors[i].descriptorSetLayout);
-				//}
-
 			}
-
 
 			shaderStages.push_back(shader.second.As<VulkanShader>()->getShaderStageInfo());
 		}

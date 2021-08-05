@@ -186,14 +186,14 @@ namespace Broccoli {
 		}
 	}
 
-	void VulkanShader::updateDescriptorSet(int set, int binding, uint32_t imageIndex, void* data)
+	void VulkanShader::updateDescriptorSet(int set, int binding, uint32_t imageIndex, ViewProjection data)
 	{
 		void* buffer;
 		vkMapMemory(VulkanContext::get()->getLogicalDevice()->getLogicalDevice(), shaderDescriptorSets[set].uniformBuffers[binding]->uniformMemory[imageIndex], 0, sizeof(data), 0, &buffer);
-		memcpy(buffer, data, sizeof(data));
+		memcpy(buffer, &data, sizeof(ViewProjection));
 		vkUnmapMemory(VulkanContext::get()->getLogicalDevice()->getLogicalDevice(), shaderDescriptorSets[set].uniformBuffers[binding]->uniformMemory[imageIndex]);
 
-		std::cout << "Updated descriptor set for shader: " << getName() << " with set: " << set << " at binding: " << binding << "\n";
+		//std::cout << "Updated descriptor set for shader: " << getName() << " with set: " << set << " at binding: " << binding << "\n";
 	}
 	
 	VkShaderModule VulkanShader::createShaderModule(const std::vector<uint32_t>& shaderData)

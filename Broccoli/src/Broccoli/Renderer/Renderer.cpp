@@ -88,7 +88,7 @@ namespace Broccoli {
 		renderAPI->presentQueue();
 	}
 
-	void Renderer::updateUniform(std::string& name, int set, int binding, void* data)
+	void Renderer::updateUniform(const std::string& name, int set, int binding, void* data)
 	{
 		renderAPI->updateUniform(name, set, binding, data);
 	}

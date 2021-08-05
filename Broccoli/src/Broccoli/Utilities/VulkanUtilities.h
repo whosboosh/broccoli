@@ -11,7 +11,15 @@
 #include <stdexcept>
 #include <fstream>
 
+#include <glm/glm.hpp>
+
 namespace Broccoli {
+	struct ViewProjection {
+		glm::mat4 projection;
+		glm::mat4 view;
+	};
+
+
 	static uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t allowedTypes, VkMemoryPropertyFlags properties);
 
 

@@ -30,6 +30,7 @@ namespace Broccoli {
 		if (keys[GLFW_KEY_W].key)
 		{
 			position += front * velocity;
+			std::cout << "UPDATING POSITION " << "delta time: " << deltaTime << " velocity: " << velocity << " " << position.x << " " << position.y << " " << position.z << "\n";
 		}
 
 		if (keys[GLFW_KEY_S].key)

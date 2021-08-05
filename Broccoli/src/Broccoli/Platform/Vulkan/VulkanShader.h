@@ -54,7 +54,8 @@ namespace Broccoli {
 		//VkDescriptorSetLayout getDescriptorSetLayout(uint32_t set) { return descriptorSetLayouts.at(set); }
 		//std::vector<VkDescriptorSetLayout> getAllDescriptorSetLayouts() { return descriptorSetLayouts; }
 
-		void updateDescriptorSet(int set, int binding, uint32_t imageIndex, void* data);
+		// TODO: set back to void* data
+		void updateDescriptorSet(int set, int binding, uint32_t imageIndex, ViewProjection data);
 
 		VkShaderModule createShaderModule(const std::vector<uint32_t>& shaderData);
 

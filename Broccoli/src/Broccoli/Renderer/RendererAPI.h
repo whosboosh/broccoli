@@ -37,7 +37,7 @@ namespace Broccoli {
 		virtual void submitQueue() = 0;
 		virtual void presentQueue() = 0;
 
-		virtual void updateUniform(std::string& name, int set, int binding, void* data) = 0;
+		virtual void updateUniform(const std::string& name, int set, int binding, void* data) = 0;
 
 		virtual void renderMesh(Ref<Pipeline>, Ref<Mesh> mesh, const glm::mat4& transform) = 0;
 

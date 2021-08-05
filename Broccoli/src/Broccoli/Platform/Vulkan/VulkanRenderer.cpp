@@ -4,13 +4,15 @@
 #include "Broccoli/Platform/Vulkan/VulkanSwapchain.h"
 #include "Broccoli/Platform/Vulkan/VulkanPipeline.h"
 
-#include "Broccoli/Core/Application.h"
-
 #include "Broccoli/Renderer/VertexBuffer.h"
 #include "Broccoli/Platform/Vulkan/VulkanVertexBuffer.h"
 #include "Broccoli/Renderer/IndexBuffer.h"
 #include "Broccoli/Platform/Vulkan/VulkanIndexBuffer.h"
 #include "Broccoli/Platform/Vulkan/VulkanShader.h"
+
+#include "Broccoli/Core/Application.h"
+
+#include "Broccoli/Utilities/VulkanUtilities.h"
 
 #include <vector>
 
@@ -62,6 +64,31 @@ namespace Broccoli {
 	{
 		std::array<VkClearValue, 2> clearValues = {};
 
+		VkRenderPassBeginInfo renderPassBeginInfo = {};
+		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassBeginInfo.renderPass = swapChain->getRenderPass().getRenderPass();
+		renderPassBeginInfo.framebuffer = swapChain->getCurrentFrameBuffer();
+		renderPassBeginInfo.renderArea.offset = { 0, 0 };
+		renderPassBeginInfo.renderArea.extent.width = swapChain->getSwapExtent().width;
+		renderPassBeginInfo.renderArea.extent.height = swapChain->getSwapExtent().height;
+
+
+		// Test
+		//glm::vec3 verts = Application::get().getTestMesh()->getVertexBuffer()->As<VulkanVertexBuffer>()->getVertices()[1].col;
+		//std::cout << verts.x << " " << verts.y << " " << verts.z << "\n";
+
+		// TODO: Remove
+		glm::vec3* cameraPos = Application::get().getCamera().getCameraPosition();
+		//std::cout << "Camera pos x " << cameraPos->x << " Y: " << cameraPos->y << " Z: " << cameraPos->z << "\n";
+		clearValues[0].color = { cameraPos->x/100, cameraPos->y/100, cameraPos->z/100, 1.0f }; // Color attachment clear value
+
+		//clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f }; // Color attachment clear value
+		clearValues[1].depthStencil = { 1.0f, 0 };
+		renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+		renderPassBeginInfo.pClearValues = clearValues.data(); // List of clear values
+
+		vkCmdBeginRenderPass(swapChain->getCurrentCommandBuffer(), &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+
 		VkViewport viewport = {};
 		viewport.width = swapChain->getSwapExtent().width;
 		viewport.height = swapChain->getSwapExtent().height;
@@ -75,20 +102,6 @@ namespace Broccoli {
 		scissor.offset.x = 0;
 		scissor.offset.y = 0;
 		vkCmdSetScissor(swapChain->getCurrentCommandBuffer(), 0, 1, &scissor);
-
-		VkRenderPassBeginInfo renderPassBeginInfo = {};
-		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassBeginInfo.renderPass = swapChain->getRenderPass().getRenderPass();
-		renderPassBeginInfo.framebuffer = swapChain->getCurrentFrameBuffer();
-		renderPassBeginInfo.renderArea.offset = { 0, 0 };
-		renderPassBeginInfo.renderArea.extent.width = swapChain->getSwapExtent().width;
-		renderPassBeginInfo.renderArea.extent.height = swapChain->getSwapExtent().height;
-		clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f }; // Color attachment clear value
-		clearValues[1].depthStencil = { 1.0f, 0 };
-		renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-		renderPassBeginInfo.pClearValues = clearValues.data(); // List of clear values
-
-		vkCmdBeginRenderPass(swapChain->getCurrentCommandBuffer(), &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 	}
 
 	void VulkanRenderer::endRenderPass()
@@ -148,7 +161,7 @@ namespace Broccoli {
 		swapChain->incrementCurrentFrame();
 	}
 
-	void VulkanRenderer::updateUniform(std::string& name, int set, int binding, void* data)
+	void VulkanRenderer::updateUniform(const std::string& name, int set, int binding, void* data)
 	{
 		Ref<Pipeline> pipeline = Application::get().getRenderer().getGraphicsPipeline();
 		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
@@ -156,7 +169,14 @@ namespace Broccoli {
 		uint32_t imageIndex = swapChain->getCurrentBufferIndex();
 
 		Ref<VulkanShader> shader = vulkanPipeline->getShaderLibrary()->getShader(name).As<VulkanShader>();
-		shader->updateDescriptorSet(set, binding, imageIndex, data);
+
+		// TODO: Remove this, just testing if void* doesn't pass data properly
+		ViewProjection viewproj = {};
+		viewproj.projection = glm::perspective(glm::radians(70.0f), 1600.0f / 900.0f, 0.1f, 100.0f);
+		viewproj.projection[1][1] *= -1; // Invert the y axis for vulkan (GLM was made for opengl which uses +y as up)
+		viewproj.view = Application::get().getCamera().calculateViewMatrix();
+
+		shader->updateDescriptorSet(set, binding, imageIndex, viewproj);
 	}
 
 	void VulkanRenderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)
@@ -165,8 +185,6 @@ namespace Broccoli {
 
 		// Potentially move binding pipeline out to its own function if multiple meshes all use the same pipeline, dont need to keep rebinding it
 		vkCmdBindPipeline(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipeline());
-		
-		mesh->getVertexBuffer();
 
 		VkBuffer vertexBuffer[] = { mesh->getVertexBuffer()->As<VulkanVertexBuffer>()->getVertexBuffer() };
 		VkDeviceSize offsets[] = { 0 }; // Offsets into buffers being bound

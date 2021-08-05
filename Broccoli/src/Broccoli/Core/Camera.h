@@ -18,6 +18,8 @@ namespace Broccoli {
 		float* getCameraY() { return &position.y; }
 		float* getCameraZ() { return &position.z; }
 
+		//static Camera get() { return Camera(Application::get().getCamera()); }
+
 		void setCameraPosX(float x) { this->position.x = x; }
 		void setCameraPosY(float y) { this->position.y = y; }
 		void setCameraPosZ(float z) { this->position.z = z; }

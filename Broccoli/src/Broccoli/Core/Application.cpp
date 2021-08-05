@@ -68,23 +68,25 @@ namespace Broccoli {
 		glm::mat4 transformTest(1.0f);
 
 		mesh = Ref<Mesh>::create(floorVertices, floorIndices, transformTest);
-
-		viewProjection.projection = glm::perspective(glm::radians(70.0f), (float)windowSpec.width / (float)windowSpec.height, 0.1f, 100.0f);
-		viewProjection.projection[1][1] *= -1; // Invert the y axis for vulkan (GLM was made for opengl which uses +y as up)
-		viewProjection.view = camera->calculateViewMatrix();
 	}
 
 	void Application::updateUniforms()
 	{
-		std::string geom = "geometry.vert";
+		viewProjection.projection = glm::perspective(glm::radians(70.0f), (float)appInfo.windowWidth / (float)appInfo.windowHeight, 0.1f, 100.0f);
+		viewProjection.projection[1][1] *= -1; // Invert the y axis for vulkan (GLM was made for opengl which uses +y as up)
+		viewProjection.view = camera->calculateViewMatrix();
 
-
-		renderer->updateUniform(geom, 0, 0, &viewProjection);
-		renderer->updateUniform(geom, 0, 1, &mesh->getMeshInfo());
+		renderer->updateUniform("geometry.vert", 0, 0, &viewProjection);
+		//renderer->updateUniform("geometry.vert", 0, 1, &mesh->getMeshInfo());
 	}
 
 	void Application::processEvents()
 	{
+		double now = glfwGetTime();
+		deltaTime = now - lastFrameTime;
+		lastFrameTime = now;
+		currentFpsTime += deltaTime;
+
 		if (window->getIsControllingGame())
 		{
 			camera->mouseControl(window->getXChange(), window->getYChange());
@@ -98,9 +100,9 @@ namespace Broccoli {
 	{
 		while (isRunning)
 		{
-			processEvents();
 			if (!isMinimised)
 			{
+				processEvents();
 				// Update descriptor sets
 				updateUniforms();
 
@@ -126,8 +128,6 @@ namespace Broccoli {
 
 				window->swapBuffers();
 
-				float time = glfwGetTime();
-				float delta = time - lastFrameTime;
 				frameCounter++;
 			}
 		}

@@ -21,9 +21,13 @@ namespace Broccoli {
 
 		virtual unsigned int getSize() override;
 
+		std::vector<Vertex> getVertices() { return vertices; }
+
 		virtual VkBuffer getVertexBuffer() override { return vertexBuffer; }
 
 	private:
+		std::vector<Vertex> vertices;
+
 		VkBuffer vertexBuffer;
 		VkDeviceMemory vertexBufferMemory;
 	};
