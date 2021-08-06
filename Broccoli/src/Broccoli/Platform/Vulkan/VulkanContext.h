@@ -32,7 +32,7 @@ namespace Broccoli {
 		static Ref<VulkanContext> get() { return Ref<VulkanContext>(Renderer::getContext()); }
 
 		VkInstance getInstance() { return mainInstance; };
-		VkSurfaceKHR getSurface() { return surface; }
+		VkSurfaceKHR& getSurface() { return surface; }
 
 		virtual void init(GLFWwindow* windowHandle) override;
 

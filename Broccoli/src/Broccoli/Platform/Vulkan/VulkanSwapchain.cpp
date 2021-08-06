@@ -176,7 +176,7 @@ namespace Broccoli {
 		std::cout << "Created " << i << " framebuffers\n";
 	}
 
-	SwapChainDetails VulkanSwapchain::getSwapchainDetails(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
+	SwapChainDetails VulkanSwapchain::getSwapchainDetails(VkPhysicalDevice physicalDevice, VkSurfaceKHR& surface)
 	{
 		SwapChainDetails swapChainDetails;
 

@@ -185,8 +185,9 @@ namespace Broccoli {
 		// Multi sampling state
 		VkPipelineMultisampleStateCreateInfo multisampleCreateInfo = {};
 		multisampleCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-		multisampleCreateInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-		multisampleCreateInfo.pSampleMask = nullptr;
+		multisampleCreateInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT; // Number of samples to use per fragment
+		multisampleCreateInfo.sampleShadingEnable = VK_FALSE; // enable sample shading in the pipeline
+		multisampleCreateInfo.minSampleShading = 1.0f; // min fraction for sample shading; closer to one is smooth
 
 		// Create Graphics Pipeline
 		VkGraphicsPipelineCreateInfo pipelineCreateInfo = {};
@@ -204,6 +205,10 @@ namespace Broccoli {
 		pipelineCreateInfo.layout = pipelineLayout; // Pipeline layout pipeline should use
 		pipelineCreateInfo.renderPass = renderPass.getRenderPass(); // Render pass description the pipeline is compatible with
 		pipelineCreateInfo.subpass = 0; // Subpass of render pass to use with pipeline
+
+		// Pipeline derivatives: Can create multiple pipelines that derive from one another for optimisation
+		pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE; // Existing pipeline to derive from
+		pipelineCreateInfo.basePipelineIndex = -1; // Or index of pipeline being created to derive from (in case creating multiple at once) 
 
 		result = vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &pipeline);
 		if (result != VK_SUCCESS) {
