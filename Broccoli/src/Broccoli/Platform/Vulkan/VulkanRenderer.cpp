@@ -67,8 +67,7 @@ namespace Broccoli {
 		renderPassBeginInfo.renderPass = swapChain->getRenderPass().getRenderPass();
 		renderPassBeginInfo.framebuffer = swapChain->getCurrentFrameBuffer();
 		renderPassBeginInfo.renderArea.offset = { 0, 0 };
-		renderPassBeginInfo.renderArea.extent.width = swapChain->getSwapExtent().width;
-		renderPassBeginInfo.renderArea.extent.height = swapChain->getSwapExtent().height;
+		renderPassBeginInfo.renderArea.extent = swapChain->getSwapExtent();
 
 
 		// Test
@@ -144,7 +143,7 @@ namespace Broccoli {
 		presentInfo.pWaitSemaphores = &swapChain->getCurrentRenderFinishedSemaphore(); // Semaphores to wait on
 		presentInfo.swapchainCount = 1; // Number of swapchains to present to
 		presentInfo.pSwapchains = &swapChain->getSwapChain(); // Swapchains to present images to
-		presentInfo.pImageIndices = &swapChain->getCurrentBufferIndex(); // Index of images in swapchains to present
+		presentInfo.pImageIndices = &swapChain->getCurrentImageIndex(); // Index of images in swapchains to present
 
 		VkResult result = vkQueuePresentKHR(VulkanContext::get()->getLogicalDevice()->getPresentationQueue(), &presentInfo);
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR  || Window::frameBufferResized) {
@@ -165,8 +164,6 @@ namespace Broccoli {
 		Ref<Pipeline> pipeline = Application::get().getRenderer().getGraphicsPipeline();
 		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
 
-		uint32_t imageIndex = swapChain->getCurrentBufferIndex();
-
 		Ref<VulkanShader> shader = vulkanPipeline->getShaderLibrary()->getShader(name).As<VulkanShader>();
 
 		// TODO: Remove this, just testing if void* doesn't pass data properly
@@ -175,7 +172,7 @@ namespace Broccoli {
 		viewproj.projection[1][1] *= -1; // Invert the y axis for vulkan (GLM was made for opengl which uses +y as up)
 		viewproj.view = Application::get().getCamera().calculateViewMatrix();
 
-		shader->updateDescriptorSet(set, binding, imageIndex, viewproj);
+		shader->updateDescriptorSet(set, binding, swapChain->getCurrentImageIndex(), viewproj);
 	}
 
 	void VulkanRenderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)

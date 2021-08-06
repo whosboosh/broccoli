@@ -104,7 +104,7 @@ namespace Broccoli {
 		physicalDevice = new VulkanPhysicalDevice();
 		logicalDevice = new VulkanLogicalDevice(physicalDevice);
 		
-		swapChain.init(mainInstance, logicalDevice, surface, Window::getWindowSpec().vsync);
+		swapChain.init(mainInstance, logicalDevice, Window::getWindowSpec().vsync);
 	}
 
 }

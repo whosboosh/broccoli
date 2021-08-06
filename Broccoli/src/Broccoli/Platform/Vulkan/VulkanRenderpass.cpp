@@ -38,12 +38,12 @@ namespace Broccoli {
 		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 		subpass.colorAttachmentCount = 1;
 		subpass.pColorAttachments = &colorAttachmentRef;
-		//subpass.pDepthStencilAttachment = &depthAttachmentRef;
-		subpass.preserveAttachmentCount = 0;
-		subpass.pPreserveAttachments = nullptr;
-		subpass.pResolveAttachments = nullptr;
-		subpass.inputAttachmentCount = 0;
-		subpass.pInputAttachments = nullptr;
+		subpass.pDepthStencilAttachment = &depthAttachmentRef;
+		//subpass.preserveAttachmentCount = 0;
+		//subpass.pPreserveAttachments = nullptr;
+		//subpass.pResolveAttachments = nullptr;
+		//subpass.inputAttachmentCount = 0;
+		//subpass.pInputAttachments = nullptr;
 
 		VkSubpassDependency dependency{};
 		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
@@ -55,7 +55,7 @@ namespace Broccoli {
 
 		VkRenderPassCreateInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		renderPassInfo.attachmentCount = 1; // static_cast<uint32_t>(attachments.size());
+		renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 		renderPassInfo.pAttachments = attachments.data();
 		renderPassInfo.subpassCount = 1;
 		renderPassInfo.pSubpasses = &subpass;

@@ -2,6 +2,8 @@
 
 #include "Broccoli/Core/Application.h"
 
+#include "Broccoli/Platform/Vulkan/VulkanContext.h"
+
 #include <GLFW/glfw3.h>
 
 namespace Broccoli {
@@ -9,20 +11,16 @@ namespace Broccoli {
 	{
 	}
 
-	void VulkanSwapchain::init(VkInstance instance, VulkanLogicalDevice* logicalDevice, VkSurfaceKHR surface, bool vsync)
+	void VulkanSwapchain::init(VkInstance instance, VulkanLogicalDevice* logicalDevice, bool vsync)
 	{
 		this->instance = instance;
 		this->logicalDevice = logicalDevice;
-		this->surface = surface;
 		this->vsync = vsync;
-
-		create(vsync);
 
 		// Create synchronisation objects (semaphores & fences)
 		createSynchronisation();
 
-		// Create depth stencil for depth buffering
-		createDepthStencil();
+		create(vsync);
 	}
 
 	void VulkanSwapchain::create(bool vsync)
@@ -30,7 +28,7 @@ namespace Broccoli {
 		//VkSwapchainKHR oldSwapchain = swapChain;
 
 		// Get details about the swapchain based on surface and physical device for best settings
-		SwapChainDetails swapChainDetails = getSwapchainDetails(getPhysicalDevice());
+		SwapChainDetails swapChainDetails = getSwapchainDetails(getPhysicalDevice(), VulkanContext::get()->getSurface());
 
 		// Find optimal surface values for our swapchain
 		surfaceFormat = chooseBestSurfaceFormat(swapChainDetails.formats);
@@ -45,10 +43,12 @@ namespace Broccoli {
 			imageCount = swapChainDetails.surfaceCapabilities.maxImageCount;
 		}
 
+		// Create depth stencil for depth buffering
+		createDepthStencil();
 
 		// Creation information for swap chain
 		VkSwapchainCreateInfoKHR swapChainCreateInfo = {};
-		swapChainCreateInfo.surface = surface;
+		swapChainCreateInfo.surface = VulkanContext::get()->getSurface();
 		swapChainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 		swapChainCreateInfo.imageFormat = surfaceFormat.format;
 		swapChainCreateInfo.imageColorSpace = surfaceFormat.colorSpace;
@@ -145,7 +145,7 @@ namespace Broccoli {
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to allocate Command Buffers!");
 		}
-		std::cout << "Allocated " << swapChainImageCount << " command buffers from swapchain command pool\n";
+		std::cout << "Allocated " << swapChainImageCount << " command buffers from device command pool\n";
 
 		// Create renderpass
 		renderPass = new VulkanRenderpass(logicalDevice, surfaceFormat.format);
@@ -162,7 +162,7 @@ namespace Broccoli {
 
 			VkFramebufferCreateInfo frameBufferCreateInfo = vks::initializers::framebufferCreateInfo();
 			frameBufferCreateInfo.renderPass = renderPass->getRenderPass();
-			frameBufferCreateInfo.attachmentCount = 1; // static_cast<uint32_t>(attachments.size());
+			frameBufferCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 			frameBufferCreateInfo.pAttachments = attachments.data();
 			frameBufferCreateInfo.width = swapChainExtent.width;
 			frameBufferCreateInfo.height = swapChainExtent.height;
@@ -176,7 +176,7 @@ namespace Broccoli {
 		std::cout << "Created " << i << " framebuffers\n";
 	}
 
-	SwapChainDetails VulkanSwapchain::getSwapchainDetails(VkPhysicalDevice physicalDevice)
+	SwapChainDetails VulkanSwapchain::getSwapchainDetails(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
 	{
 		SwapChainDetails swapChainDetails;
 
@@ -347,7 +347,6 @@ namespace Broccoli {
 
 		// Recreate
 		create(vsync);
-		createDepthStencil();
 	}
 
 	VulkanSwapchain::~VulkanSwapchain()

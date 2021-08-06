@@ -35,11 +35,13 @@ namespace Broccoli {
 	public:
 		VulkanSwapchain();
 
-		void init(VkInstance instance, VulkanLogicalDevice* logicalDevice, VkSurfaceKHR surface, bool vsync);
+		void init(VkInstance instance, VulkanLogicalDevice* logicalDevice, bool vsync);
 		void create(bool vsync);
 
 		VkSwapchainKHR& getSwapChain() { return swapChain; }
-		SwapChainDetails getSwapchainDetails(VkPhysicalDevice physicalDevice);
+
+		static SwapChainDetails getSwapchainDetails(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
+
 		VkSurfaceFormatKHR chooseBestSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& formats);
 		VkPresentModeKHR chooseBestPresentationMode(const std::vector<VkPresentModeKHR>& presentationModes);
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities);
@@ -51,7 +53,7 @@ namespace Broccoli {
 
 		uint32_t getSwapChainImageCount() { return swapChainImageCount; }
 
-		void acquireNextImage() { vkAcquireNextImageKHR(getLogicalDevice(), swapChain, std::numeric_limits<uint64_t>::max(), imageAvailable[currentFrame], VK_NULL_HANDLE, &currentBufferIndex); }
+		void acquireNextImage() { vkAcquireNextImageKHR(getLogicalDevice(), swapChain, std::numeric_limits<uint64_t>::max(), imageAvailable[currentFrame], VK_NULL_HANDLE, &imageIndex); }
 
 		void incrementCurrentFrame() { currentFrame = (currentFrame + 1) % MAX_FRAME_DRAWS; }
 
@@ -73,16 +75,17 @@ namespace Broccoli {
 
 		VkCommandBuffer getCurrentCommandBuffer()
 		{
-			return commandBuffers[currentBufferIndex];
+			return commandBuffers[imageIndex];
 		}
 
 		VkFramebuffer getCurrentFrameBuffer()
 		{ 
-			if (currentBufferIndex < swapChainFramebuffers.size()) 	return swapChainFramebuffers[currentBufferIndex];
-			else throw std::runtime_error("Referenced Framebuffer is out of bounds!");
+			return swapChainFramebuffers[imageIndex];
+			//if (imageIndex < swapChainFramebuffers.size()) 	
+			//else throw std::runtime_error("Referenced Framebuffer is out of bounds!");
 		}
 
-		uint32_t& getCurrentBufferIndex() { return currentBufferIndex; }
+		uint32_t& getCurrentImageIndex() { return imageIndex; }
 
 		void createDepthStencil();
 		void createSynchronisation();
@@ -102,7 +105,6 @@ namespace Broccoli {
 			VkImageView imageView;
 		} depthStencil;
 
-		VkSurfaceKHR surface;
 		VkInstance instance;
 
 		VkSurfaceFormatKHR surfaceFormat;
@@ -126,7 +128,7 @@ namespace Broccoli {
 
 		std::vector<VkFramebuffer> swapChainFramebuffers;
 
-		uint32_t currentBufferIndex = 0;
+		uint32_t imageIndex = 0;
 		int currentFrame = 0;
 
 		VulkanRenderpass* renderPass;
