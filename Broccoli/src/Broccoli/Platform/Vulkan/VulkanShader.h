@@ -57,6 +57,8 @@ namespace Broccoli {
 		// TODO: set back to void* data
 		void updateDescriptorSet(int set, int binding, uint32_t imageIndex, ViewProjection data);
 
+		VkShaderModule createShaderModuleSPV(const std::vector<char>& code);
+
 		VkShaderModule createShaderModule(const std::vector<uint32_t>& shaderData);
 
 		void compileGlslToSpirv(std::vector<char> shaderCode, std::vector<uint32_t>& outputBinary);

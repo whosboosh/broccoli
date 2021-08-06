@@ -33,7 +33,9 @@ namespace Broccoli {
 		//name = found != std::string::npos ? name.substr(0, found) : name;
 
 		// TODO: Add loading shader from file and creating vulkan specific functions here
+
 		auto shaderCode = readFile(filePath);
+		//auto shaderCodeSPV = readFile(filePath+".spv");
 
 		// Compile and translate glsl to spirV using Vulkan SDK libs
 		std::vector<uint32_t> outputBinary;
@@ -46,8 +48,9 @@ namespace Broccoli {
 		shaderStageCreateInfo.module = shaderModule;
 		shaderStageCreateInfo.pName = "main";
 
-
 		std::cout << "Shader created with name: " << name << "\n";
+
+		/*
 
 		// Load descriptor sets from shader dynamically
 		spirv_cross::Compiler compiler(outputBinary);
@@ -121,7 +124,7 @@ namespace Broccoli {
 		// TODO: Move this to main renderer so we use the same descriptor pool for every shader
 		VkDescriptorPoolCreateInfo descriptorPoolInfo = {};
 		descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-		descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size()); //(uint32_t)typeCounts.at(set).size();
+		descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size()); //(uint32_t)typeCounts.at(set).size(); // TODO: REMOVE THE 0
 		descriptorPoolInfo.pPoolSizes = poolSizes.data();
 		descriptorPoolInfo.maxSets = static_cast<uint32_t>(swapChain.getSwapChainImageCount());
 		VkResult result = vkCreateDescriptorPool(logicalDevice, &descriptorPoolInfo, nullptr, &descriptorPool);
@@ -181,9 +184,7 @@ namespace Broccoli {
 				}
 				vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(setWrites.size()), setWrites.data(), 0, nullptr);
 			}
-
-
-		}
+		}*/
 	}
 
 	void VulkanShader::updateDescriptorSet(int set, int binding, uint32_t imageIndex, ViewProjection data)
@@ -196,6 +197,26 @@ namespace Broccoli {
 		//std::cout << "Updated descriptor set for shader: " << getName() << " with set: " << set << " at binding: " << binding << "\n";
 	}
 	
+	VkShaderModule VulkanShader::createShaderModuleSPV(const std::vector<char>& code)
+	{
+		VkDevice logicalDevice = VulkanContext::get()->getLogicalDevice()->getLogicalDevice();
+
+		// Shader module creation info
+		VkShaderModuleCreateInfo shaderModuleCreateInfo = {};
+		shaderModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO; 
+		shaderModuleCreateInfo.codeSize = code.size(); // Size of code
+		shaderModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(code.data()); // Pointer to code (uint32_t pointer type)
+
+		VkShaderModule shaderModule;
+
+		VkResult result = vkCreateShaderModule(logicalDevice, &shaderModuleCreateInfo, nullptr, &shaderModule);
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to creata a shader module");
+		}
+
+		return shaderModule;
+	}
+
 	VkShaderModule VulkanShader::createShaderModule(const std::vector<uint32_t>& shaderData)
 	{
 		VkDevice logicalDevice = VulkanContext::get()->getLogicalDevice()->getLogicalDevice();

@@ -35,8 +35,6 @@ namespace Broccoli {
 
 	void VulkanRenderer::beginFrame()
 	{
-		//VkDevice device = VulkanContext::get()->getLogicalDevice()->getLogicalDevice(); // TODO update all other logical device refs with new static ref to vulkancontext
-
 		// Stop code until fence is open
 		swapChain->waitForFrences();
 
@@ -77,12 +75,14 @@ namespace Broccoli {
 		//glm::vec3 verts = Application::get().getTestMesh()->getVertexBuffer()->As<VulkanVertexBuffer>()->getVertices()[1].col;
 		//std::cout << verts.x << " " << verts.y << " " << verts.z << "\n";
 
+		/*
 		// TODO: Remove
 		glm::vec3* cameraPos = Application::get().getCamera().getCameraPosition();
 		//std::cout << "Camera pos x " << cameraPos->x << " Y: " << cameraPos->y << " Z: " << cameraPos->z << "\n";
 		clearValues[0].color = { cameraPos->x/100, cameraPos->y/100, cameraPos->z/100, 1.0f }; // Color attachment clear value
+		*/
 
-		//clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f }; // Color attachment clear value
+		clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f }; // Color attachment clear value
 		clearValues[1].depthStencil = { 1.0f, 0 };
 		renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
 		renderPassBeginInfo.pClearValues = clearValues.data(); // List of clear values
@@ -129,7 +129,6 @@ namespace Broccoli {
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = &swapChain->getCurrentRenderFinishedSemaphore();
 
-		// TODO: Use static Ref to VulkanContext to get queue
 		VkResult result = vkQueueSubmit(VulkanContext::get()->getLogicalDevice()->getGraphicsQueue(), 1, &submitInfo, swapChain->getCurrentDrawFence());
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to submit command buffer to queue");
@@ -186,16 +185,18 @@ namespace Broccoli {
 		// Potentially move binding pipeline out to its own function if multiple meshes all use the same pipeline, dont need to keep rebinding it
 		vkCmdBindPipeline(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipeline());
 
-		VkBuffer vertexBuffer[] = { mesh->getVertexBuffer()->As<VulkanVertexBuffer>()->getVertexBuffer() };
-		VkDeviceSize offsets[] = { 0 }; // Offsets into buffers being bound
+		//VkBuffer vertexBuffer[] = { mesh->getVertexBuffer()->As<VulkanVertexBuffer>()->getVertexBuffer() };
+		//VkDeviceSize offsets[] = { 0 }; // Offsets into buffers being bound
 
-		vkCmdBindVertexBuffers(swapChain->getCurrentCommandBuffer(), 0, 1, vertexBuffer, offsets); // Command to bind vertex buffer before drawing with them
-		vkCmdBindIndexBuffer(swapChain->getCurrentCommandBuffer(), mesh->getIndexBuffer()->As<VulkanIndexBuffer>()->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32); // Bind mesh index buffer with 0 offset and using uint32 type
+		//vkCmdBindVertexBuffers(swapChain->getCurrentCommandBuffer(), 0, 1, vertexBuffer, offsets); // Command to bind vertex buffer before drawing with them
+		//vkCmdBindIndexBuffer(swapChain->getCurrentCommandBuffer(), mesh->getIndexBuffer()->As<VulkanIndexBuffer>()->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32); // Bind mesh index buffer with 0 offset and using uint32 type
 
-		vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),
-			0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentBufferIndex()).size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentBufferIndex()).data(), 0, nullptr);
+		//vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),
+			//0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentBufferIndex()).size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentBufferIndex()).data(), 0, nullptr);
 
-		vkCmdDrawIndexed(swapChain->getCurrentCommandBuffer(), mesh->getIndexCount(), 1, 0, 0, 0);
+		//vkCmdDrawIndexed(swapChain->getCurrentCommandBuffer(), mesh->getIndexCount(), 1, 0, 0, 0);
+
+		vkCmdDraw(swapChain->getCurrentCommandBuffer(), 3, 1, 0, 0);
 	}
 
 	void VulkanRenderer::recreateSwapChain()

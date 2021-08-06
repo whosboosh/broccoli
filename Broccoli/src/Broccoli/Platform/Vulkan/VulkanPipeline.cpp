@@ -70,10 +70,11 @@ namespace Broccoli {
 
 		// Vertex Input
 		VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo = vks::initializers::pipelineVertexInputStateCreateInfo();
-		vertexInputCreateInfo.vertexBindingDescriptionCount = 1;
-		vertexInputCreateInfo.pVertexBindingDescriptions = &bindingDescription; // List of vertex binding descriptions (data spacing/stride information)
-		vertexInputCreateInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
-		vertexInputCreateInfo.pVertexAttributeDescriptions = attributeDescriptions.data(); // List of vertex attribute descriptions (data format and where to bind to/from)
+		vertexInputCreateInfo.vertexBindingDescriptionCount = 0;//1;
+		vertexInputCreateInfo.pVertexBindingDescriptions = nullptr;//&bindingDescription; // List of vertex binding descriptions (data spacing/stride information)
+		vertexInputCreateInfo.vertexAttributeDescriptionCount = 0; //static_cast<uint32_t>(attributeDescriptions.size()); // TODO: REMOVE THE 0
+		vertexInputCreateInfo.pVertexAttributeDescriptions = nullptr; //attributeDescriptions.data(); // List of vertex attribute descriptions (data format and where to bind to/from)
+
 
 		// Input Assembly
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};

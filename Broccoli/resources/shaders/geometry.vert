@@ -27,9 +27,10 @@ layout(location = 3) out vec3 FragPos;
 layout(location = 4) out vec4 outShadowCoord;
 
 void main() {
-	//gl_Position = viewProjection.projection * viewProjection.view * pushModel.model * vec4(pos, 1.0);
+	gl_Position = viewProjection.projection * viewProjection.view * pushModel.model * vec4(pos, 1.0);
 	
-	gl_Position = viewProjection.projection * viewProjection.view * vec4(pos, 1.0);
+	//outUV = vec2((gl_VertexIndex << 1) & 2, gl_VertexIndex & 2);
+	//gl_Position = vec4(outUV * 2.0f - 1.0f, 0.0f, 1.0f);
 	
 	Normal = mat3(pushModel.inverseModel) * normal;  
 	

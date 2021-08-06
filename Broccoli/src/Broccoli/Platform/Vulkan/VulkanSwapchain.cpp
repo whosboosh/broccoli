@@ -62,6 +62,30 @@ namespace Broccoli {
 		swapChainCreateInfo.clipped = VK_TRUE; // Wheher to clip part of images not in view
 		swapChainCreateInfo.oldSwapchain = VK_NULL_HANDLE;
 
+
+		// Get Queue Family Indicies
+		QueueFamilyIndicies indicies = logicalDevice->getPhysicalDevice()->getQueueFamilyIndicies();
+
+		// If Graphics and Presentation are different, then swapchain must let images be shared between families
+		if (indicies.graphicsFamily != indicies.presentationFamily) {
+
+			uint32_t queueFamilyIndicies[] = {
+				(uint32_t)indicies.graphicsFamily,
+				(uint32_t)indicies.presentationFamily
+			};
+
+			swapChainCreateInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT; // Image share handling
+			swapChainCreateInfo.queueFamilyIndexCount = 2; // Number of queues to share images between
+			swapChainCreateInfo.pQueueFamilyIndices = queueFamilyIndicies; // Array of queues to share between
+		}
+		else {
+			// Only 1 queue family
+			swapChainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+			swapChainCreateInfo.queueFamilyIndexCount = 0;
+			swapChainCreateInfo.pQueueFamilyIndices = nullptr;
+		}
+
+		/*
 		// TODO: after staging buffers used see if this is needed
 		// Enable transfer source on swap chain images if supported
 		if (swapChainDetails.surfaceCapabilities.supportedUsageFlags & VK_IMAGE_USAGE_TRANSFER_SRC_BIT) {
@@ -71,7 +95,7 @@ namespace Broccoli {
 		// Enable transfer destination on swap chain images if supported
 		if (swapChainDetails.surfaceCapabilities.supportedUsageFlags & VK_IMAGE_USAGE_TRANSFER_DST_BIT) {
 			swapChainCreateInfo.imageUsage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-		}
+		}*/
 
 		// Create swapchain
 		VkResult result = vkCreateSwapchainKHR(getLogicalDevice(), &swapChainCreateInfo, nullptr, &swapChain);
@@ -110,17 +134,23 @@ namespace Broccoli {
 		}
 
 		// Allocate command buffers (same amount as swapchain images)
-		VkCommandBufferAllocateInfo commandBufferAllocateInfo = vks::initializers::commandBufferAllocateInfo(logicalDevice->getGraphicsCommandPool(), VK_COMMAND_BUFFER_LEVEL_PRIMARY, swapChainImageCount);
 		commandBuffers.resize(swapChainImageCount);
-		vkAllocateCommandBuffers(getLogicalDevice(), &commandBufferAllocateInfo, commandBuffers.data());
+		VkCommandBufferAllocateInfo cmdBufferAllocateInfo = {};
+		cmdBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		cmdBufferAllocateInfo.commandPool = logicalDevice->getGraphicsCommandPool();
+		cmdBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		cmdBufferAllocateInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
+
+		result = vkAllocateCommandBuffers(getLogicalDevice(), &cmdBufferAllocateInfo, commandBuffers.data());
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to allocate Command Buffers!");
+		}
 		std::cout << "Allocated " << swapChainImageCount << " command buffers from swapchain command pool\n";
 
 		// Create renderpass
 		renderPass = new VulkanRenderpass(logicalDevice, surfaceFormat.format);
 
-		// Create framebuffer
-		//framebuffer = new VulkanFramebuffer();
-
+		// Framebuffer creation
 		swapChainFramebuffers.resize(swapChainImages.size());
 		size_t i = 0;
 		for (; i < swapChainFramebuffers.size(); i++)

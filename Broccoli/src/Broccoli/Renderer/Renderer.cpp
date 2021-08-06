@@ -43,8 +43,8 @@ namespace Broccoli {
 
 		//TODO: Fix relative paths for shaders
 		//shaderLibrary->loadShader("Broccoli/resources/shaders/geometry.vert");
-		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.vert", VK_SHADER_STAGE_VERTEX_BIT);
-		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
+		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/shader.vert", VK_SHADER_STAGE_VERTEX_BIT);
+		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/shader.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
 
 		graphicsPipeline = Pipeline::create(spec, geometryShaderLibrary);
 	}
