@@ -11,7 +11,7 @@
 namespace Broccoli {
 
 	
-	Ref<VertexBuffer> VertexBuffer::create(const std::vector<Vertex>& vertices, VertexBufferUsage usage)
+	Ref<VertexBuffer> VertexBuffer::create(std::vector<Vertex>* vertices, VertexBufferUsage usage)
 	{
 		switch (RendererAPI::getCurrent()) {
 			case RendererAPIType::None: return nullptr;

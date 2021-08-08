@@ -13,7 +13,7 @@ namespace Broccoli {
 	class VulkanIndexBuffer : public IndexBuffer
 	{
 	public:
-		VulkanIndexBuffer(const std::vector<uint32_t>& indices);
+		VulkanIndexBuffer(std::vector<uint32_t>* indices);
 
 		virtual void bind() override;
 

@@ -22,7 +22,7 @@ namespace Broccoli {
 	{
 
 	public:
-		Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, glm::mat4& transform);
+		Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4& transform);
 		~Mesh();
 
 		Ref<VertexBuffer>* getVertexBuffer() { return &vertexBuffer; }

@@ -43,8 +43,8 @@ namespace Broccoli {
 
 		//TODO: Fix relative paths for shaders
 		//shaderLibrary->loadShader("Broccoli/resources/shaders/geometry.vert");
-		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/shader.vert", VK_SHADER_STAGE_VERTEX_BIT);
-		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/shader.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
+		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.vert", VK_SHADER_STAGE_VERTEX_BIT);
+		geometryShaderLibrary->loadShader("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/shaders/geometry.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
 
 		graphicsPipeline = Pipeline::create(spec, geometryShaderLibrary);
 	}
@@ -88,9 +88,9 @@ namespace Broccoli {
 		renderAPI->presentQueue();
 	}
 
-	void Renderer::updateUniform(const std::string& name, int set, int binding, void* data)
+	void Renderer::updateUniform(const std::string& name, int set, int binding, void* data, int size)
 	{
-		renderAPI->updateUniform(name, set, binding, data);
+		renderAPI->updateUniform(name, set, binding, data, size);
 	}
 
 	void Renderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)

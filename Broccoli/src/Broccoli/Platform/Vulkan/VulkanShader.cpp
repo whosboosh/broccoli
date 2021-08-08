@@ -10,6 +10,8 @@
 #include <spirv-tools/libspirv.h>
 #include <shaderc/shaderc.hpp>
 
+#include <glm/gtx/string_cast.hpp>
+
 namespace Broccoli {
 
 	VulkanShader::~VulkanShader()
@@ -32,8 +34,6 @@ namespace Broccoli {
 		//found = name.find_last_of(".");
 		//name = found != std::string::npos ? name.substr(0, found) : name;
 
-		// TODO: Add loading shader from file and creating vulkan specific functions here
-
 		auto shaderCode = readFile(filePath);
 		//auto shaderCodeSPV = readFile(filePath+".spv");
 
@@ -50,8 +50,6 @@ namespace Broccoli {
 		shaderStageCreateInfo.pName = "main";
 
 		std::cout << "Shader created with name: " << name << "\n";
-
-		/*
 
 		// Load descriptor sets from shader dynamically
 		spirv_cross::Compiler compiler(outputBinary);
@@ -185,14 +183,19 @@ namespace Broccoli {
 				}
 				vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(setWrites.size()), setWrites.data(), 0, nullptr);
 			}
-		}*/
+		}
 	}
 
-	void VulkanShader::updateDescriptorSet(int set, int binding, uint32_t imageIndex, ViewProjection data)
+	void VulkanShader::updateDescriptorSet(int set, int binding, uint32_t imageIndex, void* data, int size)
 	{
+
+		//ViewProjection* viewProj = static_cast<ViewProjection*>(data);
+		//std::cout << "size of data: " << size;
+		//std::cout << glm::to_string(viewProj->projection) << "\n";
+
 		void* buffer;
 		vkMapMemory(VulkanContext::get()->getLogicalDevice()->getLogicalDevice(), shaderDescriptorSets[set].uniformBuffers[binding]->uniformMemory[imageIndex], 0, sizeof(data), 0, &buffer);
-		memcpy(buffer, &data, sizeof(ViewProjection));
+		memcpy(buffer, data, size);
 		vkUnmapMemory(VulkanContext::get()->getLogicalDevice()->getLogicalDevice(), shaderDescriptorSets[set].uniformBuffers[binding]->uniformMemory[imageIndex]);
 
 		//std::cout << "Updated descriptor set for shader: " << getName() << " with set: " << set << " at binding: " << binding << "\n";

@@ -70,16 +70,16 @@ namespace Broccoli {
 
 		// Vertex Input
 		VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo = vks::initializers::pipelineVertexInputStateCreateInfo();
-		vertexInputCreateInfo.vertexBindingDescriptionCount = 0;//1;
-		vertexInputCreateInfo.pVertexBindingDescriptions = nullptr;//&bindingDescription; // List of vertex binding descriptions (data spacing/stride information)
-		vertexInputCreateInfo.vertexAttributeDescriptionCount = 0; //static_cast<uint32_t>(attributeDescriptions.size()); // TODO: REMOVE THE 0
-		vertexInputCreateInfo.pVertexAttributeDescriptions = nullptr; //attributeDescriptions.data(); // List of vertex attribute descriptions (data format and where to bind to/from)
+		vertexInputCreateInfo.vertexBindingDescriptionCount = 1;
+		vertexInputCreateInfo.pVertexBindingDescriptions = &bindingDescription; // List of vertex binding descriptions (data spacing/stride information)
+		vertexInputCreateInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size()); // TODO: REMOVE THE 0
+		vertexInputCreateInfo.pVertexAttributeDescriptions = attributeDescriptions.data(); // List of vertex attribute descriptions (data format and where to bind to/from)
 
 
 		// Input Assembly
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-		inputAssembly.topology = GetVulkanTopology(spec.topology); // Primitive type to assemble verticies
+		inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;//GetVulkanTopology(spec.topology); // Primitive type to assemble verticies // TODO: Set back to GetVulkanTopology
 		inputAssembly.primitiveRestartEnable = VK_FALSE; // Allow overriding of "strip" topology to start new primitives
 
 		// Viewport and Scissor
@@ -107,14 +107,15 @@ namespace Broccoli {
 		// Dyanamic states to enable (Change values in runtime instead of hardcoding pipeline)
 		std::vector<VkDynamicState> dyanamicStateEnables;
 		dyanamicStateEnables.push_back(VK_DYNAMIC_STATE_VIEWPORT); // Dynamic Viewport: Can resize in command buffer with vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-		dyanamicStateEnables.push_back(VK_DYNAMIC_STATE_SCISSOR); // Dynamic Scissor: Can resize in command buffer with vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+		//dyanamicStateEnables.push_back(VK_DYNAMIC_STATE_SCISSOR); // Dynamic Scissor: Can resize in command buffer with vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+		if (spec.topology == PrimitiveTopology::Lines || spec.topology == PrimitiveTopology::LineStrip || spec.wireFrame)
+			dyanamicStateEnables.push_back(VK_DYNAMIC_STATE_LINE_WIDTH);
 
 		// Dynamic state creation info
 		VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
 		dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 		dynamicStateCreateInfo.dynamicStateCount = static_cast<uint32_t>(dyanamicStateEnables.size());
 		dynamicStateCreateInfo.pDynamicStates = dyanamicStateEnables.data();
-		dynamicStateCreateInfo.pNext = 0;
 
 
 		// Rasterizer
@@ -132,16 +133,17 @@ namespace Broccoli {
 		colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 		colorBlendAttachment.blendEnable = VK_FALSE;
 
-		VkPipelineColorBlendStateCreateInfo colorBlending{};
-		colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-		colorBlending.logicOpEnable = VK_FALSE;
-		colorBlending.logicOp = VK_LOGIC_OP_COPY;
-		colorBlending.attachmentCount = 1;
-		colorBlending.pAttachments = &colorBlendAttachment;
-		colorBlending.blendConstants[0] = 0.0f;
-		colorBlending.blendConstants[1] = 0.0f;
-		colorBlending.blendConstants[2] = 0.0f;
-		colorBlending.blendConstants[3] = 0.0f;
+		
+		VkPipelineColorBlendStateCreateInfo colourBlendingCreateInfo{};
+		colourBlendingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+		colourBlendingCreateInfo.logicOpEnable = VK_FALSE;
+		colourBlendingCreateInfo.logicOp = VK_LOGIC_OP_COPY;
+		colourBlendingCreateInfo.attachmentCount = 1;
+		colourBlendingCreateInfo.pAttachments = &colorBlendAttachment;
+		colourBlendingCreateInfo.blendConstants[0] = 0.0f;
+		colourBlendingCreateInfo.blendConstants[1] = 0.0f;
+		colourBlendingCreateInfo.blendConstants[2] = 0.0f;
+		colourBlendingCreateInfo.blendConstants[3] = 0.0f;
 
 		// Descriptor sets and push constants
 		std::vector<VkDescriptorSetLayout> descriptorSetLayouts = {};
@@ -173,6 +175,7 @@ namespace Broccoli {
 			throw std::runtime_error("Failed to create pipeline layout");
 		}
 
+		
 		// Depth Stencil Testing
 		VkPipelineDepthStencilStateCreateInfo depthStencilCreateInfo = {};
 		depthStencilCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
@@ -193,14 +196,14 @@ namespace Broccoli {
 		VkGraphicsPipelineCreateInfo pipelineCreateInfo = {};
 		pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 		pipelineCreateInfo.stageCount = 2; // Number of shader stages (vertex, fragment)
-		pipelineCreateInfo.pStages = shaderStages.data(); // List of shader stages
+		pipelineCreateInfo.pStages = shaderStages.data(); // List of shader stages // TODO: Add.data() to shaderStages for original
 		pipelineCreateInfo.pVertexInputState = &vertexInputCreateInfo; // All the fixed function pipeline states
 		pipelineCreateInfo.pInputAssemblyState = &inputAssembly;
 		pipelineCreateInfo.pViewportState = &viewportStateCreateInfo;
 		pipelineCreateInfo.pDynamicState = &dynamicStateCreateInfo;
 		pipelineCreateInfo.pRasterizationState = &rasterizerStateCreateInfo;
 		pipelineCreateInfo.pMultisampleState = &multisampleCreateInfo;
-		pipelineCreateInfo.pColorBlendState = &colorBlending;
+		pipelineCreateInfo.pColorBlendState = &colourBlendingCreateInfo;
 		pipelineCreateInfo.pDepthStencilState = &depthStencilCreateInfo;
 		pipelineCreateInfo.layout = pipelineLayout; // Pipeline layout pipeline should use
 		pipelineCreateInfo.renderPass = renderPass.getRenderPass(); // Render pass description the pipeline is compatible with

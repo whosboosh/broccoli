@@ -18,6 +18,7 @@
 #include <chrono>
 
 #include "Broccoli/Platform/Vulkan/VulkanRenderer.h"
+#include "Broccoli/Core/Window.h"
 
 namespace Broccoli {
 
@@ -28,8 +29,8 @@ namespace Broccoli {
 		appInstance = this;
 
 		appInfo.Name = "Cloud Gaming Engine";
-		appInfo.windowHeight = 900;
-		appInfo.windowWidth = 1600;
+		appInfo.windowWidth = 1280;
+		appInfo.windowHeight = 720;
 		appInfo.fullscreen = true;
 		appInfo.vsync = false;
 
@@ -44,15 +45,13 @@ namespace Broccoli {
 		window->init();
 		window->setVsync(false);
 
-		camera = new Camera(glm::vec3(42.0f, 28.0f, 16.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -10.0f, 10.0f, 0.05f);
+		camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -10.0f, 10.0f, 0.05f);
 
 		// Initialise renderer (shaders etc) and ImGui
 		renderer = new Renderer();
 		renderer->init();
 
-		// TODO: All of this is just test code to run the engine
-		Ref<CommandBuffer> commandBuffer = Ref<CommandBuffer>::create();
-
+		/*
 		std::vector<Vertex> floorVertices = {
 			{ { -40, 0, -40}, { 1.0f, 0.0f, 1.0f}, { 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f} }, //BL
 			{ { 40, 0, -40}, { 1.0f, .0f, 0.0f}, { 1.0f, 0.0f }, { 0.0f, 0.0f, 0.0f} },//BR
@@ -63,36 +62,87 @@ namespace Broccoli {
 		std::vector<uint32_t> floorIndices = {
 			0, 2, 1,
 			1, 2, 3
+		};*/
+
+		std::vector<Vertex> vertices = {
+		{ { -1.0, -1.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 0
+		{ { 1.0, -1.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+		{ { -1.0, 1.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+		{ { 1.0, 1.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+
+		{ { 1.0, -1.0, -1.0 }, { 0.0, 1.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 4
+		{ { 1.0, -1.0, 1.0 }, { 0.0, 1.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+		{ { 1.0, 1.0, 1.0 }, { 0.0, 1.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+		{ { 1.0, 1.0, -1.0 }, { 0.0, 1.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+
+		{ { 1.0, -1.0, -1.0 }, { 1.0, 1.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 8 back
+		{ { -1.0, -1.0, -1.0 }, { 1.0, 1.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+		{ { 1.0, 1.0, -1.0 }, { 1.0, 1.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+		{ { -1.0, 1.0, -1.0 }, { 1.0, 1.0, 0.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+
+		{ { -1.0, -1.0, -1.0 }, { 1.0, 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 12 left
+		{ { -1.0, -1.0, 1.0 }, { 1.0, 0.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+		{ { -1.0, 1.0, -1.0 }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+		{ { -1.0, 1.0, 1.0 }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+
+		{ { -1.0, -1.0, -1.0 }, { 0.0, 0.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }}, // 16
+		{ { 1.0, -1.0, -1.0 }, { 0.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+		{ { -1.0, -1.0, 1.0 }, { 0.0, 0.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+		{ { 1.0, -1.0, 1.0 }, { 0.0, 0.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+
+		{ { -1.0, 1.0, 1.0 }, { 1.0, 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 20
+		{ { 1.0, 1.0, 1.0 }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+		{ { -1.0, 1.0, -1.0 }, { 1.0, 0.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+		{ { 1.0, 1.0, -1.0 }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+		};
+
+		std::vector<uint32_t> indices = {
+			1,3,2, 2,0,1,  //Face front
+			4,7,6, 6,5,4, //Face right
+			10,8,9, 9,11,10, // Back
+			14,12,13, 13,15,14, // Left
+			16,17,19, 19,18,16, // Bottom
+			23,22,20, 20,21,23, // Top
 		};
 
 		glm::mat4 transformTest(1.0f);
+		transformTest = glm::translate(transformTest, glm::vec3(0, 0, -5));
 
-		mesh = Ref<Mesh>::create(floorVertices, floorIndices, transformTest);
+		mesh = Ref<Mesh>::create(&vertices, &indices, transformTest);
+
+		viewProjection = new ViewProjection;
 	}
 
 	void Application::updateUniforms()
 	{
-		viewProjection.projection = glm::perspective(glm::radians(70.0f), (float)appInfo.windowWidth / (float)appInfo.windowHeight, 0.1f, 100.0f);
-		viewProjection.projection[1][1] *= -1; // Invert the y axis for vulkan (GLM was made for opengl which uses +y as up)
-		viewProjection.view = camera->calculateViewMatrix();
+		viewProjection->projection = glm::perspective(glm::radians(70.0f), (float)Window::getSize().first/ (float)Window::getSize().second, 0.1f, 100.0f);
+		viewProjection->projection[1][1] *= -1; // Invert the y axis for vulkan (GLM was made for opengl which uses +y as up)
+		viewProjection->view = camera->calculateViewMatrix();
 
-		//renderer->updateUniform("geometry.vert", 0, 0, &viewProjection);
-		//renderer->updateUniform("geometry.vert", 0, 1, &mesh->getMeshInfo());
+		renderer->updateUniform("geometry.vert", 0, 0, viewProjection, sizeof(*viewProjection));
+		renderer->updateUniform("geometry.vert", 0, 1, &mesh->getMeshInfo(), sizeof(mesh->getMeshInfo()));
 	}
 
 	void Application::processEvents()
 	{
+		glfwPollEvents();
+		
+		if (window->getIsControllingGame())
+		{
+			camera->mouseControl(window->getXChange(), window->getYChange());
+			camera->keyControl(window->getKeys(), deltaTime);
+			glfwSetInputMode(window->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
+		else {
+			glfwSetInputMode(window->getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+
 		double now = glfwGetTime();
 		deltaTime = now - lastFrameTime;
 		lastFrameTime = now;
 		currentFpsTime += deltaTime;
 
-		if (window->getIsControllingGame())
-		{
-			camera->mouseControl(window->getXChange(), window->getYChange());
-			camera->keyControl(window->getKeys(), deltaTime);
-		}
-		window->processEvents();
+		//std::cout << deltaTime << "\n";
 	}
 
 

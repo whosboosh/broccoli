@@ -8,7 +8,8 @@
 
 #include "Broccoli/Renderer/Pipeline.h"
 #include "Broccoli/Renderer/Mesh.h"
-#include "Broccoli/Renderer/CommandBuffer.h"
+
+#include "Broccoli/Platform/Vulkan/VulkanPipeline.h"
 
 #include <glm/glm.hpp>
 
@@ -36,7 +37,7 @@ namespace Broccoli {
 		void submitQueue();
 		void presentQueue();
 
-		void updateUniform(const std::string& name, int set, int binding, void* data);
+		void updateUniform(const std::string& name, int set, int binding, void* data, int size);
 
 		void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform);
 

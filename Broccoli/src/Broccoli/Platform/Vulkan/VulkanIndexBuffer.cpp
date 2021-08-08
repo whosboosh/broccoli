@@ -8,7 +8,7 @@
 #include <stdint.h>
 
 namespace Broccoli {
-	VulkanIndexBuffer::VulkanIndexBuffer(const std::vector<uint32_t>& indices)
+	VulkanIndexBuffer::VulkanIndexBuffer(std::vector<uint32_t>* indices)
 	{
 		VulkanLogicalDevice* device = VulkanContext::get()->getLogicalDevice();
 		VkDevice logicalDevice = device->getLogicalDevice();
@@ -17,7 +17,7 @@ namespace Broccoli {
 		VkQueue graphicsQueue = device->getGraphicsQueue();
 		VkCommandPool graphicsCommandPool = device->getGraphicsCommandPool();
 
-		VkDeviceSize bufferSize = sizeof(uint32_t) * indices.size(); // Get size of buffer needed for indicies
+		VkDeviceSize bufferSize = sizeof(uint32_t) * indices->size(); // Get size of buffer needed for indicies
 
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingBufferMemory;
@@ -27,7 +27,7 @@ namespace Broccoli {
 		// Map memory to staging buffer
 		void* data;
 		vkMapMemory(logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, indices.data(), (size_t)bufferSize);
+		memcpy(data, indices->data(), (size_t)bufferSize);
 		vkUnmapMemory(logicalDevice, stagingBufferMemory);
 
 		// Create buffer for index data on gpu access only area

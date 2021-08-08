@@ -41,7 +41,7 @@ namespace Broccoli {
 
 	private:
 		Ref<Mesh> mesh;
-		ViewProjection viewProjection;
+		ViewProjection *viewProjection;
 		
 		Camera* camera;
 		Window* window;
@@ -49,7 +49,8 @@ namespace Broccoli {
 		ApplicationInfo appInfo;
 		static Application* appInstance;
 		bool isRunning = true, isMinimised = false;
-		uint64_t frameCounter = 0, lastFrameTime = 0, deltaTime = 0, currentFpsTime = 0;
+		uint64_t frameCounter = 0;
+		float lastFrameTime = 0, deltaTime = 0, currentFpsTime = 0;
 	};
 
 	//Application* CreateApplication(int argc, char** argvv);

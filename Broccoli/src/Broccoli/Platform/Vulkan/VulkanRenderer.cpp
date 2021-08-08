@@ -74,6 +74,7 @@ namespace Broccoli {
 		//glm::vec3 verts = Application::get().getTestMesh()->getVertexBuffer()->As<VulkanVertexBuffer>()->getVertices()[1].col;
 		//std::cout << verts.x << " " << verts.y << " " << verts.z << "\n";
 
+		
 		/*
 		// TODO: Remove
 		glm::vec3* cameraPos = Application::get().getCamera().getCameraPosition();
@@ -159,20 +160,13 @@ namespace Broccoli {
 		swapChain->incrementCurrentFrame();
 	}
 
-	void VulkanRenderer::updateUniform(const std::string& name, int set, int binding, void* data)
+	void VulkanRenderer::updateUniform(const std::string& name, int set, int binding, void* data, int size)
 	{
-		Ref<Pipeline> pipeline = Application::get().getRenderer().getGraphicsPipeline();
-		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
+		Ref<VulkanPipeline> pipeline = Application::get().getRenderer().getGraphicsPipeline().As<VulkanPipeline>();
 
-		Ref<VulkanShader> shader = vulkanPipeline->getShaderLibrary()->getShader(name).As<VulkanShader>();
+		Ref<VulkanShader> shader = pipeline->getShaderLibrary()->getShader(name).As<VulkanShader>();
 
-		// TODO: Remove this, just testing if void* doesn't pass data properly
-		ViewProjection viewproj = {};
-		viewproj.projection = glm::perspective(glm::radians(70.0f), 1600.0f / 900.0f, 0.1f, 100.0f);
-		viewproj.projection[1][1] *= -1; // Invert the y axis for vulkan (GLM was made for opengl which uses +y as up)
-		viewproj.view = Application::get().getCamera().calculateViewMatrix();
-
-		shader->updateDescriptorSet(set, binding, swapChain->getCurrentImageIndex(), viewproj);
+		shader->updateDescriptorSet(set, binding, swapChain->getCurrentImageIndex(), data, size);
 	}
 
 	void VulkanRenderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)
@@ -182,18 +176,16 @@ namespace Broccoli {
 		// Potentially move binding pipeline out to its own function if multiple meshes all use the same pipeline, dont need to keep rebinding it
 		vkCmdBindPipeline(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipeline());
 
-		//VkBuffer vertexBuffer[] = { mesh->getVertexBuffer()->As<VulkanVertexBuffer>()->getVertexBuffer() };
-		//VkDeviceSize offsets[] = { 0 }; // Offsets into buffers being bound
+		VkBuffer vertexBuffer[] = { mesh->getVertexBuffer()->As<VulkanVertexBuffer>()->getVertexBuffer() };
+		VkDeviceSize offsets[] = { 0 }; // Offsets into buffers being bound
 
-		//vkCmdBindVertexBuffers(swapChain->getCurrentCommandBuffer(), 0, 1, vertexBuffer, offsets); // Command to bind vertex buffer before drawing with them
-		//vkCmdBindIndexBuffer(swapChain->getCurrentCommandBuffer(), mesh->getIndexBuffer()->As<VulkanIndexBuffer>()->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32); // Bind mesh index buffer with 0 offset and using uint32 type
+		vkCmdBindVertexBuffers(swapChain->getCurrentCommandBuffer(), 0, 1, vertexBuffer, offsets); // Command to bind vertex buffer before drawing with them
+		vkCmdBindIndexBuffer(swapChain->getCurrentCommandBuffer(), mesh->getIndexBuffer()->As<VulkanIndexBuffer>()->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32); // Bind mesh index buffer with 0 offset and using uint32 type
 
-		//vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),
-			//0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentBufferIndex()).size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentBufferIndex()).data(), 0, nullptr);
+		vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),
+			0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).data(), 0, nullptr);
 
-		//vkCmdDrawIndexed(swapChain->getCurrentCommandBuffer(), mesh->getIndexCount(), 1, 0, 0, 0);
-
-		vkCmdDraw(swapChain->getCurrentCommandBuffer(), 3, 1, 0, 0);
+		vkCmdDrawIndexed(swapChain->getCurrentCommandBuffer(), mesh->getIndexCount(), 1, 0, 0, 0);
 	}
 
 	void VulkanRenderer::recreateSwapChain()

@@ -10,6 +10,8 @@ namespace Broccoli {
 
 	Window::Window(WindowSpecification windowSpec)
 	{
+		this->height = windowSpec.height;
+		this->width = windowSpec.width;
 		this->windowSpec = windowSpec;
 		Window::frameBufferResized = false;
 	}
@@ -100,7 +102,7 @@ namespace Broccoli {
 		//app->frameBufferResized = true;
 		Window::frameBufferResized = true;
 		
-		glfwGetFramebufferSize(window, &width, &height);
+		glfwGetFramebufferSize(window, &Window::width, &Window::height);
 		if ((width == 0) || (height == 0))
 		{
 			Application::get().setMinimise(true);

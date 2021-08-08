@@ -12,7 +12,7 @@
 #include "Broccoli/Core/Ref.h"
 
 namespace Broccoli {
-	Ref<IndexBuffer> IndexBuffer::create(const std::vector<uint32_t>& indices)
+	Ref<IndexBuffer> IndexBuffer::create(std::vector<uint32_t>* indices)
 	{
 		switch (RendererAPI::getCurrent())
 		{

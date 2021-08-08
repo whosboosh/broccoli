@@ -6,7 +6,6 @@
 
 #include "Broccoli/Renderer/Pipeline.h"
 #include "Broccoli/Renderer/Mesh.h"
-#include "Broccoli/Renderer/CommandBuffer.h"
 
 #include "Broccoli/Platform/Vulkan/VulkanSwapchain.h"
 
@@ -32,9 +31,9 @@ namespace Broccoli {
 		virtual void submitQueue() override;
 		virtual void presentQueue() override;
 
-		virtual void updateUniform(const std::string& name, int set, int binding, void* data) override;
+		virtual void updateUniform(const std::string& name, int set, int binding, void* data, int size) override;
 
-		virtual void renderMesh(Ref<Pipeline>, Ref<Mesh> mesh, const glm::mat4& transform) override;
+		virtual void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform) override;
 
 		void recreateSwapChain();
 

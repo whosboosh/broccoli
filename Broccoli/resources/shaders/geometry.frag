@@ -11,6 +11,7 @@ layout(location = 4) in vec4 inShadowCoord;
 
 layout(location = 0) out vec4 outColour; 	// Final output colour (must also have location
 
+
 // Uniform buffer for light
 layout(set = 0, binding = 2) uniform DirectionalLight {
 	float directionX;
@@ -35,7 +36,5 @@ layout(push_constant) uniform PushModel {
 
 void main() 
 {
-
-	outColour = vec4(0.5, 0.2, 0.6, 1.0);
-	//outColour = vec4(fragCol, 1.0);
+	outColour = vec4(fragCol, 1.0);
 }

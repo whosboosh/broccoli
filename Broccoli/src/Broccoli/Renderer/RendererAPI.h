@@ -4,7 +4,8 @@
 
 #include "Broccoli/Renderer/Pipeline.h"
 #include "Broccoli/Renderer/Mesh.h"
-#include "Broccoli/Renderer/CommandBuffer.h"
+
+#include "Broccoli/Platform/Vulkan/VulkanPipeline.h"
 
 #include <glm/glm.hpp>
 
@@ -37,9 +38,9 @@ namespace Broccoli {
 		virtual void submitQueue() = 0;
 		virtual void presentQueue() = 0;
 
-		virtual void updateUniform(const std::string& name, int set, int binding, void* data) = 0;
+		virtual void updateUniform(const std::string& name, int set, int binding, void* data, int size) = 0;
 
-		virtual void renderMesh(Ref<Pipeline>, Ref<Mesh> mesh, const glm::mat4& transform) = 0;
+		virtual void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform) = 0;
 
 		// Render mesh etc...
 		static RendererAPIType getCurrent() { return currentRenderer; }

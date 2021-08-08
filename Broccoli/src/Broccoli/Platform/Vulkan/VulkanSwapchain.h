@@ -105,6 +105,13 @@ namespace Broccoli {
 			VkImageView imageView;
 		} depthStencil;
 
+		struct
+		{
+			VkImage image;
+			VkDeviceMemory imageMemory;
+			VkImageView imageView;
+		} multiSampleStencil;
+
 		VkInstance instance;
 
 		VkSurfaceFormatKHR surfaceFormat;

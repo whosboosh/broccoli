@@ -22,7 +22,7 @@ namespace Broccoli {
 		virtual void bind() = 0;
 		virtual unsigned int getSize() = 0;
 
-		static Ref<IndexBuffer> create(const std::vector<uint32_t>& indices);
+		static Ref<IndexBuffer> create(std::vector<uint32_t>* indices);
 
 		// Vulkan Specific
 		virtual VkBuffer getIndexBuffer() = 0;

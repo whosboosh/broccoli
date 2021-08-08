@@ -51,7 +51,7 @@ namespace Broccoli {
 		void swapBuffers() { glfwSwapBuffers(mainWindow); }
 
 		// Get the current window size
-		std::pair<uint32_t, uint32_t> getSize() { return { width, height }; }
+		static std::pair<uint32_t, uint32_t> getSize() { return { width, height }; }
 		std::pair<uint32_t, uint32_t> getWindowPos();
 
 		Ref<RendererContext> getRenderContext() { return rendererContext; }
@@ -73,10 +73,10 @@ namespace Broccoli {
 		GLFWwindow* mainWindow;
 		
 		inline static WindowSpecification windowSpec;
+		inline static int width, height;
 
 		bool glfwInitialised = false;
 		bool isControllingGame = true;
-		int width, height;
 
 		// Global
 		KeyAction keys[1024] = { 0, 0 };

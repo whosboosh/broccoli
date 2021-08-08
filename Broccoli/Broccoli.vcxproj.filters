@@ -120,9 +120,6 @@
     <ClInclude Include="src\Broccoli\Renderer\Mesh.h">
       <Filter>Source Files\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Broccoli\Renderer\CommandBuffer.h">
-      <Filter>Source Files\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Broccoli\Asset\AssetType.h">
       <Filter>Source Files\Asset</Filter>
     </ClInclude>
@@ -222,9 +219,6 @@
       <Filter>Source Files\Platform\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="src\Broccoli\Renderer\Mesh.cpp">
-      <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Broccoli\Renderer\CommandBuffer.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Broccoli\Renderer\VertexBuffer.cpp">

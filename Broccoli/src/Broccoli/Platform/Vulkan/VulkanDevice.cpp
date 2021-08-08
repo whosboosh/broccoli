@@ -187,6 +187,7 @@ namespace Broccoli {
 
 		// Physical device features the logical device will be using
 		VkPhysicalDeviceFeatures deviceFeatures = {};
+		deviceFeatures.fillModeNonSolid = true;
 		deviceFeatures.samplerAnisotropy = VK_TRUE; // Enable anisotropy
 		//deviceFeatures.depthClamp = VK_TRUE; // use if using depthClampEnable to true
 		deviceCreateInfo.pEnabledFeatures = &deviceFeatures; // Physical Device features Logical Device will use

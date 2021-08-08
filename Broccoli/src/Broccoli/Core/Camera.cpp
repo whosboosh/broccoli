@@ -1,6 +1,8 @@
 #include "Camera.h"
 #include <iostream>
 
+#include <glm/gtx/string_cast.hpp>
+
 namespace Broccoli {
 	Camera::Camera()
 	{
@@ -23,14 +25,13 @@ namespace Broccoli {
 
 	void Camera::keyControl(KeyAction* keys, GLfloat deltaTime)
 	{
-		//std::cout << position.x << " " << position.y << " " << position.z << "\n";
-
 		GLfloat velocity = moveSpeed * deltaTime;
+
+		//std::cout << "Position: " << glm::to_string(position) << "front: " << glm::to_string(front) << "Velocity: " << velocity << " moveSpeed: " << moveSpeed << "Delta" << deltaTime << "\n";
 
 		if (keys[GLFW_KEY_W].key)
 		{
 			position += front * velocity;
-			std::cout << "UPDATING POSITION " << "delta time: " << deltaTime << " velocity: " << velocity << " " << position.x << " " << position.y << " " << position.z << "\n";
 		}
 
 		if (keys[GLFW_KEY_S].key)
@@ -78,6 +79,7 @@ namespace Broccoli {
 
 	glm::mat4 Camera::calculateViewMatrix()
 	{
+		//std::cout << position.x << position.y << position.z << "\n";
 		return glm::lookAt(position, position + front, up);
 	}
 

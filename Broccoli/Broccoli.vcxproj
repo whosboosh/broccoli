@@ -39,7 +39,6 @@
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanSwapchain.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanValidation.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanVertexBuffer.h" />
-    <ClInclude Include="src\Broccoli\Renderer\CommandBuffer.h" />
     <ClInclude Include="src\Broccoli\Renderer\IndexBuffer.h" />
     <ClInclude Include="src\Broccoli\Renderer\Mesh.h" />
     <ClInclude Include="src\Broccoli\Renderer\Pipeline.h" />
@@ -68,7 +67,6 @@
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanShader.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanSwapchain.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanVertexBuffer.cpp" />
-    <ClCompile Include="src\Broccoli\Renderer\CommandBuffer.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\IndexBuffer.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Mesh.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Pipeline.cpp" />
