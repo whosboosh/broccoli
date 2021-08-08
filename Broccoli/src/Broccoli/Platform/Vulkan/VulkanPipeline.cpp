@@ -79,7 +79,7 @@ namespace Broccoli {
 		// Input Assembly
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-		inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;//GetVulkanTopology(spec.topology); // Primitive type to assemble verticies // TODO: Set back to GetVulkanTopology
+		inputAssembly.topology = GetVulkanTopology(spec.topology); // Primitive type to assemble verticies
 		inputAssembly.primitiveRestartEnable = VK_FALSE; // Allow overriding of "strip" topology to start new primitives
 
 		// Viewport and Scissor
@@ -107,7 +107,7 @@ namespace Broccoli {
 		// Dyanamic states to enable (Change values in runtime instead of hardcoding pipeline)
 		std::vector<VkDynamicState> dyanamicStateEnables;
 		dyanamicStateEnables.push_back(VK_DYNAMIC_STATE_VIEWPORT); // Dynamic Viewport: Can resize in command buffer with vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-		//dyanamicStateEnables.push_back(VK_DYNAMIC_STATE_SCISSOR); // Dynamic Scissor: Can resize in command buffer with vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+		dyanamicStateEnables.push_back(VK_DYNAMIC_STATE_SCISSOR); // Dynamic Scissor: Can resize in command buffer with vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 		if (spec.topology == PrimitiveTopology::Lines || spec.topology == PrimitiveTopology::LineStrip || spec.wireFrame)
 			dyanamicStateEnables.push_back(VK_DYNAMIC_STATE_LINE_WIDTH);
 
@@ -131,19 +131,26 @@ namespace Broccoli {
 
 		VkPipelineColorBlendAttachmentState colorBlendAttachment{};
 		colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-		colorBlendAttachment.blendEnable = VK_FALSE;
+		colorBlendAttachment.blendEnable = VK_TRUE;
 
-		
-		VkPipelineColorBlendStateCreateInfo colourBlendingCreateInfo{};
+		// Blending uses equation: (srcColorBlendFactor * new colour) colorBlendOp (dstColorBlendFactor * old colour)
+		colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+		colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+		colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+
+		// Summarised: (VK_BLEND_FACTOR_SRC_ALPHA * new colour) + (VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA * old colour)
+		//			   (new colour alpha * new colour) + ((1 - new colour alpha) * old colour)
+
+		colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+		colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+		colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+		// Summarised: (1 * new alpha) + (0 * old alpha) = new alpha
+
+		VkPipelineColorBlendStateCreateInfo colourBlendingCreateInfo = {};
 		colourBlendingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-		colourBlendingCreateInfo.logicOpEnable = VK_FALSE;
-		colourBlendingCreateInfo.logicOp = VK_LOGIC_OP_COPY;
+		colourBlendingCreateInfo.logicOpEnable = VK_FALSE;				// Alternative to calculations is to use logical operations
 		colourBlendingCreateInfo.attachmentCount = 1;
 		colourBlendingCreateInfo.pAttachments = &colorBlendAttachment;
-		colourBlendingCreateInfo.blendConstants[0] = 0.0f;
-		colourBlendingCreateInfo.blendConstants[1] = 0.0f;
-		colourBlendingCreateInfo.blendConstants[2] = 0.0f;
-		colourBlendingCreateInfo.blendConstants[3] = 0.0f;
 
 		// Descriptor sets and push constants
 		std::vector<VkDescriptorSetLayout> descriptorSetLayouts = {};

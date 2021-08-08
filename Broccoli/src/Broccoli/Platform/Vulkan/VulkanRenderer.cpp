@@ -97,8 +97,7 @@ namespace Broccoli {
 		vkCmdSetViewport(swapChain->getCurrentCommandBuffer(), 0, 1, &viewport);
 
 		VkRect2D scissor = {};
-		viewport.width = swapChain->getSwapExtent().width;
-		viewport.height = swapChain->getSwapExtent().height;
+		scissor.extent = swapChain->getSwapExtent();
 		scissor.offset.x = 0;
 		scissor.offset.y = 0;
 		vkCmdSetScissor(swapChain->getCurrentCommandBuffer(), 0, 1, &scissor);
