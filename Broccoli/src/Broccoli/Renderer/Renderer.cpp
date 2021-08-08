@@ -93,9 +93,9 @@ namespace Broccoli {
 		renderAPI->updateUniform(name, set, binding, data, size);
 	}
 
-	void Renderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)
+	void Renderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh)
 	{
-		renderAPI->renderMesh(pipeline, mesh, transform);
+		renderAPI->renderMesh(pipeline, mesh);
 	}
 
 	Ref<RendererContext> Renderer::getContext()
@@ -103,4 +103,8 @@ namespace Broccoli {
 		return Application::get().getWindow().getRenderContext();
 	}
 
+	void Renderer::shutdown()
+	{
+		renderAPI->shutdown();
+	}
 }

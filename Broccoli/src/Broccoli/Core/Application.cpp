@@ -163,7 +163,7 @@ namespace Broccoli {
 				
 				renderer->beginRenderPass();
 
-				renderer->renderMesh(renderer->getGraphicsPipeline(), mesh, glm::mat4(1.0f));
+				renderer->renderMesh(renderer->getGraphicsPipeline(), mesh);
 
 				renderer->endRenderPass();
 

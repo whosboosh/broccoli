@@ -23,6 +23,7 @@ namespace Broccoli {
 	public:
 		VulkanContext();
 		~VulkanContext();
+		void cleanup();
 	
 		VulkanLogicalDevice* getLogicalDevice() { return logicalDevice; };
 		VulkanPhysicalDevice* getPhysicalDevice() { return physicalDevice; }

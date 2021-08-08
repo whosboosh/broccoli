@@ -28,6 +28,11 @@ namespace Broccoli {
 		}
 	}
 
+	void VulkanContext::cleanup()
+	{
+		delete this;
+	}
+
 	void VulkanContext::init(GLFWwindow* windowHandle)
 	{
 		std::cout << "Vulkan Context Creation starting\n";

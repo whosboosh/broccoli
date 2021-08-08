@@ -317,11 +317,6 @@ namespace Broccoli {
 
 	void VulkanSwapchain::cleanup()
 	{
-		recreateSwapChain();
-	}
-
-	void VulkanSwapchain::recreateSwapChain()
-	{
 		vkDeviceWaitIdle(getLogicalDevice());
 
 		vkFreeCommandBuffers(getLogicalDevice(), logicalDevice->getGraphicsCommandPool(), static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
@@ -334,6 +329,13 @@ namespace Broccoli {
 		renderPass->cleanup();
 		delete renderPass;
 
+		// Cleanup synchronisation
+		for (size_t i = 0; i < MAX_FRAME_DRAWS; i++) {
+			vkDestroySemaphore(logicalDevice->getLogicalDevice(), renderFinished[i], nullptr);
+			vkDestroySemaphore(logicalDevice->getLogicalDevice(), imageAvailable[i], nullptr);
+			vkDestroyFence(logicalDevice->getLogicalDevice(), drawFences[i], nullptr);
+		}
+
 		vkDestroyImage(getLogicalDevice(), depthStencil.image, nullptr);
 		vkDestroyImageView(getLogicalDevice(), depthStencil.imageView, nullptr);
 		vkFreeMemory(getLogicalDevice(), depthStencil.imageMemory, nullptr);
@@ -344,6 +346,11 @@ namespace Broccoli {
 		}
 		swapChainImages.clear();
 		vkDestroySwapchainKHR(getLogicalDevice(), swapChain, nullptr);
+	}
+
+	void VulkanSwapchain::recreateSwapChain()
+	{
+		cleanup();
 
 		// Recreate
 		create(vsync);

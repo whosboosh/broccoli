@@ -39,7 +39,7 @@ namespace Broccoli {
 
 		void updateUniform(const std::string& name, int set, int binding, void* data, int size);
 
-		void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform);
+		void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh);
 
 	private:
 		Ref<Pipeline> graphicsPipeline;

@@ -29,9 +29,6 @@ namespace Broccoli {
 	{
 		swapChain = &VulkanContext::get()->getVulkanSwapChain();
 	}
-	void VulkanRenderer::shutdown()
-	{
-	}
 
 	void VulkanRenderer::beginFrame()
 	{
@@ -168,7 +165,7 @@ namespace Broccoli {
 		shader->updateDescriptorSet(set, binding, swapChain->getCurrentImageIndex(), data, size);
 	}
 
-	void VulkanRenderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, const glm::mat4& transform)
+	void VulkanRenderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh)
 	{
 		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
 
@@ -185,6 +182,14 @@ namespace Broccoli {
 			0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).data(), 0, nullptr);
 
 		vkCmdDrawIndexed(swapChain->getCurrentCommandBuffer(), mesh->getIndexCount(), 1, 0, 0, 0);
+	}
+
+	void VulkanRenderer::shutdown()
+	{
+		// Call cleanup for vulkan creations
+		swapChain->cleanup();
+		Application::get().getRenderer().getGraphicsPipeline().As<VulkanPipeline>()->cleanup();
+		VulkanContext::get()->cleanup();
 	}
 
 	void VulkanRenderer::recreateSwapChain()

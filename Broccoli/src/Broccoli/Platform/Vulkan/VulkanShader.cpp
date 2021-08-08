@@ -20,6 +20,29 @@ namespace Broccoli {
 
 	void VulkanShader::cleanup()
 	{
+		VkDevice logicalDevice = VulkanContext::get()->getLogicalDevice()->getLogicalDevice();
+		uint32_t swapChainImageCount = VulkanContext::get()->getVulkanSwapChain().getSwapChainImageCount();
+
+		// Cleanup descriptor pool
+		vkDestroyDescriptorPool(logicalDevice, descriptorPool, nullptr);
+
+		// Loop over each "set" in this shader
+		for (size_t i = 0; i < shaderDescriptorSets.size(); i++)
+		{
+			// Cleanup the layout
+			vkDestroyDescriptorSetLayout(logicalDevice, shaderDescriptorSets[i].descriptorSetLayout, nullptr);
+
+			// Loop over each uniform buffer binding for that set
+			for (size_t j = 0; j < shaderDescriptorSets[i].uniformBuffers.size(); j++)
+			{
+				for (int k = 0; k < swapChainImageCount; k++)
+				{
+					vkDestroyBuffer(logicalDevice, shaderDescriptorSets[i].uniformBuffers[j]->uniformBuffer[k], nullptr);
+					vkFreeMemory(logicalDevice, shaderDescriptorSets[i].uniformBuffers[j]->uniformMemory[k], nullptr);
+				}
+			}
+
+		}
 		std::cout << "Cleanup for vulkan shader\n";
 	}
 
