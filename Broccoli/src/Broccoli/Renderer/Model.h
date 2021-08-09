@@ -36,7 +36,7 @@ namespace Broccoli {
 			modelTransform.transform = transform; 
 			modelTransform.inverseTransform = glm::transpose(glm::inverse(transform));
 		}
-		MeshInfo getTransform() { return modelTransform; }
+		MeshInfo& getTransform() { return modelTransform; }
 
 	private:
 		const aiScene* scene;

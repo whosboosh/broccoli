@@ -31,8 +31,6 @@ namespace Broccoli {
 		const ApplicationInfo& getSpecification() const { return appInfo; }
 		static inline Application& get() { return *appInstance; }
 
-		Ref<Mesh> getTestMesh() { return mesh; }
-
 		inline Camera& getCamera() { return *camera; }
 		inline Window& getWindow() { return *window; }
 		inline Renderer& getRenderer() { return *renderer; }
@@ -40,8 +38,8 @@ namespace Broccoli {
 		void setMinimise(bool state) { isMinimised = state; }
 
 	private:
-		Ref<Mesh> mesh;
-		Ref<Model> model;
+		std::vector<Ref<Mesh>> meshList;
+		std::vector<Ref<Model>> modelList;
 
 
 		ViewProjection viewProjection;

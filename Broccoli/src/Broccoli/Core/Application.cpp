@@ -109,8 +109,8 @@ namespace Broccoli {
 		transformTest = glm::translate(transformTest, glm::vec3(0, 0, -5));
 
 		// TODO: Don't use absolute path xd
-		model = Ref<Model>::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/models/chair_01.fbx", glm::mat4(1.0f));
-		mesh = Ref<Mesh>::create(&vertices, &indices, transformTest);
+		modelList.push_back(Ref<Model>::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/models/chair_01.fbx", glm::scale(glm::mat4(1.0f), glm::vec3(0.4, 0.4, 0.4))));
+		meshList.push_back(Ref<Mesh>::create(&vertices, &indices, transformTest));
 	}
 
 	void Application::updateUniforms()
@@ -120,7 +120,15 @@ namespace Broccoli {
 		viewProjection.view = camera->calculateViewMatrix();
 
 		renderer->updateUniform("geometry.vert", 0, 0, &viewProjection, sizeof(viewProjection));
-		renderer->updateUniform("geometry.vert", 0, 1, &mesh->getMeshInfo(), sizeof(mesh->getMeshInfo()));
+
+		for (Ref<Mesh> mesh: meshList)
+		{
+			renderer->updateUniform("geometry.vert", 0, 1, &mesh->getMeshInfo(), sizeof(mesh->getMeshInfo()));
+		}
+		for (Ref<Model> model : modelList)
+		{
+			renderer->updateUniform("geometry.vert", 0, 1, &model->getTransform(), sizeof(model->getTransform()));
+		}
 	}
 
 	void Application::processEvents()
@@ -161,7 +169,14 @@ namespace Broccoli {
 				
 				renderer->beginRenderPass();
 
-				renderer->renderMesh(renderer->getGraphicsPipeline(), mesh);
+				for (Ref<Mesh> mesh : meshList)
+				{
+					renderer->renderMesh(renderer->getGraphicsPipeline(), mesh);
+				}
+				for (Ref<Model> model : modelList)
+				{
+					renderer->renderModel(renderer->getGraphicsPipeline(), model);
+				}
 
 				renderer->endRenderPass();
 

@@ -98,6 +98,11 @@ namespace Broccoli {
 		renderAPI->renderMesh(pipeline, mesh);
 	}
 
+	void Renderer::renderModel(Ref<Pipeline> pipeline, Ref<Model> model)
+	{
+		renderAPI->renderModel(pipeline, model);
+	}
+
 	Ref<RendererContext> Renderer::getContext()
 	{
 		return Application::get().getWindow().getRenderContext();

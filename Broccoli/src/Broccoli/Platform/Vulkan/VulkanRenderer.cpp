@@ -66,19 +66,6 @@ namespace Broccoli {
 		renderPassBeginInfo.renderArea.offset = { 0, 0 };
 		renderPassBeginInfo.renderArea.extent = swapChain->getSwapExtent();
 
-
-		// Test
-		//glm::vec3 verts = Application::get().getTestMesh()->getVertexBuffer()->As<VulkanVertexBuffer>()->getVertices()[1].col;
-		//std::cout << verts.x << " " << verts.y << " " << verts.z << "\n";
-
-		
-		/*
-		// TODO: Remove
-		glm::vec3* cameraPos = Application::get().getCamera().getCameraPosition();
-		//std::cout << "Camera pos x " << cameraPos->x << " Y: " << cameraPos->y << " Z: " << cameraPos->z << "\n";
-		clearValues[0].color = { cameraPos->x/100, cameraPos->y/100, cameraPos->z/100, 1.0f }; // Color attachment clear value
-		*/
-
 		clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f }; // Color attachment clear value
 		clearValues[1].depthStencil = { 1.0f, 0 };
 		renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
@@ -182,6 +169,30 @@ namespace Broccoli {
 			0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).data(), 0, nullptr);
 
 		vkCmdDrawIndexed(swapChain->getCurrentCommandBuffer(), mesh->getIndexCount(), 1, 0, 0, 0);
+	}
+
+	void VulkanRenderer::renderModel(Ref<Pipeline> pipeline, Ref<Model> model)
+	{
+		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
+
+		// Maybe refactor this so it uses the renderMesh command inside loop
+		for (size_t i = 0; i < model->getMeshCount(); i++)
+		{
+			//MeshInfo modelTransform = model->getTransform(); // TODO: use this when using push constants
+			Ref<Mesh> mesh = model->getMesh(i)->As<Mesh>();			
+			
+			VkBuffer vertexBuffer[] = { mesh->getVertexBuffer()->As<VulkanVertexBuffer>()->getVertexBuffer() };
+			VkDeviceSize offsets[] = { 0 };
+
+			vkCmdBindVertexBuffers(swapChain->getCurrentCommandBuffer(), 0, 1, vertexBuffer, offsets); // Command to bind vertex buffer before drawing with them
+			vkCmdBindIndexBuffer(swapChain->getCurrentCommandBuffer(), mesh->getIndexBuffer()->As<VulkanIndexBuffer>()->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32); // Bind mesh index buffer with 0 offset and using uint32 type
+
+			vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),
+				0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).data(), 0, nullptr);
+
+			vkCmdDrawIndexed(swapChain->getCurrentCommandBuffer(), mesh->getIndexCount(), 1, 0, 0, 0);
+			
+		}
 	}
 
 	void VulkanRenderer::shutdown()
