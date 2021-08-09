@@ -1,7 +1,7 @@
 #include "Mesh.h"
 
 namespace Broccoli {
-	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4& transform)
+	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform)
 	{
 		indexCount = indices->size();
 		vertexCount = vertices->size();

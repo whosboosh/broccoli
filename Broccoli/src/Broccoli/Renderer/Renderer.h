@@ -8,6 +8,7 @@
 
 #include "Broccoli/Renderer/Pipeline.h"
 #include "Broccoli/Renderer/Mesh.h"
+#include "Broccoli/Renderer/Model.h"
 
 #include "Broccoli/Platform/Vulkan/VulkanPipeline.h"
 

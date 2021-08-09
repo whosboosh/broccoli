@@ -41,7 +41,10 @@ namespace Broccoli {
 
 	private:
 		Ref<Mesh> mesh;
-		ViewProjection *viewProjection;
+		Ref<Model> model;
+
+
+		ViewProjection viewProjection;
 		
 		Camera* camera;
 		Window* window;

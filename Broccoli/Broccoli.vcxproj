@@ -41,6 +41,7 @@
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanVertexBuffer.h" />
     <ClInclude Include="src\Broccoli\Renderer\IndexBuffer.h" />
     <ClInclude Include="src\Broccoli\Renderer\Mesh.h" />
+    <ClInclude Include="src\Broccoli\Renderer\Model.h" />
     <ClInclude Include="src\Broccoli\Renderer\Pipeline.h" />
     <ClInclude Include="src\Broccoli\Renderer\Renderer.h" />
     <ClInclude Include="src\Broccoli\Renderer\RendererAPI.h" />
@@ -69,6 +70,7 @@
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanVertexBuffer.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\IndexBuffer.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Mesh.cpp" />
+    <ClCompile Include="src\Broccoli\Renderer\Model.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Pipeline.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\RendererContext.cpp" />

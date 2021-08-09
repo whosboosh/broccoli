@@ -108,18 +108,18 @@ namespace Broccoli {
 		glm::mat4 transformTest(1.0f);
 		transformTest = glm::translate(transformTest, glm::vec3(0, 0, -5));
 
+		// TODO: Don't use absolute path xd
+		model = Ref<Model>::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/models/chair_01.fbx", glm::mat4(1.0f));
 		mesh = Ref<Mesh>::create(&vertices, &indices, transformTest);
-
-		viewProjection = new ViewProjection;
 	}
 
 	void Application::updateUniforms()
 	{
-		viewProjection->projection = glm::perspective(glm::radians(70.0f), (float)Window::getSize().first/ (float)Window::getSize().second, 0.1f, 100.0f);
-		viewProjection->projection[1][1] *= -1; // Invert the y axis for vulkan (GLM was made for opengl which uses +y as up)
-		viewProjection->view = camera->calculateViewMatrix();
+		viewProjection.projection = glm::perspective(glm::radians(70.0f), (float)Window::getSize().first/ (float)Window::getSize().second, 0.1f, 100.0f);
+		viewProjection.projection[1][1] *= -1; // Invert the y axis for vulkan (GLM was made for opengl which uses +y as up)
+		viewProjection.view = camera->calculateViewMatrix();
 
-		renderer->updateUniform("geometry.vert", 0, 0, viewProjection, sizeof(*viewProjection));
+		renderer->updateUniform("geometry.vert", 0, 0, &viewProjection, sizeof(viewProjection));
 		renderer->updateUniform("geometry.vert", 0, 1, &mesh->getMeshInfo(), sizeof(mesh->getMeshInfo()));
 	}
 
@@ -141,8 +141,6 @@ namespace Broccoli {
 		deltaTime = now - lastFrameTime;
 		lastFrameTime = now;
 		currentFpsTime += deltaTime;
-
-		//std::cout << deltaTime << "\n";
 	}
 
 
