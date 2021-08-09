@@ -20,6 +20,7 @@ namespace Broccoli {
 		void create();
 
 		void cleanup();
+		void destroyPipeline();
 		void recreateSwapChain();
 
 		ShaderLibrary* getShaderLibrary() { return shaderLibrary; }

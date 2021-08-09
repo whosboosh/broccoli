@@ -146,7 +146,7 @@ namespace Broccoli {
 
 	void Application::Run()
 	{
-		while (isRunning)
+		while (!window->getShouldClose())
 		{
 			if (!isMinimised)
 			{
@@ -179,5 +179,10 @@ namespace Broccoli {
 				frameCounter++;
 			}
 		}
+
+
+		glfwDestroyWindow(window->getWindow());
+		glfwTerminate();
+		//renderer->shutdown();
 	}
 }

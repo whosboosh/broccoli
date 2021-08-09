@@ -229,8 +229,6 @@ namespace Broccoli {
 	void VulkanLogicalDevice::cleanup()
 	{
 		vkDestroyCommandPool(logicalDevice, graphicsCommandPool, nullptr);
-
-		vkDeviceWaitIdle(logicalDevice);
 		vkDestroyDevice(logicalDevice, nullptr);
 	}
 

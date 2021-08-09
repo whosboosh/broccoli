@@ -229,21 +229,25 @@ namespace Broccoli {
 
 	VulkanPipeline::~VulkanPipeline()
 	{
-		//cleanup();
 	}
-	void VulkanPipeline::cleanup()
+
+	void VulkanPipeline::destroyPipeline()
 	{
 		VkDevice logicalDevice = VulkanContext::get()->getLogicalDevice()->getLogicalDevice();
 		vkDeviceWaitIdle(logicalDevice);
 
 		vkDestroyPipeline(logicalDevice, pipeline, nullptr);
 		vkDestroyPipelineLayout(logicalDevice, pipelineLayout, nullptr);
+	}
 
+	void VulkanPipeline::cleanup()
+	{
+		destroyPipeline();
 		shaderLibrary->cleanup();
 	}
 	void VulkanPipeline::recreateSwapChain()
 	{
-		cleanup();
+		destroyPipeline();
 
 		// Recreate the pipeline
 		create();

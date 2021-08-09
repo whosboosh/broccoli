@@ -315,7 +315,7 @@ namespace Broccoli {
 		}
 	}
 
-	void VulkanSwapchain::cleanup()
+	void VulkanSwapchain::destroySwapchain()
 	{
 		vkDeviceWaitIdle(getLogicalDevice());
 
@@ -329,13 +329,6 @@ namespace Broccoli {
 		renderPass->cleanup();
 		delete renderPass;
 
-		// Cleanup synchronisation
-		for (size_t i = 0; i < MAX_FRAME_DRAWS; i++) {
-			vkDestroySemaphore(logicalDevice->getLogicalDevice(), renderFinished[i], nullptr);
-			vkDestroySemaphore(logicalDevice->getLogicalDevice(), imageAvailable[i], nullptr);
-			vkDestroyFence(logicalDevice->getLogicalDevice(), drawFences[i], nullptr);
-		}
-
 		vkDestroyImage(getLogicalDevice(), depthStencil.image, nullptr);
 		vkDestroyImageView(getLogicalDevice(), depthStencil.imageView, nullptr);
 		vkFreeMemory(getLogicalDevice(), depthStencil.imageMemory, nullptr);
@@ -348,9 +341,21 @@ namespace Broccoli {
 		vkDestroySwapchainKHR(getLogicalDevice(), swapChain, nullptr);
 	}
 
+	void VulkanSwapchain::cleanup()
+	{
+		destroySwapchain();
+
+		// Cleanup synchronisation
+		for (size_t i = 0; i < MAX_FRAME_DRAWS; i++) {
+			vkDestroySemaphore(logicalDevice->getLogicalDevice(), renderFinished[i], nullptr);
+			vkDestroySemaphore(logicalDevice->getLogicalDevice(), imageAvailable[i], nullptr);
+			vkDestroyFence(logicalDevice->getLogicalDevice(), drawFences[i], nullptr);
+		}
+	}
+
 	void VulkanSwapchain::recreateSwapChain()
 	{
-		cleanup();
+		destroySwapchain();
 
 		// Recreate
 		create(vsync);

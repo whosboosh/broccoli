@@ -45,10 +45,10 @@ namespace Broccoli {
 
 		GLFWwindow* getWindow() { return mainWindow; }
 
-		// New refcactor methods
 		void init();
 		void processEvents();
 		void swapBuffers() { glfwSwapBuffers(mainWindow); }
+		bool getShouldClose() { return glfwWindowShouldClose(mainWindow); }
 
 		// Get the current window size
 		static std::pair<uint32_t, uint32_t> getSize() { return { width, height }; }

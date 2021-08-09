@@ -90,6 +90,7 @@ namespace Broccoli {
 		void createDepthStencil();
 		void createSynchronisation();
 
+		void destroySwapchain();
 		void cleanup();
 		void recreateSwapChain();
 

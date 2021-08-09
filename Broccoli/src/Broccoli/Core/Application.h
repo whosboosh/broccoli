@@ -51,7 +51,7 @@ namespace Broccoli {
 		Renderer* renderer;
 		ApplicationInfo appInfo;
 		static Application* appInstance;
-		bool isRunning = true, isMinimised = false;
+		bool isMinimised = false;
 		uint64_t frameCounter = 0;
 		float lastFrameTime = 0, deltaTime = 0, currentFpsTime = 0;
 	};

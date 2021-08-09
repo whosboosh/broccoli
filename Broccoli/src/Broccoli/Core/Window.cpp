@@ -75,9 +75,7 @@ namespace Broccoli {
 
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		{
-			Application::get().getRenderer().shutdown();
-			glfwTerminate();
-			//glfwSetWindowShouldClose(window, GL_TRUE);
+			glfwSetWindowShouldClose(window, GL_TRUE);
 		}
 
 		if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS)

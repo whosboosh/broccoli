@@ -15,19 +15,18 @@ namespace Broccoli {
 	
 	VulkanContext::~VulkanContext()
 	{
-		logicalDevice->cleanup();
-
-		vkDestroyInstance(mainInstance, nullptr);
-		mainInstance = nullptr;
-
 		vkDestroySurfaceKHR(mainInstance, surface, nullptr);
+
 		// Cleanup validation
 		if (enableValidationLayers)
 		{
 			destroyDebugMessenger(nullptr);
 		}
-	}
 
+		logicalDevice->cleanup();
+		vkDestroyInstance(mainInstance, nullptr);
+	}
+	 
 	void VulkanContext::cleanup()
 	{
 		delete this;

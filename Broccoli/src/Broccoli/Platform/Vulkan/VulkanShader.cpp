@@ -27,13 +27,13 @@ namespace Broccoli {
 		vkDestroyDescriptorPool(logicalDevice, descriptorPool, nullptr);
 
 		// Loop over each "set" in this shader
-		for (size_t i = 0; i < shaderDescriptorSets.size(); i++)
+		for (int i = 0; i < shaderDescriptorSets.size(); i++)
 		{
 			// Cleanup the layout
 			vkDestroyDescriptorSetLayout(logicalDevice, shaderDescriptorSets[i].descriptorSetLayout, nullptr);
 
 			// Loop over each uniform buffer binding for that set
-			for (size_t j = 0; j < shaderDescriptorSets[i].uniformBuffers.size(); j++)
+			for (int j = 0; j < shaderDescriptorSets[i].uniformBuffers.size(); j++)
 			{
 				for (int k = 0; k < swapChainImageCount; k++)
 				{
@@ -43,7 +43,6 @@ namespace Broccoli {
 			}
 
 		}
-		std::cout << "Cleanup for vulkan shader\n";
 	}
 
 	VulkanShader::VulkanShader(const std::string& filePath, VkShaderStageFlagBits stageFlags) : stageFlags(stageFlags), filePath(filePath)
