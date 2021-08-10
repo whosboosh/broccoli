@@ -43,12 +43,22 @@ namespace Broccoli {
 		std::array<Ref<Shader>, 2> getShaderGroup(std::string& name);
 
 		// Vulkan specific
-		std::vector<VkDescriptorSet> getShaderDescriptorSets(int imageIndex);
+		void setDescriptorSetsfromShaders();
+		std::vector<VkDescriptorSet> getShaderDescriptorSets(int imageIndex) { return shaderDescriptorSets[imageIndex]; }
+		
+		void setPushConstantRangesFromShaders();
+		const std::vector<VkPushConstantRange>& getPushConstantRanges() { return pushConstantRanges; }
 		
 		void loadShader(const std::string& path, VkShaderStageFlagBits stageFlags);
 
 	private:
 		std::unordered_map<std::string, Ref<Shader>> currentShaders;
+		
+		// Store push constant ranges and descriptor sets in shader library as expensive to recompute in loop every frame
+		std::vector<VkPushConstantRange> pushConstantRanges;
+		//std::vector<VkDescriptorSet> shaderDescriptorSets;
+
+		std::unordered_map<int, std::vector<VkDescriptorSet>> shaderDescriptorSets;
 	};
 
 }

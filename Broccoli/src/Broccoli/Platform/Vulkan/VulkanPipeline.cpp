@@ -172,8 +172,8 @@ namespace Broccoli {
 		pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutCreateInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
 		pipelineLayoutCreateInfo.pSetLayouts = descriptorSetLayouts.data();
-		pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
-		pipelineLayoutCreateInfo.pPushConstantRanges = nullptr;
+		pipelineLayoutCreateInfo.pushConstantRangeCount = static_cast<uint32_t>(shaderLibrary->getPushConstantRanges().size());
+		pipelineLayoutCreateInfo.pPushConstantRanges = shaderLibrary->getPushConstantRanges().data();
 
 
 		// Create Pipeline Layout

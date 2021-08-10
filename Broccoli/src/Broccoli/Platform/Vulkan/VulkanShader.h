@@ -47,7 +47,8 @@ namespace Broccoli {
 		virtual const VkPipelineShaderStageCreateInfo getShaderStageInfo() const override { return shaderStageCreateInfo; }
 
 		const std::vector<ShaderDescriptorSet>& getShaderDescriptorSets() const { return shaderDescriptorSets; }
-
+		VkPushConstantRange getPushConstantRange() { return pushConstantRange; }
+			
 		//std::vector<VkDescriptorSet> getAllDescriptorSets() { return descriptorSets; }
 
 		//VkDescriptorSet GetDescriptorSet() { return m_DescriptorSet; }
@@ -69,6 +70,7 @@ namespace Broccoli {
 		VkShaderStageFlagBits stageFlags;
 		VkPipelineShaderStageCreateInfo shaderStageCreateInfo;
 
+		VkPushConstantRange pushConstantRange;
 		std::vector<ShaderDescriptorSet> shaderDescriptorSets;
 
 		std::vector<VkDescriptorPoolSize> poolSizes;

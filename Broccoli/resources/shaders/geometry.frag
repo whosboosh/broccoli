@@ -11,7 +11,7 @@ layout(location = 4) in vec4 inShadowCoord;
 
 layout(location = 0) out vec4 outColour; 	// Final output colour (must also have location
 
-
+/*
 // Uniform buffer for light
 layout(set = 0, binding = 2) uniform DirectionalLight {
 	float directionX;
@@ -27,12 +27,15 @@ layout(set = 0, binding = 2) uniform DirectionalLight {
 layout(set = 0, binding = 3) uniform CameraPosition {
 	vec3 cameraPos;	
 } cameraPosition;
+*/
 
+/*
 layout(push_constant) uniform PushModel {
 	mat4 model;
 	mat4 inverseModel;
 	bool hasTexture;
 } pushModel;
+*/
 
 void main() 
 {

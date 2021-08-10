@@ -121,14 +121,15 @@ namespace Broccoli {
 
 		renderer->updateUniform("geometry.vert", 0, 0, &viewProjection, sizeof(viewProjection));
 
+		/*
 		for (Ref<Mesh> mesh: meshList)
 		{
 			renderer->updateUniform("geometry.vert", 0, 1, &mesh->getMeshInfo(), sizeof(mesh->getMeshInfo()));
 		}
 		for (Ref<Model> model : modelList)
 		{
-			renderer->updateUniform("geometry.vert", 0, 1, &model->getTransform(), sizeof(model->getTransform()));
-		}
+			/renderer->updateUniform("geometry.vert", 0, 1, &model->getTransform(), sizeof(model->getTransform()));
+		}*/
 	}
 
 	void Application::processEvents()

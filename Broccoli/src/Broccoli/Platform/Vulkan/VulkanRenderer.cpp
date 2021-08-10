@@ -156,6 +156,8 @@ namespace Broccoli {
 	{
 		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
 
+		MeshInfo modelTransform = mesh->getMeshInfo();
+
 		// Potentially move binding pipeline out to its own function if multiple meshes all use the same pipeline, dont need to keep rebinding it
 		vkCmdBindPipeline(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipeline());
 
@@ -168,6 +170,11 @@ namespace Broccoli {
 		vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),
 			0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).data(), 0, nullptr);
 
+		for (const VkPushConstantRange& pushConstantRange : vulkanPipeline->getShaderLibrary()->getPushConstantRanges())
+		{
+			vkCmdPushConstants(swapChain->getCurrentCommandBuffer(), vulkanPipeline->getVulkanPipelineLayout(), pushConstantRange.stageFlags, pushConstantRange.offset, pushConstantRange.size, &modelTransform);
+		}
+
 		vkCmdDrawIndexed(swapChain->getCurrentCommandBuffer(), mesh->getIndexCount(), 1, 0, 0, 0);
 	}
 
@@ -178,7 +185,7 @@ namespace Broccoli {
 		// Maybe refactor this so it uses the renderMesh command inside loop
 		for (size_t i = 0; i < model->getMeshCount(); i++)
 		{
-			//MeshInfo modelTransform = model->getTransform(); // TODO: use this when using push constants
+			MeshInfo modelTransform = model->getTransform();
 			Ref<Mesh> mesh = model->getMesh(i)->As<Mesh>();			
 			
 			VkBuffer vertexBuffer[] = { mesh->getVertexBuffer()->As<VulkanVertexBuffer>()->getVertexBuffer() };
@@ -189,6 +196,11 @@ namespace Broccoli {
 
 			vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),
 				0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).data(), 0, nullptr);
+
+			for (const VkPushConstantRange& pushConstantRange : vulkanPipeline->getShaderLibrary()->getPushConstantRanges())
+			{
+				vkCmdPushConstants(swapChain->getCurrentCommandBuffer(), vulkanPipeline->getVulkanPipelineLayout(), pushConstantRange.stageFlags, pushConstantRange.offset, pushConstantRange.size, &modelTransform);
+			}
 
 			vkCmdDrawIndexed(swapChain->getCurrentCommandBuffer(), mesh->getIndexCount(), 1, 0, 0, 0);
 			

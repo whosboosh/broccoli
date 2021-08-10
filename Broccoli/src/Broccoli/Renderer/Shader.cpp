@@ -57,20 +57,33 @@ namespace Broccoli {
 		return shaderGroup;
 	}
 
-	std::vector<VkDescriptorSet> ShaderLibrary::getShaderDescriptorSets(int imageIndex)
+	void ShaderLibrary::setDescriptorSetsfromShaders()
 	{
 		VulkanSwapchain swapChain = VulkanContext::get()->getVulkanSwapChain();
 
-		std::vector<VkDescriptorSet> descriptorSets = {};
 		for (std::pair<std::string, Ref<Shader>> shader : currentShaders)
 		{
 			for (ShaderDescriptorSet shaderDescriptor : shader.second.As<VulkanShader>()->getShaderDescriptorSets())
 			{
-				descriptorSets.push_back(shaderDescriptor.descriptorSets[imageIndex]);
+				for (int i = 0; i < swapChain.getSwapChainImageCount(); i++)
+				{
+					shaderDescriptorSets[i].push_back(shaderDescriptor.descriptorSets[i]);
+				}
 			}
 		}
+	}
 
-		return descriptorSets;
+	void ShaderLibrary::setPushConstantRangesFromShaders()
+	{
+		for (std::pair<std::string, Ref<Shader>> shader : currentShaders)
+		{
+			VkPushConstantRange pushConstantRange = shader.second.As<VulkanShader>()->getPushConstantRange();
+			// If size of the range is 0 then the push constant doesn't exist
+			if (pushConstantRange.size != 0)
+			{
+				pushConstantRanges.push_back(pushConstantRange);
+			}
+		}
 	}
 
 	void ShaderLibrary::loadShader(const std::string& filePath, VkShaderStageFlagBits stageFlags)
