@@ -75,7 +75,7 @@ namespace Broccoli {
 		}
 
 
-		Ref<Mesh> newMesh = Ref<Mesh>::create(&vertices, &indices, glm::mat4(1.0f));
+		Ref<Mesh> newMesh = Ref<Mesh>::create(&vertices, &indices, modelTransform.transform);
 		meshList.push_back(newMesh);
 	}
 

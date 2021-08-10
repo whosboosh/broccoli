@@ -182,28 +182,10 @@ namespace Broccoli {
 	{
 		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
 
-		// Maybe refactor this so it uses the renderMesh command inside loop
 		for (size_t i = 0; i < model->getMeshCount(); i++)
 		{
-			MeshInfo modelTransform = model->getTransform();
-			Ref<Mesh> mesh = model->getMesh(i)->As<Mesh>();			
-			
-			VkBuffer vertexBuffer[] = { mesh->getVertexBuffer()->As<VulkanVertexBuffer>()->getVertexBuffer() };
-			VkDeviceSize offsets[] = { 0 };
-
-			vkCmdBindVertexBuffers(swapChain->getCurrentCommandBuffer(), 0, 1, vertexBuffer, offsets); // Command to bind vertex buffer before drawing with them
-			vkCmdBindIndexBuffer(swapChain->getCurrentCommandBuffer(), mesh->getIndexBuffer()->As<VulkanIndexBuffer>()->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32); // Bind mesh index buffer with 0 offset and using uint32 type
-
-			vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),
-				0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).data(), 0, nullptr);
-
-			for (const VkPushConstantRange& pushConstantRange : vulkanPipeline->getShaderLibrary()->getPushConstantRanges())
-			{
-				vkCmdPushConstants(swapChain->getCurrentCommandBuffer(), vulkanPipeline->getVulkanPipelineLayout(), pushConstantRange.stageFlags, pushConstantRange.offset, pushConstantRange.size, &modelTransform);
-			}
-
-			vkCmdDrawIndexed(swapChain->getCurrentCommandBuffer(), mesh->getIndexCount(), 1, 0, 0, 0);
-			
+			Ref<Mesh> mesh = model->getMesh(i)->As<Mesh>();
+			renderMesh(pipeline, mesh);
 		}
 	}
 
