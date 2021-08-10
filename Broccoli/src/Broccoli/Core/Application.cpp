@@ -109,7 +109,7 @@ namespace Broccoli {
 		transformTest = glm::translate(transformTest, glm::vec3(0, 0, -5));
 
 		// TODO: Don't use absolute path xd
-		modelList.push_back(Ref<Model>::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/models/chair_01.fbx", glm::scale(glm::mat4(1.0f), glm::vec3(0.4, 0.4, 0.4))));
+		modelList.push_back(Ref<Model>::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/models/sponza.obj", glm::scale(glm::mat4(1.0f), glm::vec3(0.4, 0.4, 0.4))));
 		meshList.push_back(Ref<Mesh>::create(&vertices, &indices, transformTest));
 	}
 
