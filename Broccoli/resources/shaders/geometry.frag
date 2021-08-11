@@ -11,7 +11,7 @@ layout(set = 1, binding = 0) uniform sampler2D textureSampler;
 
 layout(location = 0) out vec4 outColour; 	// Final output colour (must also have location
 
-/*
+
 // Uniform buffer for light
 layout(set = 0, binding = 2) uniform DirectionalLight {
 	float directionX;
@@ -27,7 +27,6 @@ layout(set = 0, binding = 2) uniform DirectionalLight {
 layout(set = 0, binding = 3) uniform CameraPosition {
 	vec3 cameraPos;	
 } cameraPosition;
-*/
 
 /*
 layout(push_constant) uniform PushModel {

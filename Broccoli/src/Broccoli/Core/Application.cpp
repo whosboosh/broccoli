@@ -34,7 +34,7 @@ namespace Broccoli {
 		appInfo.fullscreen = true;
 		appInfo.vsync = false;
 		appInfo.nearPlane = 0.01f;
-		appInfo.farPlane = 300.0f;
+		appInfo.farPlane = 400.0f;
 
 		WindowSpecification windowSpec;
 		windowSpec.title = appInfo.Name;
@@ -110,9 +110,15 @@ namespace Broccoli {
 		glm::mat4 transformTest(1.0f);
 		transformTest = glm::translate(transformTest, glm::vec3(0, 0, -5));
 
+		glm::mat4 oldTransform = glm::scale(glm::mat4(1.0f), glm::vec3(0.4, 0.4, 0.4));
+
+		glm::mat4 mapTransform = glm::mat4(1.0f);
+		mapTransform = glm::rotate(mapTransform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		mapTransform = glm::scale(mapTransform, glm::vec3(0.1f, 0.1f, 0.1f));
+
 		// TODO: Don't use absolute path xd
-		modelList.push_back(Ref<Model>::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/models/sponza.obj", glm::scale(glm::mat4(1.0f), glm::vec3(0.4, 0.4, 0.4))));
-		meshList.push_back(Ref<Mesh>::create(&vertices, &indices, transformTest));
+		modelList.push_back(Ref<Model>::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/models/sponza.obj", mapTransform));
+		meshList.push_back(Ref<Mesh>::create(&vertices, &indices, glm::mat4(1.0f)));
 	}
 
 	void Application::updateUniforms()

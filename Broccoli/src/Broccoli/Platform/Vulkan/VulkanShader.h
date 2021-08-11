@@ -25,7 +25,6 @@ namespace Broccoli {
 
 	struct ImageSampler
 	{
-		//std::string descriptorType;
 		uint32_t set = 0;
 		uint32_t binding = 0;
 		uint32_t arraySize = 0;
@@ -36,13 +35,15 @@ namespace Broccoli {
 	struct ShaderDescriptorSet
 	{
 		// Need 3 layout bindings for image sampler and 3 separate layout bindings for uniform buffers
-		std::unordered_map<uint32_t, std::vector<VkDescriptorSetLayoutBinding>> layoutBindings; // Keyed with descriptorType name (ImageSampler)
+		std::vector<VkDescriptorSetLayoutBinding> layoutBindings;
 		std::unordered_map<uint32_t, ImageSampler*> imageSamplers;
 		std::unordered_map<uint32_t, UniformBuffer*> uniformBuffers;
 		//std::unordered_map<uint32_t, ImageSampler> ImageSamplers; // TODO: Add texture sampler support later
 		std::vector<std::unordered_map<std::string, VkWriteDescriptorSet>> writeDescriptorSets;
 		std::vector<VkDescriptorSet> descriptorSets;
 		VkDescriptorSetLayout descriptorSetLayout;
+		std::vector<VkDescriptorPoolSize> poolSizes;
+		VkDescriptorPool descriptorPool;
 
 		operator bool() const { return !(uniformBuffers.empty()); }
 	};
@@ -86,9 +87,6 @@ namespace Broccoli {
 
 		VkPushConstantRange pushConstantRange;
 		std::vector<ShaderDescriptorSet> shaderDescriptorSets;
-
-		std::vector<VkDescriptorPoolSize> poolSizes;
-		VkDescriptorPool descriptorPool;
 
 		std::string name;
 	};
