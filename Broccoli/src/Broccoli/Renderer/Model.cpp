@@ -1,5 +1,7 @@
 #include "Model.h"
 
+#include "Broccoli/Renderer/Texture.h"
+
 namespace Broccoli {
 	Model::Model(const std::string& fileName, glm::mat4 transform)
 	{
@@ -23,7 +25,7 @@ namespace Broccoli {
 			}
 			else {
 				// Otherwise create texture from material name and set value to index of new texture inside sampler
-				//matToTex[i] = createTexture(textureList[i]) // TODO: Create texture importer
+				//matToTex[i] = Texture::create(textureList[i]); // TODO: Create texture importer
 			}
 		}
 

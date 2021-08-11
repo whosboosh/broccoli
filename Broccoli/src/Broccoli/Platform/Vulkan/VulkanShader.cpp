@@ -263,10 +263,10 @@ namespace Broccoli {
 					setWrites.push_back(writeSet);
 				}
 
-				/*
 				for (auto& [binding, imageSampler] : shaderDescriptorSet.imageSamplers)
 				{
-
+					// Dont update descriptor set yet because we need to create the image first...
+					// TODO: Make a function that calls vkUpdateDescriptorSets with pImageInfo after creation
 					VkWriteDescriptorSet& writeSet = shaderDescriptorSet.writeDescriptorSets[i][imageSampler->name];
 					writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 					writeSet.dstSet = shaderDescriptorSet.descriptorSets[i];
@@ -276,7 +276,6 @@ namespace Broccoli {
 					writeSet.descriptorCount = imageSampler->arraySize;
 					//writeSet.pImageInfo = 
 				}
-				*/
 
 				vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(setWrites.size()), setWrites.data(), 0, nullptr);
 			}

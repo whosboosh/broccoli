@@ -39,8 +39,6 @@ namespace Broccoli {
 		// Destroy and release staging buffer resources
 		vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
 		vkFreeMemory(logicalDevice, stagingBufferMemory, nullptr);
-
-		std::cout << "Index buffer created!\n";
 	}
 	void VulkanIndexBuffer::bind()
 	{

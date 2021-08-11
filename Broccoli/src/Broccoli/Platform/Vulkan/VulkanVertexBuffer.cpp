@@ -47,8 +47,6 @@ namespace Broccoli {
 		// Cleanup staging buffer
 		vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
 		vkFreeMemory(logicalDevice, stagingBufferMemory, nullptr);
-
-		std::cout << "Vertex buffer created!\n";
 	}
 	void VulkanVertexBuffer::setData(void* buffer, uint32_t size, uint32_t offset)
 	{

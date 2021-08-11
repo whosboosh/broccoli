@@ -20,6 +20,9 @@
 #include "Broccoli/Platform/Vulkan/VulkanRenderer.h"
 #include "Broccoli/Core/Window.h"
 
+#include "Broccoli/Renderer/Texture.h"
+#include "Broccoli/Platform/Vulkan/VulkanTexture.h"
+
 namespace Broccoli {
 
 	Application* Application::appInstance = nullptr;
@@ -119,6 +122,8 @@ namespace Broccoli {
 		// TODO: Don't use absolute path xd
 		modelList.push_back(Ref<Model>::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/models/sponza.obj", mapTransform));
 		meshList.push_back(Ref<Mesh>::create(&vertices, &indices, glm::mat4(1.0f)));
+
+		Ref<VulkanTexture> textureTest = Texture::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/textures/brickwall.jpg");
 	}
 
 	void Application::updateUniforms()
