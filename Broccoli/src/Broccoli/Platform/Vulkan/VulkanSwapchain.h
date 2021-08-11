@@ -18,6 +18,7 @@ namespace Broccoli {
 
 	// TODO: Move this to a global renderer config struct
 	const int MAX_FRAME_DRAWS = 2;
+	const int MAX_OBJECTS = 200;
 
 	struct SwapChainDetails {
 		VkSurfaceCapabilitiesKHR surfaceCapabilities; // Surface properties (e.g. image size/extent)

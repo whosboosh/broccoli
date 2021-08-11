@@ -13,7 +13,6 @@ namespace Broccoli {
 	class Asset : public RefCounted
 	{
 	public:
-		
 		virtual ~Asset() {}
 
 		virtual AssetType getAssetType() const { return assetType; }

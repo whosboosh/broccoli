@@ -78,6 +78,7 @@ namespace Broccoli {
 		auto resources = compiler.get_shader_resources();
 
 		// Determine if there is a push constant in the shader
+		// Only ever 1 push constant per shader so no reason to loop
 		if (resources.push_constant_buffers.size() > 0)
 		{
 			std::cout << "Push constant detected: " << resources.push_constant_buffers[0].name << "\n";
@@ -88,8 +89,6 @@ namespace Broccoli {
 			pushConstantRange.offset = 0;
 			pushConstantRange.stageFlags = stageFlags;
 		}
-
-		std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {};
 
 		// Generate uniform buffers based on shader content
 		std::cout << "Uniform buffers inside shader: " << name << "\n";
@@ -138,9 +137,12 @@ namespace Broccoli {
 			layoutBinding.binding = binding;
 			layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 			layoutBinding.descriptorCount = 1;
-			layoutBinding.stageFlags = stageFlags; // TODO: Auto compute if vertex/frag/compute shader, depending on what type change the stage flags here
+			layoutBinding.stageFlags = stageFlags;
 			layoutBinding.pImmutableSamplers = nullptr;
-			layoutBindings.push_back(layoutBinding);
+
+
+			std::cout << "uniform buffer base type id: " << resource.base_type_id << "\n";
+			shaderDescriptorSet.layoutBindings[resource.base_type_id].push_back(layoutBinding);
 
 			// Create pool size for this uniform buffer (Used when we create the descriptor pool)
 			VkDescriptorPoolSize poolSize = {};
@@ -153,6 +155,50 @@ namespace Broccoli {
 			std::cout << "Name: " << name << " DescriptorSet: " << descriptorSet << " Binding: " << binding << "\n";
 		}
 
+
+		// Generate texture samplers if they exist
+		for (const auto& resource : resources.sampled_images)
+		{
+			const auto& name = resource.name;
+			auto& bufferType = compiler.get_type(resource.base_type_id);
+			auto& type = compiler.get_type(resource.type_id);
+			int memberCount = (uint32_t)bufferType.member_types.size();
+			uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding); // Binding value
+			uint32_t descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet); // Set value
+			uint32_t arraySize = type.array[0];
+			if (arraySize == 0)
+				arraySize = 1;
+
+			if (descriptorSet >= shaderDescriptorSets.size())
+			{
+				shaderDescriptorSets.resize(descriptorSet + 1);
+			}
+
+			ShaderDescriptorSet& shaderDescriptorSet = shaderDescriptorSets[descriptorSet];
+			
+			ImageSampler* imageSampler = new ImageSampler();
+			imageSampler->binding = binding;
+			imageSampler->set = descriptorSet;
+			imageSampler->name = name;
+			imageSampler->arraySize = arraySize;
+
+			VkDescriptorSetLayoutBinding& layoutBinding = imageSampler->layoutBinding;
+			layoutBinding.binding = binding;
+			layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			layoutBinding.descriptorCount = arraySize;
+			layoutBinding.stageFlags = stageFlags;
+			layoutBinding.pImmutableSamplers = nullptr;
+			shaderDescriptorSet.layoutBindings[resource.base_type_id].push_back(layoutBinding);
+
+			VkDescriptorPoolSize poolSize = {};
+			poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			poolSize.descriptorCount = 1;
+			poolSizes.push_back(poolSize);
+			
+			shaderDescriptorSet.imageSamplers[binding] = imageSampler;
+		}
+
+		// Only create descriptor pool if there is at least one descriptor set
 		if (shaderDescriptorSets.size() > 0)
 		{
 			// Create Descriptor Pool
@@ -212,12 +258,26 @@ namespace Broccoli {
 					writeSet.dstSet = shaderDescriptorSet.descriptorSets[i]; // Descriptor set to update
 					writeSet.dstBinding = binding; // Binding to update (matches with binding on layout/shader)
 					writeSet.dstArrayElement = 0; // Index in array to update
-					writeSet.descriptorType = uniformBuffer->layoutBinding.descriptorType; // TODO hacky fix, might need to use a different data structure to store layout bindings
+					writeSet.descriptorType = uniformBuffer->layoutBinding.descriptorType;
 					writeSet.descriptorCount = 1;
 					writeSet.pBufferInfo = &uniformBuffer->descriptor; // Information about buffer data to bind
 
 					setWrites.push_back(writeSet);
 				}
+
+				for (auto& [binding, imageSampler] : shaderDescriptorSet.imageSamplers)
+				{
+					/*
+					VkWriteDescriptorSet& writeSet = shaderDescriptorSet.writeDescriptorSets[i][imageSampler->name];
+					writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+					writeSet.dstSet = shaderDescriptorSet.descriptorSets[i];
+					writeSet.dstBinding = binding;
+					writeSet.dstArrayElement = 0;
+					writeSet.descriptorType = imageSampler->layoutBinding.descriptorType;
+					writeSet.descriptorCount = imageSampler->arraySize;
+					//writeSet.pImageInfo = */
+				}
+
 				vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(setWrites.size()), setWrites.data(), 0, nullptr);
 			}
 		}

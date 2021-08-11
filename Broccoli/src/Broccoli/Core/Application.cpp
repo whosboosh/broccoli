@@ -33,6 +33,8 @@ namespace Broccoli {
 		appInfo.windowHeight = 720;
 		appInfo.fullscreen = true;
 		appInfo.vsync = false;
+		appInfo.nearPlane = 0.01f;
+		appInfo.farPlane = 300.0f;
 
 		WindowSpecification windowSpec;
 		windowSpec.title = appInfo.Name;
@@ -115,7 +117,7 @@ namespace Broccoli {
 
 	void Application::updateUniforms()
 	{
-		viewProjection.projection = glm::perspective(glm::radians(70.0f), (float)Window::getSize().first/ (float)Window::getSize().second, 0.1f, 100.0f);
+		viewProjection.projection = glm::perspective(glm::radians(70.0f), (float)Window::getSize().first/ (float)Window::getSize().second, appInfo.nearPlane, appInfo.farPlane);
 		viewProjection.projection[1][1] *= -1; // Invert the y axis for vulkan (GLM was made for opengl which uses +y as up)
 		viewProjection.view = camera->calculateViewMatrix();
 

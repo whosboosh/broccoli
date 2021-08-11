@@ -141,6 +141,12 @@
     <ClInclude Include="src\Broccoli\Renderer\Model.h">
       <Filter>Source Files\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Broccoli\Renderer\Texture.h">
+      <Filter>Source Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanTexture.h">
+      <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanContext.cpp">
@@ -238,6 +244,12 @@
     </ClCompile>
     <ClCompile Include="src\Broccoli\Renderer\Model.cpp">
       <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Renderer\Texture.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanTexture.cpp">
+      <Filter>Source Files\Platform\Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

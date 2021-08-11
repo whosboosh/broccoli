@@ -12,6 +12,8 @@ namespace Broccoli {
 		uint32_t windowWidth = 1600, windowHeight = 1600;
 		bool fullscreen = false;
 		bool vsync = false;
+		float farPlane = 200.0f;
+		float nearPlane = 0.1f;
 	};
 
 	class Application

@@ -6,7 +6,7 @@ layout(location = 2) in vec3 Normal;
 layout(location = 3) in vec3 FragPos;
 layout(location = 4) in vec4 inShadowCoord;
  
-//layout(set = 1, binding = 0) uniform sampler2D textureSampler;
+layout(set = 1, binding = 0) uniform sampler2D textureSampler;
 //layout(set = 2, binding = 0) uniform sampler2D shadowMap;
 
 layout(location = 0) out vec4 outColour; 	// Final output colour (must also have location

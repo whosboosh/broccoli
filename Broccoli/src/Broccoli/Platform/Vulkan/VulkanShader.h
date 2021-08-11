@@ -11,6 +11,7 @@ namespace Broccoli {
 
 	struct UniformBuffer
 	{
+		//std::string descriptorType;
 		VkDescriptorBufferInfo descriptor;
 		VkDeviceSize descriptorSize = 0;
 		uint32_t size = 0;
@@ -22,8 +23,21 @@ namespace Broccoli {
 		VkDescriptorSetLayoutBinding layoutBinding;
 	};
 
+	struct ImageSampler
+	{
+		//std::string descriptorType;
+		uint32_t set = 0;
+		uint32_t binding = 0;
+		uint32_t arraySize = 0;
+		std::string name;
+		VkDescriptorSetLayoutBinding layoutBinding;
+	};
+
 	struct ShaderDescriptorSet
 	{
+		// Need 3 layout bindings for image sampler and 3 separate layout bindings for uniform buffers
+		std::unordered_map<uint32_t, std::vector<VkDescriptorSetLayoutBinding>> layoutBindings; // Keyed with descriptorType name (ImageSampler)
+		std::unordered_map<uint32_t, ImageSampler*> imageSamplers;
 		std::unordered_map<uint32_t, UniformBuffer*> uniformBuffers;
 		//std::unordered_map<uint32_t, ImageSampler> ImageSamplers; // TODO: Add texture sampler support later
 		std::vector<std::unordered_map<std::string, VkWriteDescriptorSet>> writeDescriptorSets;
