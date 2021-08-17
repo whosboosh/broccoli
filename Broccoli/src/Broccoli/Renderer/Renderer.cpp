@@ -36,7 +36,7 @@ namespace Broccoli {
 		spec.depthTest = true;
 		spec.lineWidth = 1.0f;
 		spec.topology = PrimitiveTopology::Triangles;
-		spec.wireFrame = false;
+		spec.wireFrame = true;
 
 		// Initialise geometry shader library
 		ShaderLibrary* geometryShaderLibrary = new ShaderLibrary();

@@ -13,9 +13,9 @@ namespace Broccoli {
 
 		textureImage.imageView = createImageView(logicalDevice->getLogicalDevice(), textureImage.image, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 
-		// Shader create descriptor group
+		// Shader create descriptor 
 		Ref<VulkanPipeline> pipeline = Application::get().getRenderer().getGraphicsPipeline().As<VulkanPipeline>();
-		descriptorLoc = pipeline->getShaderLibrary()->getShader("geometry.frag").As<VulkanShader>()->updateTextureWriteBinding(1, 0, textureImage.imageView, uniformName);
+		setTextureId(pipeline->getShaderLibrary()->getShader("geometry.frag").As<VulkanShader>()->updateTextureWriteBinding(1, 0, textureImage.imageView, uniformName));
 	}
 
 	void VulkanTexture::createTextureImage()
@@ -58,14 +58,5 @@ namespace Broccoli {
 
 		vkDestroyBuffer(logicalDevice->getLogicalDevice(), imageStagingBuffer, nullptr);
 		vkFreeMemory(logicalDevice->getLogicalDevice(), imageStagingBufferMemory, nullptr);
-	}
-
-	uint32_t VulkanTexture::getHeight()
-	{
-		return height;
-	}
-	uint32_t VulkanTexture::getWidth()
-	{
-		return width;
 	}
 }

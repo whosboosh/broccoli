@@ -68,6 +68,9 @@ namespace Broccoli {
 				for (int i = 0; i < swapChain.getSwapChainImageCount(); i++)
 				{
 					shaderDescriptorSets[i].push_back(shaderDescriptor.uniformDescriptors.descriptorSets[i]);
+
+					// TODO: Should probably separate out texture descriptors and uniforms
+					//shaderDescriptorSets[i].push_back(shaderDescriptor.samplerDescriptors.descriptorSets[0]);
 				}
 			}
 		}

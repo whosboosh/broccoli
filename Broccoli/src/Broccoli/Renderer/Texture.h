@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Broccoli/Asset/Asset.h"
-#include "Broccoli/Renderer/RendererAPI.h"
 
 #ifndef STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -17,7 +16,16 @@ namespace Broccoli {
 
 		stbi_uc* loadTextureFile(const std::string fileName, int* width, int* height, uint64_t* imageSize);
 
-		virtual uint32_t getHeight() = 0;
-		virtual uint32_t getWidth() = 0;
+		uint32_t getHeight() { return height; }
+		uint32_t getWidth() { return width; }
+
+		int getTextureId() { return textureId; }
+		void setTextureId(int texId) { textureId = texId; }
+
+	private:
+		int textureId;
+
+	protected:
+		int width, height;
 	};
 }

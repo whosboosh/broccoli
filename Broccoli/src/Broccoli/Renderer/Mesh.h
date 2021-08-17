@@ -4,6 +4,7 @@
 
 #include "Broccoli/Renderer/VertexBuffer.h"
 #include "Broccoli/Renderer/IndexBuffer.h"
+#include "Broccoli/Renderer/Texture.h"
 
 #include <vector>
 
@@ -23,6 +24,7 @@ namespace Broccoli {
 
 	public:
 		Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform);
+		Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform, Texture texture);
 		~Mesh();
 
 		Ref<VertexBuffer>* getVertexBuffer() { return &vertexBuffer; }
@@ -45,6 +47,8 @@ namespace Broccoli {
 
 		Ref<VertexBuffer> vertexBuffer;
 		Ref<IndexBuffer> indexBuffer;
+
+		Texture texture;
 	};
 
 }

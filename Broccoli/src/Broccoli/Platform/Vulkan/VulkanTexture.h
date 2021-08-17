@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Broccoli/Renderer/Texture.h"
+#include "Broccoli/Renderer/RendererAPI.h"
 
 namespace Broccoli {
 
@@ -12,13 +13,7 @@ namespace Broccoli {
 
 		void createTextureImage();
 
-		virtual uint32_t getHeight() override;
-		virtual uint32_t getWidth() override;
-
-		int getDescriptorLoc() { return descriptorLoc; }
-
 	private:
-		int width, height;
 		VkDeviceSize imageSize;
 
 		std::string fileName;
@@ -30,8 +25,6 @@ namespace Broccoli {
 			VkDeviceMemory imageMemory;
 			VkImageView imageView;
 		} textureImage;
-
-		int descriptorLoc;
 	};
 
 }

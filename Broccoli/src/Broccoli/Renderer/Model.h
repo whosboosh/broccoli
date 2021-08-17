@@ -3,6 +3,8 @@
 #include "Broccoli/Asset/Asset.h"
 #include "Broccoli/Renderer/Mesh.h"
 
+#include "Broccoli/Renderer/Texture.h"
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -17,8 +19,10 @@ namespace Broccoli {
 
 	public:
 		Model(const std::string& fileName, glm::mat4 transform);
+		Model(const std::string& fileName, glm::mat4 transform, Texture texture);
 		~Model();
 
+		void loadModel();
 		void loadMaterials();
 		void loadNode(const aiNode* node);
 		void loadMesh(const aiMesh* mesh);
@@ -39,9 +43,11 @@ namespace Broccoli {
 		MeshInfo& getTransform() { return modelTransform; }
 
 	private:
+		const std::string fileName;
 		const aiScene* scene;
 
 		MeshInfo modelTransform;
+		Texture texture;
 
 		std::vector<Ref<Mesh>> meshList;
 		std::vector<std::string> textureList;

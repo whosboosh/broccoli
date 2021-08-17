@@ -1,5 +1,7 @@
 #include "Texture.h"
 
+#include "Broccoli/Renderer/RendererAPI.h"
+
 #include "Broccoli/Platform/Vulkan/VulkanTexture.h"
 
 namespace Broccoli {

@@ -1,31 +1,47 @@
 #include "Model.h"
 
-#include "Broccoli/Renderer/Texture.h"
-
 namespace Broccoli {
-	Model::Model(const std::string& fileName, glm::mat4 transform)
+	Model::Model(const std::string& fileName, glm::mat4 transform) : fileName(fileName)
 	{
 		setTransform(transform);
+		loadModel();
+	}
 
+	Model::Model(const std::string& fileName, glm::mat4 transform, Texture texture) : fileName(fileName)
+	{
+		setTransform(transform);
+		this->texture = texture;
+
+		loadModel();
+	}
+
+	void Model::loadModel()
+	{
 		Assimp::Importer importer;
 		scene = importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
 		if (!scene) {
 			throw std::runtime_error("Failed to load model (" + fileName + ")");
 		}
 
-		// Generate an array of string names for each required material
+		// Loads textureList with an array of string names for each required material
 		loadMaterials();
 
 		// Mapping from material string values to descriptor ids
 		std::vector<int> matToTex(textureList.size());
 
 		for (size_t i = 0; i < textureList.size(); i++) {
-			if (textureList[i].empty()) {
+			// TODO: Use something else than getHeight for detection of no texture
+			if (textureList[i].empty() && texture.getHeight() != 0)
+			{
+				matToTex[i] = texture.getTextureId();
+			}
+			else if (textureList[i].empty()) {
 				matToTex[i] = 0; // If there are no mateirals in the model, use the default texture
 			}
 			else {
 				// Otherwise create texture from material name and set value to index of new texture inside sampler
-				//matToTex[i] = Texture::create(textureList[i]); // TODO: Create texture importer
+				//matToTex[i] = Texture::create(textureList[i]);
+				matToTex[i] = texture.getTextureId();
 			}
 		}
 
