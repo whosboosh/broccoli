@@ -86,8 +86,14 @@ namespace Broccoli {
 			//else throw std::runtime_error("Referenced Framebuffer is out of bounds!");
 		}
 
+		VkSampler getTextureSampler()
+		{
+			return textureSampler;
+		}
+
 		uint32_t& getCurrentImageIndex() { return imageIndex; }
 
+		void createTextureSampler();
 		void createDepthStencil();
 		void createSynchronisation();
 
@@ -113,6 +119,8 @@ namespace Broccoli {
 			VkDeviceMemory imageMemory;
 			VkImageView imageView;
 		} multiSampleStencil;
+
+		VkSampler textureSampler;
 
 		VkInstance instance;
 

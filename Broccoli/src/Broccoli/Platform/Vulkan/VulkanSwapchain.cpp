@@ -20,6 +20,8 @@ namespace Broccoli {
 		// Create synchronisation objects (semaphores & fences)
 		createSynchronisation();
 
+		createTextureSampler();
+
 		create(vsync);
 	}
 
@@ -276,6 +278,30 @@ namespace Broccoli {
 		vkResetFences(getLogicalDevice(), 1, &drawFences[currentFrame]); // Unsignal fence (close it so other frames can't enter)
 	}
 
+	void VulkanSwapchain::createTextureSampler()
+	{
+		VkSamplerCreateInfo samplerCreateInfo = {};
+		samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		samplerCreateInfo.magFilter = VK_FILTER_LINEAR; // How to render when image is magnified on screen
+		samplerCreateInfo.minFilter = VK_FILTER_LINEAR; // How to render when image is minified on screen
+		samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerCreateInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerCreateInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerCreateInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK; // Border beyond texture, only works for border clamp
+		samplerCreateInfo.unnormalizedCoordinates = VK_FALSE; // Whether coords should be normalised between 0 and 1
+		samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+		samplerCreateInfo.mipLodBias = 0.0f; // Level of detail bias for mip level
+		samplerCreateInfo.minLod = 0.0f;
+		samplerCreateInfo.maxLod = 100.0f;
+		samplerCreateInfo.anisotropyEnable = VK_TRUE;
+		samplerCreateInfo.maxAnisotropy = 16; // Sample level of anisotropy
+
+		VkResult result = vkCreateSampler(logicalDevice->getLogicalDevice(), &samplerCreateInfo, nullptr, &textureSampler);
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to create sampler");
+		}
+	}
+
 	void VulkanSwapchain::createDepthStencil()
 	{
 		// Create the depth buffer image
@@ -351,6 +377,7 @@ namespace Broccoli {
 			vkDestroySemaphore(logicalDevice->getLogicalDevice(), imageAvailable[i], nullptr);
 			vkDestroyFence(logicalDevice->getLogicalDevice(), drawFences[i], nullptr);
 		}
+		vkDestroySampler(logicalDevice->getLogicalDevice(), textureSampler, nullptr);
 	}
 
 	void VulkanSwapchain::recreateSwapChain()

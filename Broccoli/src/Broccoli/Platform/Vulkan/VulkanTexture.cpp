@@ -1,9 +1,24 @@
 #include "VulkanTexture.h"
 
 #include "Broccoli/Platform/Vulkan/VulkanContext.h"
+#include "Broccoli/Core/Application.h"
+#include "Broccoli/Platform/Vulkan/VulkanShader.h"
 
 namespace Broccoli {
-	VulkanTexture::VulkanTexture(const std::string& fileName)
+	VulkanTexture::VulkanTexture(const std::string& fileName) : fileName(fileName)
+	{
+		VulkanLogicalDevice* logicalDevice = VulkanContext::get()->getLogicalDevice();
+
+		createTextureImage();
+
+		textureImage.imageView = createImageView(logicalDevice->getLogicalDevice(), textureImage.image, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+
+		// Shader create descriptor group
+		Ref<VulkanPipeline> pipeline = Application::get().getRenderer().getGraphicsPipeline().As<VulkanPipeline>();
+		//pipeline->getShaderLibrary()->getShader("geometry.frag").As<VulkanShader>()->updateTextureWriteBinding(0, 0, textureImage.imageView, "textureSampler");
+	}
+
+	void VulkanTexture::createTextureImage()
 	{
 		VulkanLogicalDevice* logicalDevice = VulkanContext::get()->getLogicalDevice();
 
@@ -18,35 +33,33 @@ namespace Broccoli {
 
 		// Copy image data to staging buffer
 		void* data;
-		vkMapMemory(logicalDevice->getLogicalDevice(), imageStagingBufferMemory, 0, imageSize, 0, &data);
-		memcpy(data, imageData, static_cast<size_t>(imageSize));
+		vkMapMemory(logicalDevice->getLogicalDevice(), imageStagingBufferMemory, 0, imageSize, 0, &data);		memcpy(data, imageData, static_cast<size_t>(imageSize));
 		vkUnmapMemory(logicalDevice->getLogicalDevice(), imageStagingBufferMemory);
 
 		stbi_image_free(imageData);
 
 		// Create image to hold final texture
-		VkImage texImage;
-		VkDeviceMemory texImageMemory;
-		texImage = createImage(logicalDevice->getPhysicalDevice()->getVulkanPhysicalDevice(), logicalDevice->getLogicalDevice(), 
+		textureImage.image = createImage(logicalDevice->getPhysicalDevice()->getVulkanPhysicalDevice(), logicalDevice->getLogicalDevice(),
 			width, height, mipLevels, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &texImageMemory, VK_SAMPLE_COUNT_1_BIT);
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &textureImage.imageMemory, VK_SAMPLE_COUNT_1_BIT);
 
 		// Transition image to be DST for copy operation
-		transitionImageLayout(logicalDevice->getLogicalDevice(), logicalDevice->getGraphicsQueue(), logicalDevice->getGraphicsCommandPool(), texImage,
+		transitionImageLayout(logicalDevice->getLogicalDevice(), logicalDevice->getGraphicsQueue(), logicalDevice->getGraphicsCommandPool(), textureImage.image,
 			VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
 
 		// Copy data to image (Staging buffer to texImage)
-		copyImageBuffer(logicalDevice->getLogicalDevice(), logicalDevice->getGraphicsQueue(), logicalDevice->getGraphicsCommandPool(), imageStagingBuffer, texImage, width, height);
+		copyImageBuffer(logicalDevice->getLogicalDevice(), logicalDevice->getGraphicsQueue(), logicalDevice->getGraphicsCommandPool(), imageStagingBuffer, textureImage.image, width, height);
 
 		// Transition image to be shader readable for shader usage
 		//transitionImageLayout(mainDevice.logicalDevice, graphicsQueue, graphicsCommandPool, texImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, mipLevels);
 
-		generateMipmaps(logicalDevice->getLogicalDevice(), logicalDevice->getPhysicalDevice()->getVulkanPhysicalDevice(), logicalDevice->getGraphicsQueue(), logicalDevice->getGraphicsCommandPool(), 
-			texImage, VK_FORMAT_R8G8B8A8_SRGB, width, height, mipLevels);
+		generateMipmaps(logicalDevice->getLogicalDevice(), logicalDevice->getPhysicalDevice()->getVulkanPhysicalDevice(), logicalDevice->getGraphicsQueue(), logicalDevice->getGraphicsCommandPool(),
+			textureImage.image, VK_FORMAT_R8G8B8A8_SRGB, width, height, mipLevels);
 
-
-
+		vkDestroyBuffer(logicalDevice->getLogicalDevice(), imageStagingBuffer, nullptr);
+		vkFreeMemory(logicalDevice->getLogicalDevice(), imageStagingBufferMemory, nullptr);
 	}
+
 	uint32_t VulkanTexture::getHeight()
 	{
 		return height;

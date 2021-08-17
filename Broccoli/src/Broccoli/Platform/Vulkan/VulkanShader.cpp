@@ -264,33 +264,64 @@ namespace Broccoli {
 					setWrites.push_back(writeSet);
 				}
 
-				/*
-				for (auto& [binding, imageSampler] : shaderDescriptorSet.imageSamplers)
-				{
-					// Dont update descriptor set yet because we need to create the image first...
-					// TODO: Make a function that calls vkUpdateDescriptorSets with pImageInfo after creation
-					VkWriteDescriptorSet& writeSet = shaderDescriptorSet.uniformDescriptors.writeDescriptorSets[i][imageSampler->name];
-					writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-					writeSet.dstSet = shaderDescriptorSet.uniformDescriptors.[i];
-					writeSet.dstBinding = binding;
-					writeSet.dstArrayElement = 0;
-					writeSet.descriptorType = imageSampler->layoutBinding.descriptorType;
-					writeSet.descriptorCount = imageSampler->arraySize;
-					//writeSet.pImageInfo = 
-				}*/
-
 				vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(setWrites.size()), setWrites.data(), 0, nullptr);
 			}
 		}
 	}
 
+	void VulkanShader::updateTextureWriteBinding(int set, int binding, VkImageView textureImageView, const std::string& name)
+	{
+		VkDevice logicalDevice = VulkanContext::get()->getLogicalDevice()->getLogicalDevice();
+		VulkanSwapchain swapChain = VulkanContext::get()->getVulkanSwapChain();
+		auto& shaderDescriptorSet = shaderDescriptorSets[set];
+
+		// Create Descriptor Set Layout with given bindings
+		VkDescriptorSetLayoutCreateInfo createInfo = {};
+		createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		createInfo.bindingCount = static_cast<uint32_t>(shaderDescriptorSet.samplerDescriptors.layoutBindings.size()); // Number of binding infos
+		createInfo.pBindings = shaderDescriptorSet.samplerDescriptors.layoutBindings.data(); // Pointer to binding info
+
+		VkResult result = vkCreateDescriptorSetLayout(logicalDevice, &createInfo, nullptr, &shaderDescriptorSet.samplerDescriptors.descriptorSetLayout);
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to create a Descriptor Set Layout!");
+		}
+
+		// Workaroud, normal uniform descriptors use 3 sets (1 for each swap image) - only need 1 for sampler
+		shaderDescriptorSet.samplerDescriptors.descriptorSets.resize(1);
+		shaderDescriptorSet.samplerDescriptors.writeDescriptorSets.resize(1);
+
+		VkDescriptorSetAllocateInfo setAllocInfo = {};
+		setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		setAllocInfo.descriptorPool = shaderDescriptorSet.descriptorPool; // Pool to allocate descriptor set from
+		setAllocInfo.descriptorSetCount = 1; // Number of sets to allocate
+		setAllocInfo.pSetLayouts = &shaderDescriptorSet.samplerDescriptors.descriptorSetLayout; // Layouts to use to allocate sets (1:1 relationship)
+
+		// Allocate descriptor sets
+		result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, shaderDescriptorSet.uniformDescriptors.descriptorSets.data());
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to allocate Descriptor Sets");
+		}
+
+		// Texture image info
+		VkDescriptorImageInfo imageInfo = {};
+		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL; // Image layout when in use
+		imageInfo.imageView = textureImageView; // Image to bind to set
+		imageInfo.sampler = swapChain.getTextureSampler(); // Sampler to use for set
+
+		VkWriteDescriptorSet& writeSet = shaderDescriptorSet.samplerDescriptors.writeDescriptorSets[0][name];
+		writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		writeSet.dstSet = shaderDescriptorSet.samplerDescriptors.descriptorSets[0];
+		writeSet.dstBinding = binding;
+		writeSet.dstArrayElement = 0;
+		writeSet.descriptorType = shaderDescriptorSet.imageSamplers[binding]->layoutBinding.descriptorType;
+		writeSet.descriptorCount = 1;//shaderDescriptorSet.imageSamplers[binding]->arraySize;
+		writeSet.pImageInfo = &imageInfo;
+
+		vkUpdateDescriptorSets(logicalDevice, 1, &writeSet, 0, nullptr);
+	}
+
 	void VulkanShader::updateDescriptorSet(int set, int binding, uint32_t imageIndex, void* data, int size)
 	{
-
-		//ViewProjection* viewProj = static_cast<ViewProjection*>(data);
-		//std::cout << "size of data: " << size;
-		//std::cout << glm::to_string(viewProj->projection) << "\n";
-
 		void* buffer;
 		vkMapMemory(VulkanContext::get()->getLogicalDevice()->getLogicalDevice(), shaderDescriptorSets[set].uniformBuffers[binding]->uniformMemory[imageIndex], 0, sizeof(data), 0, &buffer);
 		memcpy(buffer, data, size);
