@@ -162,7 +162,7 @@ namespace Broccoli {
 
 			for (int i = 0; i < shaderDescriptors.size(); i++)
 			{
-				descriptorSetLayouts.push_back(shaderDescriptors[i].descriptorSetLayout);
+				descriptorSetLayouts.push_back(shaderDescriptors[i].uniformDescriptors.descriptorSetLayout); // TODO: ADD sampler support
 			}
 
 			shaderStages.push_back(shader.second.As<VulkanShader>()->getShaderStageInfo());

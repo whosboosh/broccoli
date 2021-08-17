@@ -32,14 +32,20 @@ namespace Broccoli {
 		VkDescriptorSetLayoutBinding layoutBinding;
 	};
 
-	struct ShaderDescriptorSet
+	struct DescriptorGroup
 	{
 		std::vector<VkDescriptorSetLayoutBinding> layoutBindings;
-		std::unordered_map<uint32_t, ImageSampler*> imageSamplers;
-		std::unordered_map<uint32_t, UniformBuffer*> uniformBuffers;
 		std::vector<std::unordered_map<std::string, VkWriteDescriptorSet>> writeDescriptorSets;
 		std::vector<VkDescriptorSet> descriptorSets;
 		VkDescriptorSetLayout descriptorSetLayout;
+	};
+
+	struct ShaderDescriptorSet
+	{
+		std::unordered_map<uint32_t, ImageSampler*> imageSamplers;
+		std::unordered_map<uint32_t, UniformBuffer*> uniformBuffers;
+		DescriptorGroup uniformDescriptors;
+		DescriptorGroup samplerDescriptors;
 		std::vector<VkDescriptorPoolSize> poolSizes;
 		VkDescriptorPool descriptorPool;
 

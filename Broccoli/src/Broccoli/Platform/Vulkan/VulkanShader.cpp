@@ -33,7 +33,8 @@ namespace Broccoli {
 		for (int i = 0; i < shaderDescriptorSets.size(); i++)
 		{
 			// Cleanup the layout
-			vkDestroyDescriptorSetLayout(logicalDevice, shaderDescriptorSets[i].descriptorSetLayout, nullptr);
+			vkDestroyDescriptorSetLayout(logicalDevice, shaderDescriptorSets[i].uniformDescriptors.descriptorSetLayout, nullptr);
+			vkDestroyDescriptorSetLayout(logicalDevice, shaderDescriptorSets[i].samplerDescriptors.descriptorSetLayout, nullptr);
 
 			// Loop over each uniform buffer binding for that set
 			for (int j = 0; j < shaderDescriptorSets[i].uniformBuffers.size(); j++)
@@ -144,7 +145,7 @@ namespace Broccoli {
 			layoutBinding.stageFlags = stageFlags;
 			layoutBinding.pImmutableSamplers = nullptr;
 
-			shaderDescriptorSet.layoutBindings.push_back(layoutBinding);
+			shaderDescriptorSet.uniformDescriptors.layoutBindings.push_back(layoutBinding);
 
 			// Create pool size for this uniform buffer (Used when we create the descriptor pool)
 			VkDescriptorPoolSize poolSize = {};
@@ -191,12 +192,12 @@ namespace Broccoli {
 			layoutBinding.descriptorCount = 1;
 			layoutBinding.stageFlags = stageFlags;
 			layoutBinding.pImmutableSamplers = nullptr;
-			shaderDescriptorSet.layoutBindings.push_back(layoutBinding);
+			shaderDescriptorSet.samplerDescriptors.layoutBindings.push_back(layoutBinding);
 
 			VkDescriptorPoolSize poolSize = {};
 			poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 			poolSize.descriptorCount = 1;
-			shaderDescriptorSet.poolSizes.push_back(poolSize);
+			shaderDescriptorSet.poolSizes.push_back(poolSize); // TODO: Maybe put poolSizes in individual groups?
 
 			std::cout << "Sampler Name: " << name << " DescriptorSet: " << descriptorSet << " Binding: " << binding << "\n";
 		}
@@ -221,18 +222,18 @@ namespace Broccoli {
 			// Create Descriptor Set Layout with given bindings
 			VkDescriptorSetLayoutCreateInfo createInfo = {};
 			createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-			createInfo.bindingCount = static_cast<uint32_t>(shaderDescriptorSet.layoutBindings.size()); // Number of binding infos
-			createInfo.pBindings = shaderDescriptorSet.layoutBindings.data(); // Pointer to binding info
+			createInfo.bindingCount = static_cast<uint32_t>(shaderDescriptorSet.uniformDescriptors.layoutBindings.size()); // Number of binding infos
+			createInfo.pBindings = shaderDescriptorSet.uniformDescriptors.layoutBindings.data(); // Pointer to binding info
 
-			result = vkCreateDescriptorSetLayout(logicalDevice, &createInfo, nullptr, &shaderDescriptorSet.descriptorSetLayout);
+			result = vkCreateDescriptorSetLayout(logicalDevice, &createInfo, nullptr, &shaderDescriptorSet.uniformDescriptors.descriptorSetLayout);
 			if (result != VK_SUCCESS) {
 				throw std::runtime_error("Failed to create a Descriptor Set Layout!");
 			}
 
-			shaderDescriptorSet.descriptorSets.resize(swapChain.getSwapChainImageCount());
-			shaderDescriptorSet.writeDescriptorSets.resize(swapChain.getSwapChainImageCount());
+			shaderDescriptorSet.uniformDescriptors.descriptorSets.resize(swapChain.getSwapChainImageCount());
+			shaderDescriptorSet.uniformDescriptors.writeDescriptorSets.resize(swapChain.getSwapChainImageCount());
 
-			std::vector<VkDescriptorSetLayout> setLayouts(swapChain.getSwapChainImageCount(), shaderDescriptorSet.descriptorSetLayout);
+			std::vector<VkDescriptorSetLayout> setLayouts(swapChain.getSwapChainImageCount(), shaderDescriptorSet.uniformDescriptors.descriptorSetLayout);
 
 			VkDescriptorSetAllocateInfo setAllocInfo = {};
 			setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -241,7 +242,7 @@ namespace Broccoli {
 			setAllocInfo.pSetLayouts = setLayouts.data(); // Layouts to use to allocate sets (1:1 relationship)
 
 			// Allocate descriptor sets
-			result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, shaderDescriptorSet.descriptorSets.data());
+			result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, shaderDescriptorSet.uniformDescriptors.descriptorSets.data());
 			if (result != VK_SUCCESS) {
 				throw std::runtime_error("Failed to allocate Descriptor Sets");
 			}
@@ -251,9 +252,9 @@ namespace Broccoli {
 				std::vector<VkWriteDescriptorSet> setWrites = {};
 				for (auto& [binding, uniformBuffer] : shaderDescriptorSet.uniformBuffers)
 				{
-					VkWriteDescriptorSet& writeSet = shaderDescriptorSet.writeDescriptorSets[i][uniformBuffer->name];
+					VkWriteDescriptorSet& writeSet = shaderDescriptorSet.uniformDescriptors.writeDescriptorSets[i][uniformBuffer->name];
 					writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-					writeSet.dstSet = shaderDescriptorSet.descriptorSets[i]; // Descriptor set to update
+					writeSet.dstSet = shaderDescriptorSet.uniformDescriptors.descriptorSets[i]; // Descriptor set to update
 					writeSet.dstBinding = binding; // Binding to update (matches with binding on layout/shader)
 					writeSet.dstArrayElement = 0; // Index in array to update
 					writeSet.descriptorType = uniformBuffer->layoutBinding.descriptorType;
@@ -263,19 +264,20 @@ namespace Broccoli {
 					setWrites.push_back(writeSet);
 				}
 
+				/*
 				for (auto& [binding, imageSampler] : shaderDescriptorSet.imageSamplers)
 				{
 					// Dont update descriptor set yet because we need to create the image first...
 					// TODO: Make a function that calls vkUpdateDescriptorSets with pImageInfo after creation
-					VkWriteDescriptorSet& writeSet = shaderDescriptorSet.writeDescriptorSets[i][imageSampler->name];
+					VkWriteDescriptorSet& writeSet = shaderDescriptorSet.uniformDescriptors.writeDescriptorSets[i][imageSampler->name];
 					writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-					writeSet.dstSet = shaderDescriptorSet.descriptorSets[i];
+					writeSet.dstSet = shaderDescriptorSet.uniformDescriptors.[i];
 					writeSet.dstBinding = binding;
 					writeSet.dstArrayElement = 0;
 					writeSet.descriptorType = imageSampler->layoutBinding.descriptorType;
 					writeSet.descriptorCount = imageSampler->arraySize;
 					//writeSet.pImageInfo = 
-				}
+				}*/
 
 				vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(setWrites.size()), setWrites.data(), 0, nullptr);
 			}
