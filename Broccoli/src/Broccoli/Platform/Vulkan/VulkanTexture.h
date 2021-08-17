@@ -7,14 +7,15 @@ namespace Broccoli {
 	class VulkanTexture : public Texture
 	{
 	public:
-		VulkanTexture(const std::string& fileName);
+		VulkanTexture(const std::string& fileName, const std::string& uniformName);
 		//~VulkanTexture();
 
 		void createTextureImage();
-		void createTextureDescriptor();
 
 		virtual uint32_t getHeight() override;
 		virtual uint32_t getWidth() override;
+
+		int getDescriptorLoc() { return descriptorLoc; }
 
 	private:
 		int width, height;
@@ -30,6 +31,7 @@ namespace Broccoli {
 			VkImageView imageView;
 		} textureImage;
 
+		int descriptorLoc;
 	};
 
 }

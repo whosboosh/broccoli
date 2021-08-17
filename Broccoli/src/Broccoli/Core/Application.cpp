@@ -123,7 +123,12 @@ namespace Broccoli {
 		modelList.push_back(Ref<Model>::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/models/sponza.obj", mapTransform));
 		meshList.push_back(Ref<Mesh>::create(&vertices, &indices, glm::mat4(1.0f)));
 
-		Ref<VulkanTexture> textureTest = Texture::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/textures/brickwall.jpg");
+		Texture::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/textures/brickwall.jpg", "textureSampler");
+		Texture::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/textures/brickwall.jpg", "textureSampler");
+		Texture::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/textures/brickwall.jpg", "textureSampler");
+		Ref<VulkanTexture> textureTest = Texture::create("C:/Users/natha/source/repos/Broccoli/Broccoli/resources/textures/brickwall.jpg", "textureSampler");
+
+		std::cout << "Texture loc: " << textureTest->getDescriptorLoc();
 	}
 
 	void Application::updateUniforms()

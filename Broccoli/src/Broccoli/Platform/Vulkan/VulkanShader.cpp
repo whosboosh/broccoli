@@ -222,12 +222,23 @@ namespace Broccoli {
 			}
 
 			// Create Descriptor Set Layout with given bindings
-			VkDescriptorSetLayoutCreateInfo createInfo = {};
-			createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-			createInfo.bindingCount = static_cast<uint32_t>(shaderDescriptorSet.uniformDescriptors.layoutBindings.size()); // Number of binding infos
-			createInfo.pBindings = shaderDescriptorSet.uniformDescriptors.layoutBindings.data(); // Pointer to binding info
+			VkDescriptorSetLayoutCreateInfo layoutCreateInfo = {};
+			layoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+			layoutCreateInfo.bindingCount = static_cast<uint32_t>(shaderDescriptorSet.uniformDescriptors.layoutBindings.size()); // Number of binding infos
+			layoutCreateInfo.pBindings = shaderDescriptorSet.uniformDescriptors.layoutBindings.data(); // Pointer to binding info
 
-			result = vkCreateDescriptorSetLayout(logicalDevice, &createInfo, nullptr, &shaderDescriptorSet.uniformDescriptors.descriptorSetLayout);
+			result = vkCreateDescriptorSetLayout(logicalDevice, &layoutCreateInfo, nullptr, &shaderDescriptorSet.uniformDescriptors.descriptorSetLayout);
+			if (result != VK_SUCCESS) {
+				throw std::runtime_error("Failed to create a Descriptor Set Layout!");
+			}
+
+			// Create Descriptor Set Layout with given bindings
+			layoutCreateInfo = {};
+			layoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+			layoutCreateInfo.bindingCount = static_cast<uint32_t>(shaderDescriptorSet.samplerDescriptors.layoutBindings.size()); // Number of binding infos
+			layoutCreateInfo.pBindings = shaderDescriptorSet.samplerDescriptors.layoutBindings.data(); // Pointer to binding info
+
+			result = vkCreateDescriptorSetLayout(logicalDevice, &layoutCreateInfo, nullptr, &shaderDescriptorSet.samplerDescriptors.descriptorSetLayout);
 			if (result != VK_SUCCESS) {
 				throw std::runtime_error("Failed to create a Descriptor Set Layout!");
 			}
@@ -291,19 +302,7 @@ namespace Broccoli {
 			throw std::runtime_error("Failed to create sampler descriptor pool!");
 		}
 
-		// Create Descriptor Set Layout with given bindings
-		VkDescriptorSetLayoutCreateInfo createInfo = {};
-		createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		createInfo.bindingCount = static_cast<uint32_t>(shaderDescriptorSet.samplerDescriptors.layoutBindings.size()); // Number of binding infos
-		createInfo.pBindings = shaderDescriptorSet.samplerDescriptors.layoutBindings.data(); // Pointer to binding info
-
-		result = vkCreateDescriptorSetLayout(logicalDevice, &createInfo, nullptr, &shaderDescriptorSet.samplerDescriptors.descriptorSetLayout);
-		if (result != VK_SUCCESS) {
-			throw std::runtime_error("Failed to create a Descriptor Set Layout!");
-		}
-
 		// Workaroud, normal uniform descriptors use 3 sets (1 for each swap image) - only need 1 for sampler
-		shaderDescriptorSet.samplerDescriptors.descriptorSets.resize(1);
 		shaderDescriptorSet.samplerDescriptors.writeDescriptorSets.resize(1);
 
 		VkDescriptorSetAllocateInfo setAllocInfo = {};
@@ -324,6 +323,7 @@ namespace Broccoli {
 		imageInfo.imageView = textureImageView; // Image to bind to set
 		imageInfo.sampler = swapChain.getTextureSampler(); // Sampler to use for set
 
+		// TODO: Refactor descriptorgroup struct so that we dont save write set like this... (only 1 vs 3 for uniforms because of swapchainimagecount)
 		VkWriteDescriptorSet& writeSet = shaderDescriptorSet.samplerDescriptors.writeDescriptorSets[0][name];
 		writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		writeSet.dstSet = textureDescriptorSet;
@@ -335,8 +335,8 @@ namespace Broccoli {
 
 		vkUpdateDescriptorSets(logicalDevice, 1, &writeSet, 0, nullptr);
 
-
 		shaderDescriptorSet.samplerDescriptors.descriptorSets.push_back(textureDescriptorSet);
+
 		return shaderDescriptorSet.samplerDescriptors.descriptorSets.size() - 1;
 	}
 

@@ -5,7 +5,7 @@
 #include "Broccoli/Platform/Vulkan/VulkanShader.h"
 
 namespace Broccoli {
-	VulkanTexture::VulkanTexture(const std::string& fileName) : fileName(fileName)
+	VulkanTexture::VulkanTexture(const std::string& fileName, const std::string& uniformName) : fileName(fileName)
 	{
 		VulkanLogicalDevice* logicalDevice = VulkanContext::get()->getLogicalDevice();
 
@@ -15,7 +15,7 @@ namespace Broccoli {
 
 		// Shader create descriptor group
 		Ref<VulkanPipeline> pipeline = Application::get().getRenderer().getGraphicsPipeline().As<VulkanPipeline>();
-		pipeline->getShaderLibrary()->getShader("geometry.frag").As<VulkanShader>()->updateTextureWriteBinding(1, 0, textureImage.imageView, "textureSampler");
+		descriptorLoc = pipeline->getShaderLibrary()->getShader("geometry.frag").As<VulkanShader>()->updateTextureWriteBinding(1, 0, textureImage.imageView, uniformName);
 	}
 
 	void VulkanTexture::createTextureImage()
