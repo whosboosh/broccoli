@@ -26,7 +26,8 @@ namespace Broccoli {
 		// Cleanup descriptor pool
 		for (int i = 0; i < shaderDescriptorSets.size(); i++)
 		{
-			vkDestroyDescriptorPool(logicalDevice, shaderDescriptorSets[i].descriptorPool, nullptr);
+			vkDestroyDescriptorPool(logicalDevice, shaderDescriptorSets[i].uniformDescriptors.descriptorPool, nullptr);
+			vkDestroyDescriptorPool(logicalDevice, shaderDescriptorSets[i].samplerDescriptors.descriptorPool, nullptr);
 		}
 
 		// Loop over each "set" in this shader
@@ -151,7 +152,7 @@ namespace Broccoli {
 			VkDescriptorPoolSize poolSize = {};
 			poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 			poolSize.descriptorCount = static_cast<uint32_t>(uniformBuffer->uniformBuffer.size());
-			shaderDescriptorSet.poolSizes.push_back(poolSize);
+			shaderDescriptorSet.uniformDescriptors.poolSizes.push_back(poolSize);
 
 
 
@@ -197,7 +198,7 @@ namespace Broccoli {
 			VkDescriptorPoolSize poolSize = {};
 			poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 			poolSize.descriptorCount = 1;
-			shaderDescriptorSet.poolSizes.push_back(poolSize); // TODO: Maybe put poolSizes in individual groups?
+			shaderDescriptorSet.samplerDescriptors.poolSizes.push_back(poolSize); // TODO: Maybe put poolSizes in individual groups?
 
 			std::cout << "Sampler Name: " << name << " DescriptorSet: " << descriptorSet << " Binding: " << binding << "\n";
 		}
@@ -207,16 +208,17 @@ namespace Broccoli {
 		{
 			auto& shaderDescriptorSet = shaderDescriptorSets[set];
 
-			// Create Descriptor Pool
+			// TODO: Refactor pool creation, only create if poolsizes is > 0 for that set
+			// Create Uniform Descriptor Pool
 			VkDescriptorPoolCreateInfo descriptorPoolInfo = {};
 			descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-			descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(shaderDescriptorSet.poolSizes.size()); //(uint32_t)typeCounts.at(set).size(); // TODO: REMOVE THE 0
-			descriptorPoolInfo.pPoolSizes = shaderDescriptorSet.poolSizes.data();
+			descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(shaderDescriptorSet.uniformDescriptors.poolSizes.size());
+			descriptorPoolInfo.pPoolSizes = shaderDescriptorSet.uniformDescriptors.poolSizes.data();
 			descriptorPoolInfo.maxSets = static_cast<uint32_t>(swapChain.getSwapChainImageCount());
-			VkResult result = vkCreateDescriptorPool(logicalDevice, &descriptorPoolInfo, nullptr, &shaderDescriptorSet.descriptorPool);
+			VkResult result = vkCreateDescriptorPool(logicalDevice, &descriptorPoolInfo, nullptr, &shaderDescriptorSet.uniformDescriptors.descriptorPool);
 			if (result != VK_SUCCESS)
 			{
-				throw std::runtime_error("Failed to create descriptor pool!");
+				throw std::runtime_error("Failed to create uniform descriptor pool!");
 			}
 
 			// Create Descriptor Set Layout with given bindings
@@ -237,7 +239,7 @@ namespace Broccoli {
 
 			VkDescriptorSetAllocateInfo setAllocInfo = {};
 			setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-			setAllocInfo.descriptorPool = shaderDescriptorSet.descriptorPool; // Pool to allocate descriptor set from
+			setAllocInfo.descriptorPool = shaderDescriptorSet.uniformDescriptors.descriptorPool; // Pool to allocate descriptor set from
 			setAllocInfo.descriptorSetCount = static_cast<uint32_t>(swapChain.getSwapChainImageCount()); // Number of sets to allocate
 			setAllocInfo.pSetLayouts = setLayouts.data(); // Layouts to use to allocate sets (1:1 relationship)
 
@@ -275,13 +277,25 @@ namespace Broccoli {
 		VulkanSwapchain swapChain = VulkanContext::get()->getVulkanSwapChain();
 		auto& shaderDescriptorSet = shaderDescriptorSets[set];
 
+		// Create Sampler Descriptor Pool
+		VkDescriptorPoolCreateInfo descriptorPoolInfo = {};
+		descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+		descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(shaderDescriptorSet.samplerDescriptors.poolSizes.size());
+		descriptorPoolInfo.pPoolSizes = shaderDescriptorSet.samplerDescriptors.poolSizes.data();
+		descriptorPoolInfo.maxSets = MAX_OBJECTS;
+		VkResult result = vkCreateDescriptorPool(logicalDevice, &descriptorPoolInfo, nullptr, &shaderDescriptorSet.samplerDescriptors.descriptorPool);
+		if (result != VK_SUCCESS)
+		{
+			throw std::runtime_error("Failed to create sampler descriptor pool!");
+		}
+
 		// Create Descriptor Set Layout with given bindings
 		VkDescriptorSetLayoutCreateInfo createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 		createInfo.bindingCount = static_cast<uint32_t>(shaderDescriptorSet.samplerDescriptors.layoutBindings.size()); // Number of binding infos
 		createInfo.pBindings = shaderDescriptorSet.samplerDescriptors.layoutBindings.data(); // Pointer to binding info
 
-		VkResult result = vkCreateDescriptorSetLayout(logicalDevice, &createInfo, nullptr, &shaderDescriptorSet.samplerDescriptors.descriptorSetLayout);
+		result = vkCreateDescriptorSetLayout(logicalDevice, &createInfo, nullptr, &shaderDescriptorSet.samplerDescriptors.descriptorSetLayout);
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create a Descriptor Set Layout!");
 		}
@@ -292,12 +306,12 @@ namespace Broccoli {
 
 		VkDescriptorSetAllocateInfo setAllocInfo = {};
 		setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-		setAllocInfo.descriptorPool = shaderDescriptorSet.descriptorPool; // Pool to allocate descriptor set from
-		setAllocInfo.descriptorSetCount = 1; // Number of sets to allocate
+		setAllocInfo.descriptorPool = shaderDescriptorSet.samplerDescriptors.descriptorPool; // Pool to allocate descriptor set from
+		setAllocInfo.descriptorSetCount = 1;
 		setAllocInfo.pSetLayouts = &shaderDescriptorSet.samplerDescriptors.descriptorSetLayout; // Layouts to use to allocate sets (1:1 relationship)
 
 		// Allocate descriptor sets
-		result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, shaderDescriptorSet.uniformDescriptors.descriptorSets.data());
+		result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, shaderDescriptorSet.samplerDescriptors.descriptorSets.data());
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to allocate Descriptor Sets");
 		}
