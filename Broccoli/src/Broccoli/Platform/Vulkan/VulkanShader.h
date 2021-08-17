@@ -73,7 +73,7 @@ namespace Broccoli {
 		//VkDescriptorSetLayout getDescriptorSetLayout(uint32_t set) { return descriptorSetLayouts.at(set); }
 		//std::vector<VkDescriptorSetLayout> getAllDescriptorSetLayouts() { return descriptorSetLayouts; }
 
-		void updateTextureWriteBinding(int set, int binding, VkImageView textureImageView, const std::string& name);
+		int updateTextureWriteBinding(int set, int binding, VkImageView textureImageView, const std::string& name);
 
 		void updateDescriptorSet(int set, int binding, uint32_t imageIndex, void* data, int size);
 

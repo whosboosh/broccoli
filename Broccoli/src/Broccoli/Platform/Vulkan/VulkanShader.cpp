@@ -271,11 +271,13 @@ namespace Broccoli {
 		}
 	}
 
-	void VulkanShader::updateTextureWriteBinding(int set, int binding, VkImageView textureImageView, const std::string& name)
+	int VulkanShader::updateTextureWriteBinding(int set, int binding, VkImageView textureImageView, const std::string& name)
 	{
 		VkDevice logicalDevice = VulkanContext::get()->getLogicalDevice()->getLogicalDevice();
 		VulkanSwapchain swapChain = VulkanContext::get()->getVulkanSwapChain();
 		auto& shaderDescriptorSet = shaderDescriptorSets[set];
+
+		VkDescriptorSet textureDescriptorSet;
 
 		// Create Sampler Descriptor Pool
 		VkDescriptorPoolCreateInfo descriptorPoolInfo = {};
@@ -311,7 +313,7 @@ namespace Broccoli {
 		setAllocInfo.pSetLayouts = &shaderDescriptorSet.samplerDescriptors.descriptorSetLayout; // Layouts to use to allocate sets (1:1 relationship)
 
 		// Allocate descriptor sets
-		result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, shaderDescriptorSet.samplerDescriptors.descriptorSets.data());
+		result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, &textureDescriptorSet);
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to allocate Descriptor Sets");
 		}
@@ -324,7 +326,7 @@ namespace Broccoli {
 
 		VkWriteDescriptorSet& writeSet = shaderDescriptorSet.samplerDescriptors.writeDescriptorSets[0][name];
 		writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		writeSet.dstSet = shaderDescriptorSet.samplerDescriptors.descriptorSets[0];
+		writeSet.dstSet = textureDescriptorSet;
 		writeSet.dstBinding = binding;
 		writeSet.dstArrayElement = 0;
 		writeSet.descriptorType = shaderDescriptorSet.imageSamplers[binding]->layoutBinding.descriptorType;
@@ -332,6 +334,10 @@ namespace Broccoli {
 		writeSet.pImageInfo = &imageInfo;
 
 		vkUpdateDescriptorSets(logicalDevice, 1, &writeSet, 0, nullptr);
+
+
+		shaderDescriptorSet.samplerDescriptors.descriptorSets.push_back(textureDescriptorSet);
+		return shaderDescriptorSet.samplerDescriptors.descriptorSets.size() - 1;
 	}
 
 	void VulkanShader::updateDescriptorSet(int set, int binding, uint32_t imageIndex, void* data, int size)
