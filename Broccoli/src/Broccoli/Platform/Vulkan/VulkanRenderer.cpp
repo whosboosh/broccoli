@@ -167,8 +167,13 @@ namespace Broccoli {
 		vkCmdBindVertexBuffers(swapChain->getCurrentCommandBuffer(), 0, 1, vertexBuffer, offsets); // Command to bind vertex buffer before drawing with them
 		vkCmdBindIndexBuffer(swapChain->getCurrentCommandBuffer(), mesh->getIndexBuffer()->As<VulkanIndexBuffer>()->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32); // Bind mesh index buffer with 0 offset and using uint32 type
 
+
+		std::vector descriptorSetGroup = vulkanPipeline->getShaderLibrary()->getShaderUniformDescriptorSets(swapChain->getCurrentImageIndex()); // Add all of the uniform descriptors (multiple because of multiple sets)
+		//descriptorSetGroup.push_back(vulkanPipeline->getShaderLibrary()->getShaderSamplerDescriptorSets(mesh->getTexture().getShaderId(), mesh->getTexture().getTextureId())); // Add the sampler descriptor
+
 		vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),
-			0, static_cast<uint32_t>(vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).size()), vulkanPipeline->getShaderLibrary()->getShaderDescriptorSets(swapChain->getCurrentImageIndex()).data(), 0, nullptr);
+			0, static_cast<uint32_t>(descriptorSetGroup.size()),
+			descriptorSetGroup.data(), 0, nullptr);
 
 		for (const VkPushConstantRange& pushConstantRange : vulkanPipeline->getShaderLibrary()->getPushConstantRanges())
 		{

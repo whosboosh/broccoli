@@ -39,6 +39,8 @@ namespace Broccoli {
 		void setHasTexture(bool state) { meshInfo.hasTexture = state; }
 		bool getHasTexture() { return meshInfo.hasTexture; }
 
+		Texture& getTexture() { return texture; }
+
 	private:
 		MeshInfo meshInfo;
 

@@ -59,20 +59,12 @@ namespace Broccoli {
 
 		virtual void cleanup() override;
 
-		virtual const std::string& getName() const override { return name; }
-
 		virtual const VkShaderStageFlagBits getStageFlags() const override { return stageFlags; }
 		virtual const VkPipelineShaderStageCreateInfo getShaderStageInfo() const override { return shaderStageCreateInfo; }
 
 		const std::vector<ShaderDescriptorSet>& getShaderDescriptorSets() const { return shaderDescriptorSets; }
 		VkPushConstantRange getPushConstantRange() { return pushConstantRange; }
 			
-		//std::vector<VkDescriptorSet> getAllDescriptorSets() { return descriptorSets; }
-
-		//VkDescriptorSet GetDescriptorSet() { return m_DescriptorSet; }
-		//VkDescriptorSetLayout getDescriptorSetLayout(uint32_t set) { return descriptorSetLayouts.at(set); }
-		//std::vector<VkDescriptorSetLayout> getAllDescriptorSetLayouts() { return descriptorSetLayouts; }
-
 		int updateTextureWriteBinding(int set, int binding, VkImageView textureImageView, const std::string& name);
 
 		void updateDescriptorSet(int set, int binding, uint32_t imageIndex, void* data, int size);
@@ -92,6 +84,6 @@ namespace Broccoli {
 		VkPushConstantRange pushConstantRange;
 		std::vector<ShaderDescriptorSet> shaderDescriptorSets;
 
-		std::string name;
+		friend class ShaderLibrary;
 	};
 }

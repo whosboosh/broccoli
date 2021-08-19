@@ -5,8 +5,18 @@
 #include "Broccoli/Platform/Vulkan/VulkanShader.h"
 
 namespace Broccoli {
-	VulkanTexture::VulkanTexture(const std::string& fileName, const std::string& uniformName) : fileName(fileName)
+	VulkanTexture::VulkanTexture(const std::string& fileName, const std::string& shaderName, const std::string& uniformName)
 	{
+		// TODO: Move this to Texture.cpp when using opengl later?
+		int shaderId;
+		if (shaderName.substr(shaderName.find_last_of(".") + 1, shaderName.find(".")) == "frag") shaderId = 0;
+		else shaderId = 1;
+
+		std::cout << shaderName.substr(shaderName.find_last_of(".") + 1, shaderName.find(".")) << " " << shaderId << "\n";
+
+		this->shaderId = shaderId;
+		this->fileName = fileName;
+
 		VulkanLogicalDevice* logicalDevice = VulkanContext::get()->getLogicalDevice();
 
 		createTextureImage();
@@ -16,6 +26,7 @@ namespace Broccoli {
 		// Shader create descriptor 
 		Ref<VulkanPipeline> pipeline = Application::get().getRenderer().getGraphicsPipeline().As<VulkanPipeline>();
 		setTextureId(pipeline->getShaderLibrary()->getShader("geometry.frag").As<VulkanShader>()->updateTextureWriteBinding(1, 0, textureImage.imageView, uniformName));
+		pipeline->getShaderLibrary()->setSamplerDescriptorSetsFromShader();
 	}
 
 	void VulkanTexture::createTextureImage()

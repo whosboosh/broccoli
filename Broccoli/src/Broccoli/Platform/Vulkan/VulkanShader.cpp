@@ -61,6 +61,9 @@ namespace Broccoli {
 		//found = name.find_last_of(".");
 		//name = found != std::string::npos ? name.substr(0, found) : name;
 
+		if (name.substr(name.find_last_of(".") + 1, name.find(".")) == "frag") shaderId = 0;
+		else shaderId = 1;
+
 		auto shaderCode = readFile(filePath);
 		//auto shaderCodeSPV = readFile(filePath+".spv");
 
@@ -282,6 +285,7 @@ namespace Broccoli {
 		}
 	}
 
+	// name is the name of the descriptor in shader (e.g. textureSampler)
 	int VulkanShader::updateTextureWriteBinding(int set, int binding, VkImageView textureImageView, const std::string& name)
 	{
 		VkDevice logicalDevice = VulkanContext::get()->getLogicalDevice()->getLogicalDevice();
@@ -338,6 +342,9 @@ namespace Broccoli {
 		shaderDescriptorSet.samplerDescriptors.descriptorSets.push_back(textureDescriptorSet);
 
 		return shaderDescriptorSet.samplerDescriptors.descriptorSets.size() - 1;
+
+		// Update the descriptor group binding thing in ShaderLibrary
+
 	}
 
 	void VulkanShader::updateDescriptorSet(int set, int binding, uint32_t imageIndex, void* data, int size)

@@ -42,6 +42,8 @@ namespace Broccoli {
 		}
 		MeshInfo& getTransform() { return modelTransform; }
 
+		Texture& getTexture() { return texture; }
+
 	private:
 		const std::string fileName;
 		const aiScene* scene;

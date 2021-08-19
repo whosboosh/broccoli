@@ -18,14 +18,17 @@ namespace Broccoli {
 
 		static Ref<Shader> create(const std::string& filePath, VkShaderStageFlagBits stageFlags);
 
-		virtual const std::string& getName() const = 0;
-
 		// Vulkan specific
 		virtual const VkShaderStageFlagBits getStageFlags() const = 0;
 		virtual const VkPipelineShaderStageCreateInfo getShaderStageInfo() const = 0;
 
-	private:
+		int getShaderId() { return shaderId; }
+		const std::string& getName() { return name; }
+
 		friend class ShaderLibrary;
+	protected:
+		int shaderId;
+		std::string name;
 	};
 
 	class ShaderLibrary
@@ -44,21 +47,22 @@ namespace Broccoli {
 
 		// Vulkan specific
 		void setDescriptorSetsfromShaders();
-		std::vector<VkDescriptorSet> getShaderDescriptorSets(int imageIndex) { return shaderDescriptorSets[imageIndex]; }
+		void setSamplerDescriptorSetsFromShader();
+		std::vector<VkDescriptorSet> getShaderUniformDescriptorSets(int imageIndex) { return shaderUniformDescriptorSets[imageIndex]; }
+		VkDescriptorSet getShaderSamplerDescriptorSets(int shaderId, int texId) { return shaderSamplerDescriptorSets[shaderId][texId]; }
 		
 		void setPushConstantRangesFromShaders();
 		const std::vector<VkPushConstantRange>& getPushConstantRanges() { return pushConstantRanges; }
 		
 		void loadShader(const std::string& path, VkShaderStageFlagBits stageFlags);
-
 	private:
 		std::unordered_map<std::string, Ref<Shader>> currentShaders;
 		
 		// Store push constant ranges and descriptor sets in shader library as expensive to recompute in loop every frame
 		std::vector<VkPushConstantRange> pushConstantRanges;
-		//std::vector<VkDescriptorSet> shaderDescriptorSets;
 
-		std::unordered_map<int, std::vector<VkDescriptorSet>> shaderDescriptorSets;
+		std::unordered_map<int, std::vector<VkDescriptorSet>> shaderUniformDescriptorSets;
+		std::unordered_map<int, std::vector<VkDescriptorSet>> shaderSamplerDescriptorSets; // First index is the shaderId (0 is vert, 1 is frag) (position in vector is the texture id)
 	};
 
 }

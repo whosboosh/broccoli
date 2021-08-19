@@ -8,7 +8,7 @@ namespace Broccoli {
 	class VulkanTexture : public Texture
 	{
 	public:
-		VulkanTexture(const std::string& fileName, const std::string& uniformName);
+		VulkanTexture(const std::string& fileName, const std::string& shaderName, const std::string& uniformName);
 		//~VulkanTexture();
 
 		void createTextureImage();

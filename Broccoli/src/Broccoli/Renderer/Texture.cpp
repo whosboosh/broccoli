@@ -5,13 +5,13 @@
 #include "Broccoli/Platform/Vulkan/VulkanTexture.h"
 
 namespace Broccoli {
-	Ref<Texture> Texture::create(const std::string& filePath, const std::string& uniformName)
+	Ref<Texture> Texture::create(const std::string& filePath, const std::string& shaderName, const std::string& uniformName)
 	{
 		switch (RendererAPI::getCurrent())
 		{
 		case RendererAPIType::None: return nullptr;
 			//case RendererAPIType::OpenGL: return Ref<OpenGLTexture>::create(path, properties);
-		case RendererAPIType::Vulkan: return Ref<VulkanTexture>::create(filePath, uniformName);
+		case RendererAPIType::Vulkan: return Ref<VulkanTexture>::create(filePath, shaderName, uniformName);
 		}
 	}
 
