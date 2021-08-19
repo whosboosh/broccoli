@@ -25,7 +25,7 @@ namespace Broccoli {
 
 		// Shader create descriptor 
 		Ref<VulkanPipeline> pipeline = Application::get().getRenderer().getGraphicsPipeline().As<VulkanPipeline>();
-		setTextureId(pipeline->getShaderLibrary()->getShader(shaderName).As<VulkanShader>()->updateTextureWriteBinding(2, 0, textureImage.imageView, uniformName));
+		setTextureId(pipeline->getShaderLibrary()->getShader(shaderName).As<VulkanShader>()->updateTextureWriteBinding(0, 1, textureImage.imageView, uniformName));
 		pipeline->getShaderLibrary()->setSamplerDescriptorSetsFromShader();
 	}
 

@@ -162,12 +162,7 @@ namespace Broccoli {
 
 			for (int i = 0; i < shaderDescriptors.size(); i++)
 			{
-				if (shaderDescriptors[i].uniformDescriptors.layoutBindings.size() > 0) descriptorSetLayouts.push_back(shaderDescriptors[i].uniformDescriptors.descriptorSetLayout);
-				if (shaderDescriptors[i].samplerDescriptors.layoutBindings.size() > 0) descriptorSetLayouts.push_back(shaderDescriptors[i].samplerDescriptors.descriptorSetLayout);
-			}
-			for (int i = 0; i < shaderDescriptors.size(); i++)
-			{
-				if (shaderDescriptors[i].samplerDescriptors.layoutBindings.size() > 0) descriptorSetLayouts.push_back(shaderDescriptors[i].samplerDescriptors.descriptorSetLayout);
+				descriptorSetLayouts.push_back(shaderDescriptors[i].descriptorSetLayout);
 			}
 
 			shaderStages.push_back(shader.second.As<VulkanShader>()->getShaderStageInfo());

@@ -167,10 +167,7 @@ namespace Broccoli {
 		vkCmdBindVertexBuffers(swapChain->getCurrentCommandBuffer(), 0, 1, vertexBuffer, offsets); // Command to bind vertex buffer before drawing with them
 		vkCmdBindIndexBuffer(swapChain->getCurrentCommandBuffer(), mesh->getIndexBuffer()->As<VulkanIndexBuffer>()->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32); // Bind mesh index buffer with 0 offset and using uint32 type
 
-
 		std::vector descriptorSetGroup = vulkanPipeline->getShaderLibrary()->getShaderUniformDescriptorSets(swapChain->getCurrentImageIndex()); // Add all of the uniform descriptors (multiple because of multiple sets)
-
-		//std::vector<VkDescriptorSet> descriptorSetGroup = {};
 		descriptorSetGroup.push_back(vulkanPipeline->getShaderLibrary()->getShaderSamplerDescriptorSets(mesh->getTexture().getShaderId(), mesh->getTexture().getTextureId())); // Add the sampler descriptor
 
 		vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),

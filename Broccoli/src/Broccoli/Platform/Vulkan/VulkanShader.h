@@ -34,14 +34,15 @@ namespace Broccoli {
 
 	struct DescriptorGroup
 	{
-		std::vector<VkDescriptorSetLayoutBinding> layoutBindings;
 		std::vector<std::unordered_map<std::string, VkWriteDescriptorSet>> writeDescriptorSets;
 		std::vector<VkDescriptorSet> descriptorSets;
-		VkDescriptorSetLayout descriptorSetLayout;
+		std::vector<VkDescriptorSet> samplerDescriptorSets;
 	};
 
 	struct ShaderDescriptorSet
 	{
+		VkDescriptorSetLayout descriptorSetLayout;
+		std::vector<VkDescriptorSetLayoutBinding> layoutBindings;
 		VkDescriptorPool descriptorPool;
 		std::vector<VkDescriptorPoolSize> poolSizes;
 		std::unordered_map<uint32_t, ImageSampler*> imageSamplers;

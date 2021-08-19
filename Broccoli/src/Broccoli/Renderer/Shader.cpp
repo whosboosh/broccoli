@@ -61,22 +61,6 @@ namespace Broccoli {
 	void ShaderLibrary::setDescriptorSetsfromShaders()
 	{
 		VulkanSwapchain swapChain = VulkanContext::get()->getVulkanSwapChain();
-
-		/*
-		//3
-		for (int i = 0; i < swapChain.getSwapChainImageCount(); i++)
-		{
-			//2
-			for (std::pair<std::string, Ref<Shader>> shader : currentShaders)
-			{
-				// How ever many "sets" there are, usually at most 2
-				for (ShaderDescriptorSet shaderDescriptor : shader.second.As<VulkanShader>()->getShaderDescriptorSets())
-				{
-					shaderUniformDescriptorSets[i].push_back(shaderDescriptor.uniformDescriptors.descriptorSets[i]);
-				}
-			}
-		}*/
-
 		
 		for (std::pair<std::string, Ref<Shader>> shader : currentShaders)
 		{
@@ -84,7 +68,7 @@ namespace Broccoli {
 			{
 				for (int i = 0; i < swapChain.getSwapChainImageCount(); i++)
 				{
-					if (shaderDescriptor.uniformDescriptors.layoutBindings.size() > 0) shaderUniformDescriptorSets[i].push_back(shaderDescriptor.uniformDescriptors.descriptorSets[i]);
+					shaderUniformDescriptorSets[i].push_back(shaderDescriptor.uniformDescriptors.descriptorSets[i]);
 				}
 			}
 		}
@@ -99,11 +83,11 @@ namespace Broccoli {
 			// How ever many "sets" there are, usually at most 2
 			for (ShaderDescriptorSet shaderDescriptor : shader.second.As<VulkanShader>()->getShaderDescriptorSets())
 			{
-				std::cout << shader.first << " set: contains " << shaderDescriptor.samplerDescriptors.descriptorSets.size() << " samplers!\n";
+				std::cout << shader.first << " set: contains " << shaderDescriptor.samplerDescriptors.samplerDescriptorSets.size() << " samplers!\n";
 				// Samplers (equal to the amount of textures loaded in)
-				for (int j = 0; j < shaderDescriptor.samplerDescriptors.descriptorSets.size(); j++)
+				for (int j = 0; j < shaderDescriptor.samplerDescriptors.samplerDescriptorSets.size(); j++)
 				{
-					if (shaderDescriptor.samplerDescriptors.layoutBindings.size() > 0) shaderSamplerDescriptorSets[shader.second->getShaderId()].push_back(shaderDescriptor.samplerDescriptors.descriptorSets[j]);
+					shaderSamplerDescriptorSets[shader.second->getShaderId()].push_back(shaderDescriptor.samplerDescriptors.samplerDescriptorSets[j]);
 				}
 			}
 		}

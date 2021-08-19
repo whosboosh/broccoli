@@ -8,10 +8,11 @@ layout(location = 4) in vec4 inShadowCoord;
 
 layout(location = 0) out vec4 outColour; 	// Final output colour (must also have location
  
-layout(set = 2, binding = 0) uniform sampler2D textureSampler;
+layout(set = 0, binding = 1) uniform sampler2D textureSampler;
 //layout(set = 2, binding = 0) uniform sampler2D shadowMap;
 
 // Uniform buffer for light
+/*
 layout(set = 0, binding = 0) uniform DirectionalLight {
 	float directionX;
 	float directionY;
@@ -22,10 +23,11 @@ layout(set = 0, binding = 0) uniform DirectionalLight {
 	float ambientIntensity;
 	float diffuseIntensity;
 } directionalLight;
+*/
 
-layout(set = 1, binding = 0) uniform CameraPosition {
-	vec3 cameraPos;	
-} cameraPosition;
+//layout(set = 0, binding = 1) uniform CameraPosition {
+//	vec3 cameraPos;	
+//} cameraPosition;
 
 /*
 layout(push_constant) uniform PushModel {
@@ -37,6 +39,6 @@ layout(push_constant) uniform PushModel {
 
 void main() 
 {
-	//outColour = texture(textureSampler, fragTex);
+	//outColour = texture(textureSampler, fragTex) * 0.8;
 	outColour = vec4(fragCol, 1.0);
 }
