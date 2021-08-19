@@ -158,15 +158,22 @@ namespace Broccoli {
 
 		for (std::pair<std::string, Ref<Shader>> shader : shaderLibrary->getCurrentShaders())
 		{
+
 			std::vector<ShaderDescriptorSet> shaderDescriptors = shader.second.As<VulkanShader>()->getShaderDescriptorSets();
 
 			for (int i = 0; i < shaderDescriptors.size(); i++)
 			{
-				descriptorSetLayouts.push_back(shaderDescriptors[i].descriptorSetLayout);
+				if (!shaderDescriptors[i].isEmpty()) {
+					std::cout << "Adding layout to pipeline for set: " << shader.first << " for set: " << i << "\n";
+					descriptorSetLayouts.push_back(shaderDescriptors[i].descriptorSetLayout);
+				}
 			}
 
 			shaderStages.push_back(shader.second.As<VulkanShader>()->getShaderStageInfo());
 		}
+
+
+		std::cout << "Pipeline layouts size: " << descriptorSetLayouts.size() << "\n";
 
 		VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {};
 		pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;

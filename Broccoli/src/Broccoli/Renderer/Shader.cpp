@@ -8,6 +8,7 @@
 
 #include "Broccoli/Renderer/RendererAPI.h"
 
+
 namespace Broccoli {
 
 	// TODO: Auto detect VK stage flags from shader to make generalist with opengl
@@ -64,11 +65,15 @@ namespace Broccoli {
 		
 		for (std::pair<std::string, Ref<Shader>> shader : currentShaders)
 		{
+			std::cout << "shader name: " << shader.first << " has: " << shader.second.As<VulkanShader>()->getShaderDescriptorSets().size() << " descriptors " << " with " << "\n";
 			for (ShaderDescriptorSet shaderDescriptor : shader.second.As<VulkanShader>()->getShaderDescriptorSets())
 			{
-				for (int i = 0; i < swapChain.getSwapChainImageCount(); i++)
+				if (shaderDescriptor.uniformBuffers.size() > 0)
 				{
-					shaderUniformDescriptorSets[i].push_back(shaderDescriptor.uniformDescriptors.descriptorSets[i]);
+					for (int i = 0; i < swapChain.getSwapChainImageCount(); i++)
+					{
+						shaderUniformDescriptorSets[i].push_back(shaderDescriptor.uniformDescriptors.descriptorSets[i]);
+					}
 				}
 			}
 		}

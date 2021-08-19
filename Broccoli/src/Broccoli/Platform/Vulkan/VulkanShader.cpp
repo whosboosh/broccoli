@@ -205,9 +205,17 @@ namespace Broccoli {
 			std::cout << "Sampler Name: " << name << " DescriptorSet: " << descriptorSet << " Binding: " << binding << "\n";
 		}
 
-		// Loop over each descriptor "set" for creation
+		for (int i = 0; i < shaderDescriptorSets.size(); i++)
+		{
+			std::cout << (shaderDescriptorSets[i].uniformBuffers.empty() && shaderDescriptorSets[i].imageSamplers.empty()) << "\n";
+			//std::cout << shaderDescriptorSets[i].imageSamplers.empty() << "\n";
+		}
+
 		for (size_t set = 0; set < shaderDescriptorSets.size(); set++)
 		{
+			if (shaderDescriptorSets[set].isEmpty()) continue;
+
+			std::cout << "New layout being made!: " << set <<"\n";
 			auto& shaderDescriptorSet = shaderDescriptorSets[set];
 
 			// Create Set Descriptor Pool
@@ -275,6 +283,8 @@ namespace Broccoli {
 	// name is the name of the descriptor in shader (e.g. textureSampler)
 	int VulkanShader::updateTextureWriteBinding(int set, int binding, VkImageView textureImageView, const std::string& name)
 	{
+		std::cout << "Creating texture descriptor for set: " << set << "binding: " << binding << " called: " << name << "\n";
+
 		VkDevice logicalDevice = VulkanContext::get()->getLogicalDevice()->getLogicalDevice();
 		VulkanSwapchain swapChain = VulkanContext::get()->getVulkanSwapChain();
 		auto& shaderDescriptorSet = shaderDescriptorSets[set];

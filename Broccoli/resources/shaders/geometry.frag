@@ -8,7 +8,7 @@ layout(location = 4) in vec4 inShadowCoord;
 
 layout(location = 0) out vec4 outColour; 	// Final output colour (must also have location
  
-layout(set = 0, binding = 1) uniform sampler2D textureSampler;
+layout(set = 1, binding = 0) uniform sampler2D textureSampler;
 //layout(set = 2, binding = 0) uniform sampler2D shadowMap;
 
 // Uniform buffer for light
@@ -39,6 +39,6 @@ layout(push_constant) uniform PushModel {
 
 void main() 
 {
-	//outColour = texture(textureSampler, fragTex) * 0.8;
-	outColour = vec4(fragCol, 1.0);
+	outColour = texture(textureSampler, fragTex) * 0.8;
+	//outColour = vec4(fragCol, 1.0);
 }
