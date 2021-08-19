@@ -207,7 +207,7 @@ namespace Broccoli {
 		}
 
 		// Loop over each descriptor "set" for creation
-		for (size_t set = 0; set < shaderDescriptorSets.size(); set++)
+		for (size_t set = 0; set < shaderDescriptorSets.size() && !shaderDescriptorSets[set].isEmpty(); set++)
 		{
 			auto& shaderDescriptorSet = shaderDescriptorSets[set];
 

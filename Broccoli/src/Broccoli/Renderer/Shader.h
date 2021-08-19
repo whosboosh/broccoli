@@ -6,6 +6,8 @@
 
 #include <unordered_map>
 
+#include <iostream>
+
 namespace Broccoli {
 	
 	class Shader : public RefCounted
@@ -49,7 +51,11 @@ namespace Broccoli {
 		void setDescriptorSetsfromShaders();
 		void setSamplerDescriptorSetsFromShader();
 		std::vector<VkDescriptorSet> getShaderUniformDescriptorSets(int imageIndex) { return shaderUniformDescriptorSets[imageIndex]; }
-		VkDescriptorSet getShaderSamplerDescriptorSets(int shaderId, int texId) { return shaderSamplerDescriptorSets[shaderId][texId]; }
+		VkDescriptorSet getShaderSamplerDescriptorSets(int shaderId, int texId) { 
+			std::cout << "shader id: " << shaderId << " texture id " << texId << "\n";
+
+			return shaderSamplerDescriptorSets[shaderId][texId]; 
+		}
 		
 		void setPushConstantRangesFromShaders();
 		const std::vector<VkPushConstantRange>& getPushConstantRanges() { return pushConstantRanges; }

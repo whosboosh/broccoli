@@ -62,6 +62,7 @@ namespace Broccoli {
 	{
 		VulkanSwapchain swapChain = VulkanContext::get()->getVulkanSwapChain();
 
+		/*
 		//3
 		for (int i = 0; i < swapChain.getSwapChainImageCount(); i++)
 		{
@@ -74,9 +75,9 @@ namespace Broccoli {
 					shaderUniformDescriptorSets[i].push_back(shaderDescriptor.uniformDescriptors.descriptorSets[i]);
 				}
 			}
-		}
+		}*/
 
-		/*
+		
 		for (std::pair<std::string, Ref<Shader>> shader : currentShaders)
 		{
 			for (ShaderDescriptorSet shaderDescriptor : shader.second.As<VulkanShader>()->getShaderDescriptorSets())
@@ -86,7 +87,7 @@ namespace Broccoli {
 					shaderUniformDescriptorSets[i].push_back(shaderDescriptor.uniformDescriptors.descriptorSets[i]);
 				}
 			}
-		}*/
+		}
 	}
 
 	void ShaderLibrary::setSamplerDescriptorSetsFromShader()

@@ -48,7 +48,7 @@ namespace Broccoli {
 		std::unordered_map<uint32_t, UniformBuffer*> uniformBuffers;
 		DescriptorGroup uniformDescriptors;
 		DescriptorGroup samplerDescriptors;
-		operator bool() const { return !(uniformBuffers.empty()); }
+		bool isEmpty() const { return (uniformBuffers.empty() && imageSamplers.empty()); }
 	};
 
 	class VulkanShader : public Shader
