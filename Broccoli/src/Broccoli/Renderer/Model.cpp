@@ -30,18 +30,18 @@ namespace Broccoli {
 		std::vector<int> matToTex(textureList.size());
 
 		for (size_t i = 0; i < textureList.size(); i++) {
-			// TODO: Use something else than getHeight for detection of no texture
 			if (textureList[i].empty() && texture.getHeight() != 0)
 			{
-				matToTex[i] = texture.getTextureId();
+				matToTex[i] = texture.getTextureId(); // Use provided texture
 			}
 			else if (textureList[i].empty()) {
-				matToTex[i] = 0; // If there are no mateirals in the model, use the default texture
+				matToTex[i] = 0; // If there are no mateirals in the model, use the first texture ever loaded in
 			}
 			else {
 				// Otherwise create texture from material name and set value to index of new texture inside sampler
-				//matToTex[i] = Texture::create(textureList[i]);
-				matToTex[i] = texture.getTextureId();
+				std::cout << "Model texture path: " << textureList[i] << "\n";
+				//matToTex[i] = Texture::create(textureList[i], );
+				//matToTex[i] = texture.getTextureId();
 			}
 		}
 

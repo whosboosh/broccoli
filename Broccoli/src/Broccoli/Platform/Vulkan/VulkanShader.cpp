@@ -205,12 +205,6 @@ namespace Broccoli {
 			std::cout << "Sampler Name: " << name << " DescriptorSet: " << descriptorSet << " Binding: " << binding << "\n";
 		}
 
-		for (int i = 0; i < shaderDescriptorSets.size(); i++)
-		{
-			std::cout << (shaderDescriptorSets[i].uniformBuffers.empty() && shaderDescriptorSets[i].imageSamplers.empty()) << "\n";
-			//std::cout << shaderDescriptorSets[i].imageSamplers.empty() << "\n";
-		}
-
 		for (size_t set = 0; set < shaderDescriptorSets.size(); set++)
 		{
 			if (shaderDescriptorSets[set].isEmpty()) continue;
