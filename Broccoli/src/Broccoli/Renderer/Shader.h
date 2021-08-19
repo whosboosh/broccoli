@@ -51,11 +51,7 @@ namespace Broccoli {
 		void setDescriptorSetsfromShaders();
 		void setSamplerDescriptorSetsFromShader();
 		std::vector<VkDescriptorSet> getShaderUniformDescriptorSets(int imageIndex) { return shaderUniformDescriptorSets[imageIndex]; }
-		VkDescriptorSet getShaderSamplerDescriptorSets(int shaderId, int texId) { 
-			std::cout << "shader id: " << shaderId << " texture id " << texId << "\n";
-
-			return shaderSamplerDescriptorSets[shaderId][texId]; 
-		}
+		VkDescriptorSet getShaderSamplerDescriptorSets(int shaderId, int texId) { return shaderSamplerDescriptorSets[shaderId][texId]; }
 		
 		void setPushConstantRangesFromShaders();
 		const std::vector<VkPushConstantRange>& getPushConstantRanges() { return pushConstantRanges; }
@@ -68,7 +64,7 @@ namespace Broccoli {
 		std::vector<VkPushConstantRange> pushConstantRanges;
 
 		std::unordered_map<int, std::vector<VkDescriptorSet>> shaderUniformDescriptorSets;
-		std::unordered_map<int, std::vector<VkDescriptorSet>> shaderSamplerDescriptorSets; // First index is the shaderId (0 is vert, 1 is frag) (position in vector is the texture id)
+		std::unordered_map<int, std::vector<VkDescriptorSet>> shaderSamplerDescriptorSets; // First index is the shaderId (1 is vert, 0 is frag) (position in vector is the texture id)
 	};
 
 }

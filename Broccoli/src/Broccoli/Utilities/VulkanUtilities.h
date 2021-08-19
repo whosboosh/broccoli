@@ -19,6 +19,10 @@ namespace Broccoli {
 		glm::mat4 view;
 	};
 
+	struct LightSpace {
+		glm::mat4 lightSpace;
+	};
+
 
 	static uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t allowedTypes, VkMemoryPropertyFlags properties);
 

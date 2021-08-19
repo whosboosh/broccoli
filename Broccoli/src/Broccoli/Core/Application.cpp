@@ -131,8 +131,14 @@ namespace Broccoli {
 		viewProjection.projection[1][1] *= -1; // Invert the y axis for vulkan (GLM was made for opengl which uses +y as up)
 		viewProjection.view = camera->calculateViewMatrix();
 
-		renderer->updateUniform("geometry.vert", 0, 0, &viewProjection, sizeof(viewProjection));
+		lightSpace.lightSpace = camera->calculateViewMatrix();
 
+		renderer->updateUniform("geometry.vert", 0, 0, &viewProjection, sizeof(viewProjection));
+		renderer->updateUniform("geometry.vert", 1, 0, &lightSpace, sizeof(lightSpace));
+
+		
+
+		renderer->updateUniform("geometry.frag", 1, 0, camera->getCameraPosition(), sizeof(glm::vec3));
 		/*
 		for (Ref<Mesh> mesh: meshList)
 		{

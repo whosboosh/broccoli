@@ -45,6 +45,7 @@ namespace Broccoli {
 
 
 		ViewProjection viewProjection;
+		LightSpace lightSpace;
 		
 		Camera* camera;
 		Window* window;

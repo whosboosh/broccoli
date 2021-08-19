@@ -315,13 +315,14 @@ namespace Broccoli {
 		imageInfo.sampler = swapChain.getTextureSampler(); // Sampler to use for set
 
 		// TODO: Refactor descriptorgroup struct so that we dont save write set like this... (only 1 vs 3 for uniforms because of swapchainimagecount)
-		VkWriteDescriptorSet& writeSet = shaderDescriptorSet.samplerDescriptors.writeDescriptorSets[0][name];
+		//VkWriteDescriptorSet& writeSet = shaderDescriptorSet.samplerDescriptors.writeDescriptorSets[0][name];
+		VkWriteDescriptorSet writeSet = {};
 		writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		writeSet.dstSet = textureDescriptorSet;
-		writeSet.dstBinding = binding;
+		writeSet.dstBinding = shaderDescriptorSet.imageSamplers[binding]->layoutBinding.binding;
 		writeSet.dstArrayElement = 0;
 		writeSet.descriptorType = shaderDescriptorSet.imageSamplers[binding]->layoutBinding.descriptorType;
-		writeSet.descriptorCount = 1;//shaderDescriptorSet.imageSamplers[binding]->arraySize;
+		writeSet.descriptorCount = shaderDescriptorSet.imageSamplers[binding]->arraySize;
 		writeSet.pImageInfo = &imageInfo;
 
 		vkUpdateDescriptorSets(logicalDevice, 1, &writeSet, 0, nullptr);
@@ -329,9 +330,6 @@ namespace Broccoli {
 		shaderDescriptorSet.samplerDescriptors.descriptorSets.push_back(textureDescriptorSet);
 
 		return shaderDescriptorSet.samplerDescriptors.descriptorSets.size() - 1;
-
-		// Update the descriptor group binding thing in ShaderLibrary
-
 	}
 
 	void VulkanShader::updateDescriptorSet(int set, int binding, uint32_t imageIndex, void* data, int size)

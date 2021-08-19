@@ -169,7 +169,9 @@ namespace Broccoli {
 
 
 		std::vector descriptorSetGroup = vulkanPipeline->getShaderLibrary()->getShaderUniformDescriptorSets(swapChain->getCurrentImageIndex()); // Add all of the uniform descriptors (multiple because of multiple sets)
-		//descriptorSetGroup.push_back(vulkanPipeline->getShaderLibrary()->getShaderSamplerDescriptorSets(mesh->getTexture().getShaderId(), mesh->getTexture().getTextureId())); // Add the sampler descriptor
+
+		//std::vector<VkDescriptorSet> descriptorSetGroup = {};
+		descriptorSetGroup.push_back(vulkanPipeline->getShaderLibrary()->getShaderSamplerDescriptorSets(mesh->getTexture().getShaderId(), mesh->getTexture().getTextureId())); // Add the sampler descriptor
 
 		vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),
 			0, static_cast<uint32_t>(descriptorSetGroup.size()),

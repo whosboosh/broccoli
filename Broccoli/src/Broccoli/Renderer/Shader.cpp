@@ -84,7 +84,7 @@ namespace Broccoli {
 			{
 				for (int i = 0; i < swapChain.getSwapChainImageCount(); i++)
 				{
-					shaderUniformDescriptorSets[i].push_back(shaderDescriptor.uniformDescriptors.descriptorSets[i]);
+					if (shaderDescriptor.uniformDescriptors.layoutBindings.size() > 0) shaderUniformDescriptorSets[i].push_back(shaderDescriptor.uniformDescriptors.descriptorSets[i]);
 				}
 			}
 		}
@@ -103,7 +103,7 @@ namespace Broccoli {
 				// Samplers (equal to the amount of textures loaded in)
 				for (int j = 0; j < shaderDescriptor.samplerDescriptors.descriptorSets.size(); j++)
 				{
-					shaderSamplerDescriptorSets[shader.second->getShaderId()].push_back(shaderDescriptor.samplerDescriptors.descriptorSets[j]);
+					if (shaderDescriptor.samplerDescriptors.layoutBindings.size() > 0) shaderSamplerDescriptorSets[shader.second->getShaderId()].push_back(shaderDescriptor.samplerDescriptors.descriptorSets[j]);
 				}
 			}
 		}

@@ -5,15 +5,14 @@ layout(location = 1) in vec2 fragTex;
 layout(location = 2) in vec3 Normal;
 layout(location = 3) in vec3 FragPos;
 layout(location = 4) in vec4 inShadowCoord;
- 
-layout(set = 1, binding = 0) uniform sampler2D textureSampler;
-//layout(set = 2, binding = 0) uniform sampler2D shadowMap;
 
 layout(location = 0) out vec4 outColour; 	// Final output colour (must also have location
-
+ 
+layout(set = 2, binding = 0) uniform sampler2D textureSampler;
+//layout(set = 2, binding = 0) uniform sampler2D shadowMap;
 
 // Uniform buffer for light
-layout(set = 0, binding = 2) uniform DirectionalLight {
+layout(set = 0, binding = 0) uniform DirectionalLight {
 	float directionX;
 	float directionY;
 	float directionZ;
@@ -24,7 +23,7 @@ layout(set = 0, binding = 2) uniform DirectionalLight {
 	float diffuseIntensity;
 } directionalLight;
 
-layout(set = 0, binding = 3) uniform CameraPosition {
+layout(set = 1, binding = 0) uniform CameraPosition {
 	vec3 cameraPos;	
 } cameraPosition;
 
