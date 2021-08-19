@@ -26,8 +26,8 @@ namespace Broccoli {
 		// Cleanup descriptor pool
 		for (int i = 0; i < shaderDescriptorSets.size(); i++)
 		{
-			vkDestroyDescriptorPool(logicalDevice, shaderDescriptorSets[i].uniformDescriptors.descriptorPool, nullptr);
-			vkDestroyDescriptorPool(logicalDevice, shaderDescriptorSets[i].samplerDescriptors.descriptorPool, nullptr);
+			vkDestroyDescriptorPool(logicalDevice, shaderDescriptorSets[i].descriptorPool, nullptr);
+			//vkDestroyDescriptorPool(logicalDevice, shaderDescriptorSets[i].samplerDescriptors.descriptorPool, nullptr);
 		}
 
 		// Loop over each "set" in this shader
@@ -155,7 +155,7 @@ namespace Broccoli {
 			VkDescriptorPoolSize poolSize = {};
 			poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 			poolSize.descriptorCount = static_cast<uint32_t>(uniformBuffer->uniformBuffer.size());
-			shaderDescriptorSet.uniformDescriptors.poolSizes.push_back(poolSize);
+			shaderDescriptorSet.poolSizes.push_back(poolSize);
 
 
 
@@ -201,7 +201,7 @@ namespace Broccoli {
 			VkDescriptorPoolSize poolSize = {};
 			poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 			poolSize.descriptorCount = 1;
-			shaderDescriptorSet.samplerDescriptors.poolSizes.push_back(poolSize); // TODO: Maybe put poolSizes in individual groups?
+			shaderDescriptorSet.poolSizes.push_back(poolSize);
 
 			std::cout << "Sampler Name: " << name << " DescriptorSet: " << descriptorSet << " Binding: " << binding << "\n";
 		}
@@ -211,17 +211,16 @@ namespace Broccoli {
 		{
 			auto& shaderDescriptorSet = shaderDescriptorSets[set];
 
-			// TODO: Refactor pool creation, only create if poolsizes is > 0 for that set
-			// Create Uniform Descriptor Pool
+			// Create Set Descriptor Pool
 			VkDescriptorPoolCreateInfo descriptorPoolInfo = {};
 			descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-			descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(shaderDescriptorSet.uniformDescriptors.poolSizes.size());
-			descriptorPoolInfo.pPoolSizes = shaderDescriptorSet.uniformDescriptors.poolSizes.data();
-			descriptorPoolInfo.maxSets = static_cast<uint32_t>(swapChain.getSwapChainImageCount());
-			VkResult result = vkCreateDescriptorPool(logicalDevice, &descriptorPoolInfo, nullptr, &shaderDescriptorSet.uniformDescriptors.descriptorPool);
+			descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(shaderDescriptorSet.poolSizes.size());
+			descriptorPoolInfo.pPoolSizes = shaderDescriptorSet.poolSizes.data();
+			descriptorPoolInfo.maxSets = MAX_OBJECTS;
+			VkResult result = vkCreateDescriptorPool(logicalDevice, &descriptorPoolInfo, nullptr, &shaderDescriptorSet.descriptorPool);
 			if (result != VK_SUCCESS)
 			{
-				throw std::runtime_error("Failed to create uniform descriptor pool!");
+				throw std::runtime_error("Failed to create descriptor pool!");
 			}
 
 			// Create Descriptor Set Layout with given bindings
@@ -253,7 +252,7 @@ namespace Broccoli {
 
 			VkDescriptorSetAllocateInfo setAllocInfo = {};
 			setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-			setAllocInfo.descriptorPool = shaderDescriptorSet.uniformDescriptors.descriptorPool; // Pool to allocate descriptor set from
+			setAllocInfo.descriptorPool = shaderDescriptorSet.descriptorPool; // Pool to allocate descriptor set from
 			setAllocInfo.descriptorSetCount = static_cast<uint32_t>(swapChain.getSwapChainImageCount()); // Number of sets to allocate
 			setAllocInfo.pSetLayouts = setLayouts.data(); // Layouts to use to allocate sets (1:1 relationship)
 
@@ -294,29 +293,17 @@ namespace Broccoli {
 
 		VkDescriptorSet textureDescriptorSet;
 
-		// Create Sampler Descriptor Pool
-		VkDescriptorPoolCreateInfo descriptorPoolInfo = {};
-		descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-		descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(shaderDescriptorSet.samplerDescriptors.poolSizes.size());
-		descriptorPoolInfo.pPoolSizes = shaderDescriptorSet.samplerDescriptors.poolSizes.data();
-		descriptorPoolInfo.maxSets = MAX_OBJECTS;
-		VkResult result = vkCreateDescriptorPool(logicalDevice, &descriptorPoolInfo, nullptr, &shaderDescriptorSet.samplerDescriptors.descriptorPool);
-		if (result != VK_SUCCESS)
-		{
-			throw std::runtime_error("Failed to create sampler descriptor pool!");
-		}
-
 		// Workaroud, normal uniform descriptors use 3 sets (1 for each swap image) - only need 1 for sampler
 		shaderDescriptorSet.samplerDescriptors.writeDescriptorSets.resize(1);
 
 		VkDescriptorSetAllocateInfo setAllocInfo = {};
 		setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-		setAllocInfo.descriptorPool = shaderDescriptorSet.samplerDescriptors.descriptorPool; // Pool to allocate descriptor set from
+		setAllocInfo.descriptorPool = shaderDescriptorSet.descriptorPool; // Pool to allocate descriptor set from
 		setAllocInfo.descriptorSetCount = 1;
 		setAllocInfo.pSetLayouts = &shaderDescriptorSet.samplerDescriptors.descriptorSetLayout; // Layouts to use to allocate sets (1:1 relationship)
 
 		// Allocate descriptor sets
-		result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, &textureDescriptorSet);
+		VkResult result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, &textureDescriptorSet);
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to allocate Descriptor Sets");
 		}

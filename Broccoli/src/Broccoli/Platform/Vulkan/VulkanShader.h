@@ -38,12 +38,12 @@ namespace Broccoli {
 		std::vector<std::unordered_map<std::string, VkWriteDescriptorSet>> writeDescriptorSets;
 		std::vector<VkDescriptorSet> descriptorSets;
 		VkDescriptorSetLayout descriptorSetLayout;
-		VkDescriptorPool descriptorPool;
-		std::vector<VkDescriptorPoolSize> poolSizes;
 	};
 
 	struct ShaderDescriptorSet
 	{
+		VkDescriptorPool descriptorPool;
+		std::vector<VkDescriptorPoolSize> poolSizes;
 		std::unordered_map<uint32_t, ImageSampler*> imageSamplers;
 		std::unordered_map<uint32_t, UniformBuffer*> uniformBuffers;
 		DescriptorGroup uniformDescriptors;
