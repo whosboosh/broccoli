@@ -116,12 +116,14 @@ namespace Broccoli {
 		glm::mat4 oldTransform = glm::scale(glm::mat4(1.0f), glm::vec3(0.4, 0.4, 0.4));
 
 		glm::mat4 mapTransform = glm::mat4(1.0f);
-		mapTransform = glm::rotate(mapTransform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		mapTransform = glm::rotate(mapTransform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		mapTransform = glm::rotate(mapTransform, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		mapTransform = glm::scale(mapTransform, glm::vec3(0.1f, 0.1f, 0.1f));
 
 		// TODO: Don't use absolute path xd
 		Ref<VulkanTexture> textureTest = Texture::create("resources/textures/brickwall.jpg", "geometry.frag", "textureSampler");
-		modelList.push_back(Ref<Model>::create("resources/models/de_dust2-cs-map/source/de_dust2/de_dust2.obj", mapTransform));
+		//modelList.push_back(Ref<Model>::create("resources/models/de_dust2-cs-map/source/de_dust2/de_dust2.obj", mapTransform, textureTest));
+		modelList.push_back(Ref<Model>::create("resources/models/dust2/source/de_dust2.fbx", mapTransform));
 		meshList.push_back(Ref<Mesh>::create(&vertices, &indices, glm::mat4(1.0f)));
 	}
 

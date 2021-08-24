@@ -19,7 +19,7 @@ namespace Broccoli {
 
 	public:
 		Model(const std::string& fileName, glm::mat4 transform);
-		Model(const std::string& fileName, glm::mat4 transform, Texture texture);
+		Model(const std::string& fileName, glm::mat4 transform, Ref<Texture> texture);
 		~Model();
 
 		void loadModel();
@@ -42,14 +42,16 @@ namespace Broccoli {
 		}
 		MeshInfo& getTransform() { return modelTransform; }
 
-		Texture& getTexture() { return texture; }
+		Ref<Texture>& getTexture() { return texture; }
 
 	private:
 		const std::string fileName;
 		const aiScene* scene;
 
 		MeshInfo modelTransform;
-		Texture texture;
+		Ref<Texture> texture;
+
+		std::vector<Ref<Texture>> matToTex;
 
 		std::vector<Ref<Mesh>> meshList;
 		std::vector<std::string> textureList;

@@ -5,17 +5,17 @@
 #include "Broccoli/Platform/Vulkan/VulkanShader.h"
 
 namespace Broccoli {
-	VulkanTexture::VulkanTexture(const std::string& fileName, const std::string& shaderName, const std::string& uniformName)
+	VulkanTexture::VulkanTexture(const std::string& filePath, const std::string& shaderName, const std::string& uniformName)
 	{
 		// TODO: Move this to Texture.cpp when using opengl later?
 		int shaderId;
 		if (shaderName.substr(shaderName.find_last_of(".") + 1, shaderName.find(".")) == "frag") shaderId = 0;
 		else shaderId = 1;
 
-		std::cout << shaderName.substr(shaderName.find_last_of(".") + 1, shaderName.find(".")) << " " << shaderId << "\n";
+		//std::cout << shaderName.substr(shaderName.find_last_of(".") + 1, shaderName.find(".")) << " " << shaderId << "\n";
 
 		this->shaderId = shaderId;
-		this->fileName = fileName;
+		this->filePath = filePath;
 
 		VulkanLogicalDevice* logicalDevice = VulkanContext::get()->getLogicalDevice();
 
@@ -27,13 +27,15 @@ namespace Broccoli {
 		Ref<VulkanPipeline> pipeline = Application::get().getRenderer().getGraphicsPipeline().As<VulkanPipeline>();
 		setTextureId(pipeline->getShaderLibrary()->getShader(shaderName).As<VulkanShader>()->updateTextureWriteBinding(1, 0, textureImage.imageView, uniformName));
 		pipeline->getShaderLibrary()->setSamplerDescriptorSetsFromShader();
+
+		std::cout << "Creating texture with fileName: " << filePath << " with texture descriptor id: "<< textureId << "\n";
 	}
 
 	void VulkanTexture::createTextureImage()
 	{
 		VulkanLogicalDevice* logicalDevice = VulkanContext::get()->getLogicalDevice();
 
-		stbi_uc* imageData = loadTextureFile(fileName, &width, &height, &imageSize);
+		stbi_uc* imageData = loadTextureFile(filePath, &width, &height, &imageSize);
 		mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
 
 		VkBuffer imageStagingBuffer;

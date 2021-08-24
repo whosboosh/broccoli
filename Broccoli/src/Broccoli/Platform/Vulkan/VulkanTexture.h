@@ -8,7 +8,7 @@ namespace Broccoli {
 	class VulkanTexture : public Texture
 	{
 	public:
-		VulkanTexture(const std::string& fileName, const std::string& shaderName, const std::string& uniformName);
+		VulkanTexture(const std::string& filePath, const std::string& shaderName, const std::string& uniformName);
 		//~VulkanTexture();
 
 		void createTextureImage();
@@ -16,7 +16,6 @@ namespace Broccoli {
 	private:
 		VkDeviceSize imageSize;
 
-		std::string fileName;
 		uint32_t mipLevels;
 
 		struct

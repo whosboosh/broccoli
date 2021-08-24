@@ -24,7 +24,7 @@ namespace Broccoli {
 
 	public:
 		Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform);
-		Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform, Texture texture);
+		Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform, Ref<Texture> texture);
 		~Mesh();
 
 		Ref<VertexBuffer>* getVertexBuffer() { return &vertexBuffer; }
@@ -39,7 +39,7 @@ namespace Broccoli {
 		void setHasTexture(bool state) { meshInfo.hasTexture = state; }
 		bool getHasTexture() { return meshInfo.hasTexture; }
 
-		Texture& getTexture() { return texture; }
+		Ref<Texture> getTexture() { return texture; }
 
 	private:
 		MeshInfo meshInfo;
@@ -50,7 +50,7 @@ namespace Broccoli {
 		Ref<VertexBuffer> vertexBuffer;
 		Ref<IndexBuffer> indexBuffer;
 
-		Texture texture;
+		Ref<Texture> texture;
 	};
 
 }

@@ -24,12 +24,16 @@ namespace Broccoli {
 		int getTextureId() { return textureId; }
 		void setTextureId(int texId) { textureId = texId; }
 
+		std::string getFilePath() { return filePath; }
+
 	private:
 
 
 	protected:
+		std::string filePath;
+
 		int shaderId;
 		int textureId;
-		int width, height;
+		int width = 0, height = 0;
 	};
 }

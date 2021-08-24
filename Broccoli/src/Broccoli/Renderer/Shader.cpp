@@ -81,10 +81,10 @@ namespace Broccoli {
 
 	void ShaderLibrary::setSamplerDescriptorSetsFromShader()
 	{
-		//2
+		shaderSamplerDescriptorSets.clear();
 		for (std::pair<std::string, Ref<Shader>> shader : currentShaders)
 		{
-			std::cout << "shader name: " << shader.second->getShaderId() << " " << shader.first << "\n";
+			//std::cout << "shader name: " << shader.second->getShaderId() << " " << shader.first << "\n";
 			// How ever many "sets" there are, usually at most 2
 			for (ShaderDescriptorSet shaderDescriptor : shader.second.As<VulkanShader>()->getShaderDescriptorSets())
 			{

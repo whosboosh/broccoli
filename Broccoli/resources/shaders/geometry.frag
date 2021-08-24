@@ -39,6 +39,6 @@ layout(push_constant) uniform PushModel {
 
 void main() 
 {
-	outColour = texture(textureSampler, fragTex) * 0.8;
+	outColour = texture(textureSampler, fragTex) * 1;
 	//outColour = vec4(fragCol, 1.0);
 }

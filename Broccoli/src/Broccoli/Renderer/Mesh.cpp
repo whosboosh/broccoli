@@ -14,7 +14,7 @@ namespace Broccoli {
 		meshInfo.hasTexture = false;
 	}
 
-	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform, Texture texture)
+	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform, Ref<Texture> texture)
 	{
 		indexCount = indices->size();
 		vertexCount = vertices->size();
@@ -26,7 +26,7 @@ namespace Broccoli {
 
 		meshInfo.transform = transform;
 		meshInfo.inverseTransform = glm::transpose(glm::inverse(transform));
-		meshInfo.hasTexture = false;
+		meshInfo.hasTexture = true;
 	}
 
 	Mesh::~Mesh()

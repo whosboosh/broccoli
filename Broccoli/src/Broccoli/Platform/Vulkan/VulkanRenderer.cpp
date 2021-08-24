@@ -24,7 +24,9 @@ namespace Broccoli {
 
 	VulkanRenderer::~VulkanRenderer()
 	{
+		shutdown();
 	}
+
 	void VulkanRenderer::init()
 	{
 		swapChain = &VulkanContext::get()->getVulkanSwapChain();
@@ -168,7 +170,12 @@ namespace Broccoli {
 		vkCmdBindIndexBuffer(swapChain->getCurrentCommandBuffer(), mesh->getIndexBuffer()->As<VulkanIndexBuffer>()->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32); // Bind mesh index buffer with 0 offset and using uint32 type
 
 		std::vector descriptorSetGroup = vulkanPipeline->getShaderLibrary()->getShaderUniformDescriptorSets(swapChain->getCurrentImageIndex()); // Add all of the uniform descriptors (multiple because of multiple sets)
-		descriptorSetGroup.push_back(vulkanPipeline->getShaderLibrary()->getShaderSamplerDescriptorSets(mesh->getTexture().getShaderId(), mesh->getTexture().getTextureId())); // Add the sampler descriptor
+		if (mesh->getMeshInfo().hasTexture) {
+			descriptorSetGroup.push_back(vulkanPipeline->getShaderLibrary()->getShaderSamplerDescriptorSets(mesh->getTexture()->getShaderId(), mesh->getTexture()->getTextureId())); // Add the sampler descriptor
+		}
+		else {
+			descriptorSetGroup.push_back(vulkanPipeline->getShaderLibrary()->getShaderSamplerDescriptorSets(0, 0)); // Use first texture loaded in
+		}
 
 		vkCmdBindDescriptorSets(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipelineLayout(),
 			0, static_cast<uint32_t>(descriptorSetGroup.size()),

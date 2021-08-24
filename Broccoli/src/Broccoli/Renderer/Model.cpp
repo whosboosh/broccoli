@@ -7,7 +7,7 @@ namespace Broccoli {
 		loadModel();
 	}
 
-	Model::Model(const std::string& fileName, glm::mat4 transform, Texture texture) : fileName(fileName)
+	Model::Model(const std::string& fileName, glm::mat4 transform, Ref<Texture> texture) : fileName(fileName)
 	{
 		setTransform(transform);
 		this->texture = texture;
@@ -27,22 +27,44 @@ namespace Broccoli {
 		loadMaterials();
 
 		// Mapping from material string values to descriptor ids
-		std::vector<int> matToTex(textureList.size());
+		matToTex.resize(textureList.size());
+
+		// Remove final contents after last / in fileName for 
+		std::string fileDirectory = fileName.substr(0, fileName.find_last_of("/"));
+		//std::cout << fileDirectory << "\n";
 
 		for (size_t i = 0; i < textureList.size(); i++) {
-			if (textureList[i].empty() && texture.getHeight() != 0)
+			if (texture != NULL)
 			{
-				matToTex[i] = texture.getTextureId(); // Use provided texture
+				matToTex[i] = texture; // Use provided texture
 			}
-			else if (textureList[i].empty()) {
+			if (textureList[i].empty()) {
 				matToTex[i] = 0; // If there are no mateirals in the model, use the first texture ever loaded in
 			}
 			else {
 				// Otherwise create texture from material name and set value to index of new texture inside sampler
-				std::cout << "Model texture path: " << textureList[i] << "\n";
-				//matToTex[i] = Texture::create(textureList[i], );
-				//matToTex[i] = texture.getTextureId();
+				//std::cout << "Creating texture with fileName: " << fileDirectory + "/textures/" + textureList[i].substr(0, textureList[i].find_last_of(".")) + ".png\n";
+				std::string filePath = fileDirectory + "/textures/" + textureList[i].substr(0, textureList[i].find_last_of(".")) + ".png";
+
+				for (Ref<Texture> tex : matToTex)
+				{
+					if (tex != NULL)
+					{
+						//std::cout << tex->getFilePath() << " : ";
+						///std::cout << filePath << "\n";
+						if (tex->getFilePath() == filePath) 
+						{
+							matToTex[i] = tex;
+							break;
+						}
+					}
+				}
+				
+				if (matToTex[i] == nullptr) {
+					matToTex[i] = Texture::create(fileDirectory + "/textures/" + textureList[i].substr(0, textureList[i].find_last_of(".")) + ".png", "geometry.frag", "textureSampler");					
+				}
 			}
+			std::cout << "\n";
 		}
 
 		loadNode(scene->mRootNode);
@@ -92,8 +114,9 @@ namespace Broccoli {
 			}
 		}
 
+		//std::cout <<"Creating mesh with material index: "<< mesh->mMaterialIndex << " " << matToTex[mesh->mMaterialIndex]->getTextureId() << "\n";
 
-		Ref<Mesh> newMesh = Ref<Mesh>::create(&vertices, &indices, modelTransform.transform);
+		Ref<Mesh> newMesh = Ref<Mesh>::create(&vertices, &indices, modelTransform.transform, matToTex[mesh->mMaterialIndex]);
 		meshList.push_back(newMesh);
 	}
 
