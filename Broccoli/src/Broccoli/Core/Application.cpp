@@ -136,9 +136,9 @@ namespace Broccoli {
 		lightSpace.lightSpace = camera->calculateViewMatrix();
 
 		renderer->updateUniform("geometry.vert", 0, 0, &viewProjection, sizeof(viewProjection));
-		renderer->updateUniform("geometry.vert", 0, 1, &lightSpace, sizeof(lightSpace));
+		renderer->updateUniform("geometry.vert", 1, 0, &lightSpace, sizeof(lightSpace));
 
-		//renderer->updateUniform("geometry.frag", 0, 1, camera->getCameraPosition(), sizeof(glm::vec3));
+		//renderer->updateUniform("geometry.frag", 2, 0, camera->getCameraPosition(), sizeof(glm::vec3));
 
 		/*
 		for (Ref<Mesh> mesh: meshList)

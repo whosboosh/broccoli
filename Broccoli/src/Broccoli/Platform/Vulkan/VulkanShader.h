@@ -34,6 +34,8 @@ namespace Broccoli {
 
 	struct DescriptorGroup
 	{
+		std::vector<VkDescriptorSetLayoutBinding> layoutBindings;
+		VkDescriptorSetLayout descriptorSetLayout;
 		std::vector<std::unordered_map<std::string, VkWriteDescriptorSet>> writeDescriptorSets;
 		std::vector<VkDescriptorSet> descriptorSets;
 		std::vector<VkDescriptorSet> samplerDescriptorSets;
@@ -41,8 +43,6 @@ namespace Broccoli {
 
 	struct ShaderDescriptorSet
 	{
-		VkDescriptorSetLayout descriptorSetLayout;
-		std::vector<VkDescriptorSetLayoutBinding> layoutBindings;
 		VkDescriptorPool descriptorPool;
 		std::vector<VkDescriptorPoolSize> poolSizes;
 		std::unordered_map<uint32_t, ImageSampler*> imageSamplers;
@@ -62,6 +62,9 @@ namespace Broccoli {
 
 		virtual const VkShaderStageFlagBits getStageFlags() const override { return stageFlags; }
 		virtual const VkPipelineShaderStageCreateInfo getShaderStageInfo() const override { return shaderStageCreateInfo; }
+
+		void allocateDescriptorSet(VkDevice logicalDevice, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, std::vector<VkDescriptorSet> descriptorSetTarget, VkDescriptorPool& descriptorPool, int descriptorCount);
+		void createDescriptorSetLayout(VkDevice logicalDevice, VkDescriptorSetLayout& descriptorSetLayout, std::vector<VkDescriptorSetLayoutBinding> &layoutBindings);
 
 		const std::vector<ShaderDescriptorSet>& getShaderDescriptorSets() const { return shaderDescriptorSets; }
 		VkPushConstantRange getPushConstantRange() { return pushConstantRange; }

@@ -12,6 +12,7 @@ layout(set = 1, binding = 0) uniform sampler2D textureSampler;
 //layout(set = 2, binding = 0) uniform sampler2D shadowMap;
 
 // Uniform buffer for light
+
 /*
 layout(set = 0, binding = 0) uniform DirectionalLight {
 	float directionX;
@@ -23,11 +24,12 @@ layout(set = 0, binding = 0) uniform DirectionalLight {
 	float ambientIntensity;
 	float diffuseIntensity;
 } directionalLight;
-*/
 
-//layout(set = 0, binding = 1) uniform CameraPosition {
-//	vec3 cameraPos;	
-//} cameraPosition;
+
+layout(set = 2, binding = 0) uniform CameraPosition {
+	vec3 cameraPos;	
+} cameraPosition;
+*/
 
 /*
 layout(push_constant) uniform PushModel {

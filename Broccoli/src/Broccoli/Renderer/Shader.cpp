@@ -88,7 +88,7 @@ namespace Broccoli {
 			// How ever many "sets" there are, usually at most 2
 			for (ShaderDescriptorSet shaderDescriptor : shader.second.As<VulkanShader>()->getShaderDescriptorSets())
 			{
-				std::cout << shader.first << " set: contains " << shaderDescriptor.samplerDescriptors.samplerDescriptorSets.size() << " samplers!\n";
+				//std::cout << shader.first << " set: contains " << shaderDescriptor.samplerDescriptors.samplerDescriptorSets.size() << " samplers!\n";
 				// Samplers (equal to the amount of textures loaded in)
 				for (int j = 0; j < shaderDescriptor.samplerDescriptors.samplerDescriptorSets.size(); j++)
 				{

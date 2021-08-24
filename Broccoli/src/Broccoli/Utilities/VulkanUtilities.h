@@ -119,9 +119,6 @@ namespace Broccoli {
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create an image view");
 		}
-		else {
-			std::cout << "Created image view\n";
-		}
 
 		return imageView;
 	}

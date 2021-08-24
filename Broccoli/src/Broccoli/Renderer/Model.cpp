@@ -64,7 +64,6 @@ namespace Broccoli {
 					matToTex[i] = Texture::create(fileDirectory + "/textures/" + textureList[i].substr(0, textureList[i].find_last_of(".")) + ".png", "geometry.frag", "textureSampler");					
 				}
 			}
-			std::cout << "\n";
 		}
 
 		loadNode(scene->mRootNode);

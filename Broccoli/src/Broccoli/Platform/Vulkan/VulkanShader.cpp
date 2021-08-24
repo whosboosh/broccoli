@@ -34,7 +34,8 @@ namespace Broccoli {
 		for (int i = 0; i < shaderDescriptorSets.size(); i++)
 		{
 			// Cleanup the layout
-			vkDestroyDescriptorSetLayout(logicalDevice, shaderDescriptorSets[i].descriptorSetLayout, nullptr);
+			vkDestroyDescriptorSetLayout(logicalDevice, shaderDescriptorSets[i].uniformDescriptors.descriptorSetLayout, nullptr);
+			vkDestroyDescriptorSetLayout(logicalDevice, shaderDescriptorSets[i].samplerDescriptors.descriptorSetLayout, nullptr);
 
 			// Loop over each uniform buffer binding for that set
 			for (int j = 0; j < shaderDescriptorSets[i].uniformBuffers.size(); j++)
@@ -148,7 +149,7 @@ namespace Broccoli {
 			layoutBinding.stageFlags = stageFlags;
 			layoutBinding.pImmutableSamplers = nullptr;
 
-			shaderDescriptorSet.layoutBindings.push_back(layoutBinding);
+			shaderDescriptorSet.uniformDescriptors.layoutBindings.push_back(layoutBinding);
 
 			// Create pool size for this uniform buffer (Used when we create the descriptor pool)
 			VkDescriptorPoolSize poolSize = {};
@@ -195,7 +196,7 @@ namespace Broccoli {
 			layoutBinding.descriptorCount = 1;
 			layoutBinding.stageFlags = stageFlags;
 			layoutBinding.pImmutableSamplers = nullptr;
-			shaderDescriptorSet.layoutBindings.push_back(layoutBinding);
+			shaderDescriptorSet.samplerDescriptors.layoutBindings.push_back(layoutBinding);
 
 			VkDescriptorPoolSize poolSize = {};
 			poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -224,60 +225,88 @@ namespace Broccoli {
 				throw std::runtime_error("Failed to create descriptor pool!");
 			}
 
-			// Create Descriptor Set Layout with given bindings
-			VkDescriptorSetLayoutCreateInfo layoutCreateInfo = {};
-			layoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-			layoutCreateInfo.bindingCount = static_cast<uint32_t>(shaderDescriptorSet.layoutBindings.size()); // Number of binding infos
-			layoutCreateInfo.pBindings = shaderDescriptorSet.layoutBindings.data(); // Pointer to binding info
-
-			result = vkCreateDescriptorSetLayout(logicalDevice, &layoutCreateInfo, nullptr, &shaderDescriptorSet.descriptorSetLayout);
-			if (result != VK_SUCCESS) {
-				throw std::runtime_error("Failed to create a Descriptor Set Layout!");
-			}
-
-			shaderDescriptorSet.uniformDescriptors.descriptorSets.resize(swapChain.getSwapChainImageCount());
-			shaderDescriptorSet.uniformDescriptors.writeDescriptorSets.resize(swapChain.getSwapChainImageCount());
-
-			std::vector<VkDescriptorSetLayout> setLayouts(swapChain.getSwapChainImageCount(), shaderDescriptorSet.descriptorSetLayout);
-
-			VkDescriptorSetAllocateInfo setAllocInfo = {};
-			setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-			setAllocInfo.descriptorPool = shaderDescriptorSet.descriptorPool; // Pool to allocate descriptor set from
-			setAllocInfo.descriptorSetCount = static_cast<uint32_t>(swapChain.getSwapChainImageCount()); // Number of sets to allocate
-			setAllocInfo.pSetLayouts = setLayouts.data(); // Layouts to use to allocate sets (1:1 relationship)
-
-			// Allocate descriptor sets
-			result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, shaderDescriptorSet.uniformDescriptors.descriptorSets.data());
-			if (result != VK_SUCCESS) {
-				throw std::runtime_error("Failed to allocate Descriptor Sets");
-			}
-
-			for (size_t i = 0; i < swapChain.getSwapChainImageCount(); i++)
+			
+			// Create descriptor set layouts for each type of shader descriptor
+			if (shaderDescriptorSet.samplerDescriptors.layoutBindings.size() > 0) createDescriptorSetLayout(logicalDevice, shaderDescriptorSet.samplerDescriptors.descriptorSetLayout, shaderDescriptorSet.samplerDescriptors.layoutBindings);
+			if (shaderDescriptorSet.uniformDescriptors.layoutBindings.size() > 0)
 			{
-				std::vector<VkWriteDescriptorSet> setWrites = {};
-				for (auto& [binding, uniformBuffer] : shaderDescriptorSet.uniformBuffers)
-				{
-					VkWriteDescriptorSet& writeSet = shaderDescriptorSet.uniformDescriptors.writeDescriptorSets[i][uniformBuffer->name];
-					writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-					writeSet.dstSet = shaderDescriptorSet.uniformDescriptors.descriptorSets[i]; // Descriptor set to update
-					writeSet.dstBinding = binding; // Binding to update (matches with binding on layout/shader)
-					writeSet.dstArrayElement = 0; // Index in array to update
-					writeSet.descriptorType = uniformBuffer->layoutBinding.descriptorType;
-					writeSet.descriptorCount = 1;
-					writeSet.pBufferInfo = &uniformBuffer->descriptor; // Information about buffer data to bind
+				createDescriptorSetLayout(logicalDevice, shaderDescriptorSet.uniformDescriptors.descriptorSetLayout, shaderDescriptorSet.uniformDescriptors.layoutBindings);
 
-					setWrites.push_back(writeSet);
+				shaderDescriptorSet.uniformDescriptors.descriptorSets.resize(swapChain.getSwapChainImageCount());
+				shaderDescriptorSet.uniformDescriptors.writeDescriptorSets.resize(swapChain.getSwapChainImageCount());
+				std::vector<VkDescriptorSetLayout> setLayouts(swapChain.getSwapChainImageCount(), shaderDescriptorSet.uniformDescriptors.descriptorSetLayout);
+
+				//allocateDescriptorSet(logicalDevice, setLayouts, *shaderDescriptorSet.uniformDescriptors.descriptorSets, shaderDescriptorSet.descriptorPool, swapChain.getSwapChainImageCount());
+
+
+				VkDescriptorSetAllocateInfo setAllocInfo = {};
+				setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+				setAllocInfo.descriptorPool = shaderDescriptorSet.descriptorPool; // Pool to allocate descriptor set from
+				setAllocInfo.descriptorSetCount = static_cast<uint32_t>(swapChain.getSwapChainImageCount()); // Number of sets to allocate
+				setAllocInfo.pSetLayouts = setLayouts.data(); // Layouts to use to allocate sets (1:1 relationship)
+
+				// Allocate descriptor sets
+				result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, shaderDescriptorSet.uniformDescriptors.descriptorSets.data());
+				if (result != VK_SUCCESS) {
+					throw std::runtime_error("Failed to allocate uniform descriptor Sets");
 				}
 
-				vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(setWrites.size()), setWrites.data(), 0, nullptr);
+				for (size_t i = 0; i < swapChain.getSwapChainImageCount(); i++)
+				{
+					std::vector<VkWriteDescriptorSet> setWrites = {};
+					for (auto& [binding, uniformBuffer] : shaderDescriptorSet.uniformBuffers)
+					{
+						VkWriteDescriptorSet& writeSet = shaderDescriptorSet.uniformDescriptors.writeDescriptorSets[i][uniformBuffer->name];
+						writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+						writeSet.dstSet = shaderDescriptorSet.uniformDescriptors.descriptorSets[i]; // Descriptor set to update
+						writeSet.dstBinding = binding; // Binding to update (matches with binding on layout/shader)
+						writeSet.dstArrayElement = 0; // Index in array to update
+						writeSet.descriptorType = uniformBuffer->layoutBinding.descriptorType;
+						writeSet.descriptorCount = 1;
+						writeSet.pBufferInfo = &uniformBuffer->descriptor; // Information about buffer data to bind
+
+						setWrites.push_back(writeSet);
+					}
+
+					vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(setWrites.size()), setWrites.data(), 0, nullptr);
+				}
 			}
+			
+		}
+	}
+
+	void VulkanShader::allocateDescriptorSet(VkDevice logicalDevice, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, std::vector<VkDescriptorSet> descriptorSetTarget, VkDescriptorPool& descriptorPool, int descriptorCount)
+	{
+		VkDescriptorSetAllocateInfo setAllocInfo = {};
+		setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		setAllocInfo.descriptorPool = descriptorPool; // Pool to allocate descriptor set from
+		setAllocInfo.descriptorSetCount = descriptorCount; // Number of sets to allocate
+		setAllocInfo.pSetLayouts = descriptorSetLayouts.data(); // Layouts to use to allocate sets (1:1 relationship)
+
+		// Allocate descriptor sets
+		VkResult result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, descriptorSetTarget.data());
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to allocate Descriptor Sets");
+		}
+	}
+
+	void VulkanShader::createDescriptorSetLayout(VkDevice logicalDevice, VkDescriptorSetLayout& descriptorSetLayout, std::vector<VkDescriptorSetLayoutBinding>& layoutBindings)
+	{
+		VkDescriptorSetLayoutCreateInfo layoutCreateInfo = {};
+		layoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		layoutCreateInfo.bindingCount = static_cast<uint32_t>(layoutBindings.size()); // Number of binding infos
+		layoutCreateInfo.pBindings = layoutBindings.data(); // Pointer to binding info
+
+		VkResult result = vkCreateDescriptorSetLayout(logicalDevice, &layoutCreateInfo, nullptr, &descriptorSetLayout);
+		if (result != VK_SUCCESS) {
+			throw std::runtime_error("Failed to create the uniform descriptor set layout!");
 		}
 	}
 
 	// name is the name of the descriptor in shader (e.g. textureSampler)
 	int VulkanShader::updateTextureWriteBinding(int set, int binding, VkImageView textureImageView, const std::string& name)
 	{
-		std::cout << "Creating texture descriptor for set: " << set << "binding: " << binding << " called: " << name << "\n";
+		//std::cout << "Creating texture descriptor for set: " << set << "binding: " << binding << " called: " << name << "\n";
 
 		VkDevice logicalDevice = VulkanContext::get()->getLogicalDevice()->getLogicalDevice();
 		VulkanSwapchain swapChain = VulkanContext::get()->getVulkanSwapChain();
@@ -285,18 +314,20 @@ namespace Broccoli {
 
 		VkDescriptorSet textureDescriptorSet;
 
+		std::vector<VkDescriptorSetLayout> setLayouts(shaderDescriptorSet.samplerDescriptors.descriptorSetLayout);
+		//std::vector<VkDescriptorSet> descriptorSet(textureDescriptorSet);
+		//allocateDescriptorSet(logicalDevice, setLayouts, shaderDescriptorSet.samplerDescriptors.samplerDescriptorSets, shaderDescriptorSet.descriptorPool, 1);
+
+		// Allocate descriptor sets
 		VkDescriptorSetAllocateInfo setAllocInfo = {};
 		setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 		setAllocInfo.descriptorPool = shaderDescriptorSet.descriptorPool; // Pool to allocate descriptor set from
 		setAllocInfo.descriptorSetCount = 1;
-		setAllocInfo.pSetLayouts = &shaderDescriptorSet.descriptorSetLayout; // Layouts to use to allocate sets (1:1 relationship)
-
-		// Allocate descriptor sets
+		setAllocInfo.pSetLayouts = &shaderDescriptorSet.samplerDescriptors.descriptorSetLayout; // Layouts to use to allocate sets (1:1 relationship)
 		VkResult result = vkAllocateDescriptorSets(logicalDevice, &setAllocInfo, &textureDescriptorSet);
 		if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to allocate Descriptor Sets");
 		}
-
 
 		// Texture image info
 		VkDescriptorImageInfo imageInfo = {};

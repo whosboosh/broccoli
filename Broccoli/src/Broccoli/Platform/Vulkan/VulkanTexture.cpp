@@ -28,7 +28,7 @@ namespace Broccoli {
 		setTextureId(pipeline->getShaderLibrary()->getShader(shaderName).As<VulkanShader>()->updateTextureWriteBinding(1, 0, textureImage.imageView, uniformName));
 		pipeline->getShaderLibrary()->setSamplerDescriptorSetsFromShader();
 
-		std::cout << "Creating texture with fileName: " << filePath << " with texture descriptor id: "<< textureId << "\n";
+		//std::cout << "Created texture with fileName: " << filePath << " with texture descriptor id: "<< textureId << "\n";
 	}
 
 	void VulkanTexture::createTextureImage()
