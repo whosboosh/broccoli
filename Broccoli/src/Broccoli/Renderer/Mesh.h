@@ -34,7 +34,7 @@ namespace Broccoli {
 		int getVertexCount() { return vertexCount; };
 		
 		void setTransform(glm::mat4 newModel);
-		MeshInfo& getMeshInfo() { return meshInfo; }
+		MeshInfo& getTransform() { return meshInfo; }
 
 		void setHasTexture(bool state) { meshInfo.hasTexture = state; }
 		bool getHasTexture() { return meshInfo.hasTexture; }

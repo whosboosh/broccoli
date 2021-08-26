@@ -36,6 +36,8 @@ namespace Broccoli {
 		virtual void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh) override;
 		virtual void renderModel(Ref<Pipeline> pipeline, Ref<Model> model) override;
 
+		void drawObject(Ref<Pipeline> pipeline, Ref<Mesh> mesh, MeshInfo transform);
+
 		void recreateSwapChain();
 
 	private:

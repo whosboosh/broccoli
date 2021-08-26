@@ -156,9 +156,21 @@ namespace Broccoli {
 
 	void VulkanRenderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh)
 	{
-		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
+		drawObject(pipeline, mesh, mesh->getTransform());
+	}
 
-		MeshInfo modelTransform = mesh->getMeshInfo();
+	void VulkanRenderer::renderModel(Ref<Pipeline> pipeline, Ref<Model> model)
+	{
+		for (size_t i = 0; i < model->getMeshCount(); i++)
+		{
+			Ref<Mesh> mesh = model->getMesh(i)->As<Mesh>();
+			drawObject(pipeline, mesh, model->getTransform());
+		}
+	}
+
+	void VulkanRenderer::drawObject(Ref<Pipeline> pipeline, Ref<Mesh> mesh, MeshInfo transform)
+	{
+		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
 
 		// Potentially move binding pipeline out to its own function if multiple meshes all use the same pipeline, dont need to keep rebinding it
 		vkCmdBindPipeline(swapChain->getCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->getVulkanPipeline());
@@ -170,7 +182,7 @@ namespace Broccoli {
 		vkCmdBindIndexBuffer(swapChain->getCurrentCommandBuffer(), mesh->getIndexBuffer()->As<VulkanIndexBuffer>()->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32); // Bind mesh index buffer with 0 offset and using uint32 type
 
 		std::vector descriptorSetGroup = vulkanPipeline->getShaderLibrary()->getShaderUniformDescriptorSets(swapChain->getCurrentImageIndex()); // Add all of the uniform descriptors (multiple because of multiple sets)
-		if (mesh->getMeshInfo().hasTexture) {
+		if (mesh->getTransform().hasTexture) {
 			descriptorSetGroup.push_back(vulkanPipeline->getShaderLibrary()->getShaderSamplerDescriptorSets(mesh->getTexture()->getShaderId(), mesh->getTexture()->getTextureId())); // Add the sampler descriptor
 		}
 		else {
@@ -183,21 +195,10 @@ namespace Broccoli {
 
 		for (const VkPushConstantRange& pushConstantRange : vulkanPipeline->getShaderLibrary()->getPushConstantRanges())
 		{
-			vkCmdPushConstants(swapChain->getCurrentCommandBuffer(), vulkanPipeline->getVulkanPipelineLayout(), pushConstantRange.stageFlags, pushConstantRange.offset, pushConstantRange.size, &modelTransform);
+			vkCmdPushConstants(swapChain->getCurrentCommandBuffer(), vulkanPipeline->getVulkanPipelineLayout(), pushConstantRange.stageFlags, pushConstantRange.offset, pushConstantRange.size, &transform);
 		}
 
 		vkCmdDrawIndexed(swapChain->getCurrentCommandBuffer(), mesh->getIndexCount(), 1, 0, 0, 0);
-	}
-
-	void VulkanRenderer::renderModel(Ref<Pipeline> pipeline, Ref<Model> model)
-	{
-		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
-
-		for (size_t i = 0; i < model->getMeshCount(); i++)
-		{
-			Ref<Mesh> mesh = model->getMesh(i)->As<Mesh>();
-			renderMesh(pipeline, mesh);
-		}
 	}
 
 	void VulkanRenderer::shutdown()

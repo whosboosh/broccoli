@@ -20,5 +20,19 @@ namespace Broccoli
 
 	Entity::~Entity()
 	{
+		delete &mesh;
+		delete &model;
+	}
+
+	void Entity::act()
+	{
+		if(hasGravity) actGravity();
+	}
+
+	void Entity::actGravity()
+	{
+		// Boundary checking (TODO: Add bounding boxes to entities)
+
+		
 	}
 }

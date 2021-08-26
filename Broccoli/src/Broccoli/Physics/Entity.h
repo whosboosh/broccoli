@@ -15,6 +15,11 @@ namespace Broccoli
 		Ref<Model> getModel() { return model; }
 		Ref<Model> getMesh() { return mesh; }
 
+		// Carry out per frame actions for this entity
+		// E.g. affected by gravity or animation
+		void act();
+		void actGravity();
+
 	private:
 		Ref<Model> model;
 		Ref<Mesh> mesh;

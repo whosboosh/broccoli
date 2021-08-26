@@ -173,7 +173,7 @@ namespace Broccoli {
 			if (!isMinimised)
 			{
 				processEvents();
-				// Update descriptor sets
+
 				updateUniforms();
 
 				//std::cout << "New Frame " << frameCounter << "\n";
@@ -185,6 +185,7 @@ namespace Broccoli {
 
 				for (Entity* entity : entityList)
 				{
+					entity->act(); // Animate, Physiscs etc
 					renderer->renderEntity(renderer->getGraphicsPipeline(), entity);
 				}
 
