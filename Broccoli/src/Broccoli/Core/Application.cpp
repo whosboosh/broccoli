@@ -23,6 +23,8 @@
 #include "Broccoli/Renderer/Texture.h"
 #include "Broccoli/Platform/Vulkan/VulkanTexture.h"
 
+#include "Broccoli/Physics/Entity.h"
+
 namespace Broccoli {
 
 	Application* Application::appInstance = nullptr;
@@ -122,9 +124,11 @@ namespace Broccoli {
 
 		// TODO: Don't use absolute path xd
 		Ref<VulkanTexture> textureTest = Texture::create("resources/textures/brickwall.jpg", "geometry.frag", "textureSampler");
-		//modelList.push_back(Ref<Model>::create("resources/models/de_dust2-cs-map/source/de_dust2/de_dust2.obj", mapTransform, textureTest));
-		modelList.push_back(Ref<Model>::create("resources/models/dust2/source/de_dust2.fbx", mapTransform));
-		meshList.push_back(Ref<Mesh>::create(&vertices, &indices, glm::mat4(1.0f)));
+		//modelList.push_back(Ref<Model>::create("resources/models/dust2/source/de_dust2.fbx", mapTransform));
+		//meshList.push_back(Ref<Mesh>::create(&vertices, &indices, glm::mat4(1.0f)));
+
+		entityList.push_back(new Entity(Ref<Mesh>::create(&vertices, &indices, glm::mat4(1.0f)), 1, 0.0f, 1)); // Testing character entity (cube)
+		entityList.push_back(new Entity(Ref<Model>::create("resources/models/dust2/source/de_dust2.fbx", mapTransform), 1, 0.0f, 0)); // Map entity
 	}
 
 	void Application::updateUniforms()
@@ -134,21 +138,11 @@ namespace Broccoli {
 		viewProjection.view = camera->calculateViewMatrix();
 
 		lightSpace.lightSpace = camera->calculateViewMatrix();
-
+			
 		renderer->updateUniform("geometry.vert", 0, 0, &viewProjection, sizeof(viewProjection));
-		renderer->updateUniform("geometry.vert", 1, 0, &lightSpace, sizeof(lightSpace));
+		renderer->updateUniform("geometry.vert", 0, 1, &lightSpace, sizeof(lightSpace));
 
-		//renderer->updateUniform("geometry.frag", 2, 0, camera->getCameraPosition(), sizeof(glm::vec3));
-
-		/*
-		for (Ref<Mesh> mesh: meshList)
-		{
-			renderer->updateUniform("geometry.vert", 0, 1, &mesh->getMeshInfo(), sizeof(mesh->getMeshInfo()));
-		}
-		for (Ref<Model> model : modelList)
-		{
-			/renderer->updateUniform("geometry.vert", 0, 1, &model->getTransform(), sizeof(model->getTransform()));
-		}*/
+		//renderer->updateUniform("geometry.frag", 0, 1, camera->getCameraPosition(), sizeof(glm::vec3));
 	}
 
 	void Application::processEvents()
@@ -189,13 +183,9 @@ namespace Broccoli {
 				
 				renderer->beginRenderPass();
 
-				for (Ref<Mesh> mesh : meshList)
+				for (Entity* entity : entityList)
 				{
-					renderer->renderMesh(renderer->getGraphicsPipeline(), mesh);
-				}
-				for (Ref<Model> model : modelList)
-				{
-					renderer->renderModel(renderer->getGraphicsPipeline(), model);
+					renderer->renderEntity(renderer->getGraphicsPipeline(), entity);
 				}
 
 				renderer->endRenderPass();

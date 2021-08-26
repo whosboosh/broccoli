@@ -42,6 +42,7 @@ namespace Broccoli {
 	private:
 		std::vector<Ref<Mesh>> meshList;
 		std::vector<Ref<Model>> modelList;
+		std::vector<Entity*> entityList;
 
 
 		ViewProjection viewProjection;

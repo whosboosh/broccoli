@@ -27,6 +27,7 @@
     <ClInclude Include="src\Broccoli\Core\Camera.h" />
     <ClInclude Include="src\Broccoli\Core\Ref.h" />
     <ClInclude Include="src\Broccoli\Core\Window.h" />
+    <ClInclude Include="src\Broccoli\Physics\Entity.h" />
     <ClInclude Include="src\Broccoli\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanContext.h" />
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanDevice.h" />
@@ -59,6 +60,7 @@
     <ClCompile Include="src\Broccoli\Core\Camera.cpp" />
     <ClCompile Include="src\Broccoli\Core\Window.cpp" />
     <ClCompile Include="src\Broccoli\EntryPoint.cpp" />
+    <ClCompile Include="src\Broccoli\Physics\Entity.cpp" />
     <ClCompile Include="src\Broccoli\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanContext.cpp" />
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanDevice.cpp" />

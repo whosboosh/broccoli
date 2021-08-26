@@ -9,6 +9,7 @@
 #include "Broccoli/Renderer/Pipeline.h"
 #include "Broccoli/Renderer/Mesh.h"
 #include "Broccoli/Renderer/Model.h"
+#include "Broccoli/Physics/Entity.h"
 
 #include "Broccoli/Platform/Vulkan/VulkanPipeline.h"
 
@@ -42,6 +43,7 @@ namespace Broccoli {
 
 		void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh);
 		void renderModel (Ref<Pipeline> pipeline, Ref<Model> model);
+		void renderEntity(Ref<Pipeline> pipeline, Entity* entity);
 
 	private:
 		Ref<Pipeline> graphicsPipeline;

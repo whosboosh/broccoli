@@ -43,6 +43,9 @@
     <Filter Include="Source Files\Asset">
       <UniqueIdentifier>{765c68af-3bfe-4dff-9f97-f10931af7e75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Physics">
+      <UniqueIdentifier>{c116ec42-0e91-476e-afb9-592fb8e84a2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VulkanInitializers.hpp">
@@ -147,6 +150,9 @@
     <ClInclude Include="src\Broccoli\Platform\Vulkan\VulkanTexture.h">
       <Filter>Source Files\Platform\Vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="src\Broccoli\Physics\Entity.h">
+      <Filter>Source Files\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanContext.cpp">
@@ -250,6 +256,9 @@
     </ClCompile>
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanTexture.cpp">
       <Filter>Source Files\Platform\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Physics\Entity.cpp">
+      <Filter>Source Files\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
