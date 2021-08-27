@@ -1,5 +1,9 @@
 #include "Entity.h"
 
+#include <glm/glm.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 namespace Broccoli
 {
 	Entity::Entity(Ref<Model> model, bool canCollide, bool initialVelocity, bool hasGravity)
@@ -32,7 +36,8 @@ namespace Broccoli
 	void Entity::actGravity()
 	{
 		// Boundary checking (TODO: Add bounding boxes to entities)
-
+		if (mesh) mesh->setTransform(glm::translate(mesh->getTransform().transform, glm::vec3(0.0f, -0.01f, 0.0f)));
+		else model->setTransform(glm::translate(model->getTransform().transform, glm::vec3(0.0f, -0.01f, 0.0f)));
 		
 	}
 }

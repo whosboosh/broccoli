@@ -3,6 +3,8 @@
 #include "Broccoli/Asset/Asset.h"
 #include "Broccoli/Renderer/Mesh.h"
 
+#include "Broccoli/Renderer/RenderObject.h"
+
 #include "Broccoli/Renderer/Texture.h"
 
 #include <assimp/Importer.hpp>
@@ -14,7 +16,7 @@
 #include <glm/glm.hpp>
 
 namespace Broccoli {
-	class Model : public Asset
+	class Model : public RenderObject
 	{
 
 	public:
@@ -35,12 +37,6 @@ namespace Broccoli {
 			}
 			return &meshList[index];
 		}
-
-		void setTransform(glm::mat4 transform) { 
-			modelTransform.transform = transform; 
-			modelTransform.inverseTransform = glm::transpose(glm::inverse(transform));
-		}
-		MeshInfo& getTransform() { return modelTransform; }
 
 		Ref<Texture>& getTexture() { return texture; }
 

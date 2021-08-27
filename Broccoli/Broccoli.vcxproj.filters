@@ -153,6 +153,9 @@
     <ClInclude Include="src\Broccoli\Physics\Entity.h">
       <Filter>Source Files\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="src\Broccoli\Renderer\RenderObject.h">
+      <Filter>Source Files\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Broccoli\Platform\Vulkan\VulkanContext.cpp">
@@ -259,6 +262,9 @@
     </ClCompile>
     <ClCompile Include="src\Broccoli\Physics\Entity.cpp">
       <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Broccoli\Renderer\RenderObject.cpp">
+      <Filter>Source Files\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
