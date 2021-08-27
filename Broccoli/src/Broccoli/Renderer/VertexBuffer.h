@@ -41,5 +41,10 @@ namespace Broccoli {
 
 		// Vulkan Specific
 		virtual VkBuffer getVertexBuffer() = 0;
+
+		std::vector<Vertex>* getVertices() { return vertices; };
+
+	protected:
+		std::vector<Vertex>* vertices;
 	};
 }
