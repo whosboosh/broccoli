@@ -154,21 +154,23 @@ namespace Broccoli {
 		shader->updateDescriptorSet(set, binding, swapChain->getCurrentImageIndex(), data, size);
 	}
 
-	void VulkanRenderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh)
+	void VulkanRenderer::renderMesh(Ref<Pipeline> pipeline, Mesh* mesh)
 	{
+		std::cout << glm::to_string(mesh->getTransform().transform) << "\n";
+
 		drawObject(pipeline, mesh, mesh->getTransform());
 	}
 
-	void VulkanRenderer::renderModel(Ref<Pipeline> pipeline, Ref<Model> model)
+	void VulkanRenderer::renderModel(Ref<Pipeline> pipeline, Model* model)
 	{
 		for (size_t i = 0; i < model->getMeshCount(); i++)
 		{
-			Ref<Mesh> mesh = model->getMesh(i)->As<Mesh>();
+			Mesh* mesh = model->getMesh(i);
 			drawObject(pipeline, mesh, model->getTransform());
 		}
 	}
 
-	void VulkanRenderer::drawObject(Ref<Pipeline> pipeline, Ref<Mesh> mesh, MeshInfo transform)
+	void VulkanRenderer::drawObject(Ref<Pipeline> pipeline, Mesh* mesh, MeshInfo transform)
 	{
 		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
 

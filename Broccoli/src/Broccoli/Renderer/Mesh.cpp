@@ -9,9 +9,8 @@ namespace Broccoli {
 		vertexBuffer = VertexBuffer::create(vertices);
 		indexBuffer = IndexBuffer::create(indices);
 
-		meshInfo.transform = transform;
-		meshInfo.inverseTransform = glm::transpose(glm::inverse(transform));
-		meshInfo.hasTexture = false;
+		setTransform(transform);
+		setAssetType(AssetType::Mesh);
 	}
 
 	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform, Ref<Texture> texture)
@@ -24,19 +23,11 @@ namespace Broccoli {
 		vertexBuffer = VertexBuffer::create(vertices);
 		indexBuffer = IndexBuffer::create(indices);
 
-		meshInfo.transform = transform;
-		meshInfo.inverseTransform = glm::transpose(glm::inverse(transform));
-		meshInfo.hasTexture = true;
+		setTransform(transform);
+		setAssetType(AssetType::Mesh);
 	}
 
 	Mesh::~Mesh()
 	{
-	}
-
-
-	void Mesh::setTransform(glm::mat4 newModel)
-	{
-		meshInfo.transform = newModel;
-		meshInfo.inverseTransform = glm::transpose(glm::inverse(newModel));
 	}
 }

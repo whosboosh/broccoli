@@ -5,6 +5,8 @@
 
 #include "Broccoli/Renderer/Texture.h"
 
+#include "Broccoli/Renderer/RenderObject.h"
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -12,9 +14,10 @@
 #include <vector>
 
 #include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 namespace Broccoli {
-	class Model : public Asset
+	class Model : public RenderObject
 	{
 
 	public:
@@ -29,18 +32,12 @@ namespace Broccoli {
 
 		size_t getMeshCount() { return meshList.size(); };
 
-		Ref<Mesh>* getMesh(size_t index) {
+		Mesh* getMesh(size_t index) {
 			if (index >= meshList.size()) {
 				throw std::runtime_error("Attempted to access invalid Mesh index");
 			}
-			return &meshList[index];
+			return meshList[index];
 		}
-
-		void setTransform(glm::mat4 transform) { 
-			modelTransform.transform = transform; 
-			modelTransform.inverseTransform = glm::transpose(glm::inverse(transform));
-		}
-		MeshInfo& getTransform() { return modelTransform; }
 
 		Ref<Texture>& getTexture() { return texture; }
 
@@ -48,12 +45,11 @@ namespace Broccoli {
 		const std::string fileName;
 		const aiScene* scene;
 
-		MeshInfo modelTransform;
 		Ref<Texture> texture;
 
 		std::vector<Ref<Texture>> matToTex;
 
-		std::vector<Ref<Mesh>> meshList;
+		std::vector<Mesh*> meshList;
 		std::vector<std::string> textureList;
 	};
 

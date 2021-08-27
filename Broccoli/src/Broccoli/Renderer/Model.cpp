@@ -3,16 +3,21 @@
 namespace Broccoli {
 	Model::Model(const std::string& fileName, glm::mat4 transform) : fileName(fileName)
 	{
-		setTransform(transform);
+
 		loadModel();
+
+		setTransform(transform);
+		setAssetType(AssetType::Model);
 	}
 
 	Model::Model(const std::string& fileName, glm::mat4 transform, Ref<Texture> texture) : fileName(fileName)
 	{
-		setTransform(transform);
 		this->texture = texture;
 
 		loadModel();
+
+		setTransform(transform);
+		setAssetType(AssetType::Model);
 	}
 
 	void Model::loadModel()
@@ -115,7 +120,8 @@ namespace Broccoli {
 
 		//std::cout <<"Creating mesh with material index: "<< mesh->mMaterialIndex << " " << matToTex[mesh->mMaterialIndex]->getTextureId() << "\n";
 
-		Ref<Mesh> newMesh = Ref<Mesh>::create(&vertices, &indices, modelTransform.transform, matToTex[mesh->mMaterialIndex]);
+		Mesh* newMesh = new Mesh(&vertices, &indices, transform.transform, matToTex[mesh->mMaterialIndex]); // TODO: cleanup meshes when model is destroyed
+
 		meshList.push_back(newMesh);
 	}
 
@@ -148,6 +154,10 @@ namespace Broccoli {
 
 	Model::~Model()
 	{
+		for (auto& mesh : meshList)
+		{
+			delete mesh;
+		}
 	}
 
 }

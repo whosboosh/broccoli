@@ -6,20 +6,16 @@
 #include "Broccoli/Renderer/IndexBuffer.h"
 #include "Broccoli/Renderer/Texture.h"
 
+#include "Broccoli/Renderer/RenderObject.h"
+
 #include <vector>
 
 #include <glm/glm.hpp>
 
 namespace Broccoli {
-	struct MeshInfo {
-		glm::mat4 transform;
-		glm::mat4 inverseTransform;
-		bool hasTexture;
-	};
-
 	// Mesh is a collection of vertices
 	// This class will contain functions like getting the vertex buffers and index buffers
-	class Mesh : public Asset
+	class Mesh : public RenderObject
 	{
 
 	public:
@@ -32,18 +28,13 @@ namespace Broccoli {
 
 		int getIndexCount() { return indexCount; };
 		int getVertexCount() { return vertexCount; };
-		
-		void setTransform(glm::mat4 newModel);
-		MeshInfo& getTransform() { return meshInfo; }
 
-		void setHasTexture(bool state) { meshInfo.hasTexture = state; }
-		bool getHasTexture() { return meshInfo.hasTexture; }
+		void setHasTexture(bool state) { transform.hasTexture = state; }
+		bool getHasTexture() { return transform.hasTexture; }
 
 		Ref<Texture> getTexture() { return texture; }
 
 	private:
-		MeshInfo meshInfo;
-
 		int vertexCount;
 		int indexCount;
 

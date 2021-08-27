@@ -48,6 +48,7 @@
     <ClInclude Include="src\Broccoli\Renderer\Renderer.h" />
     <ClInclude Include="src\Broccoli\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Broccoli\Renderer\RendererContext.h" />
+    <ClInclude Include="src\Broccoli\Renderer\RenderObject.h" />
     <ClInclude Include="src\Broccoli\Renderer\Shader.h" />
     <ClInclude Include="src\Broccoli\Renderer\Texture.h" />
     <ClInclude Include="src\Broccoli\Renderer\VertexBuffer.h" />
@@ -79,6 +80,7 @@
     <ClCompile Include="src\Broccoli\Renderer\Pipeline.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\RendererContext.cpp" />
+    <ClCompile Include="src\Broccoli\Renderer\RenderObject.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Shader.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\Texture.cpp" />
     <ClCompile Include="src\Broccoli\Renderer\VertexBuffer.cpp" />

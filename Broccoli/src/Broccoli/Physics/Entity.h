@@ -1,28 +1,28 @@
 #pragma once
 
+#include "Broccoli/Renderer/Mesh.h"
 #include "Broccoli/Renderer/Model.h"
 #include "Broccoli/Core/Ref.h"
 
 namespace Broccoli
 {
-	class Entity
+	class Entity : Asset
 	{
 	public:
-		Entity(Ref<Mesh> mesh, bool canCollide, bool initialVelocity, bool hasGravity);
-		Entity(Ref<Model> model, bool canCollide, bool initialVelocity, bool hasGravity);
+		Entity(Mesh* object, bool canCollide, bool initialVelocity, bool hasGravity);
+		Entity(Model* object, bool canCollide, bool initialVelocity, bool hasGravity);
 		~Entity();
 
-		Ref<Model> getModel() { return model; }
-		Ref<Model> getMesh() { return mesh; }
-
-		// Carry out per frame actions for this entity
-		// E.g. affected by gravity or animation
+		// Carry out per frame actions for this entity, E.g. affected by gravity or animation
 		void act();
 		void actGravity();
 
+		RenderObject* getRenderObject() { return object; }
+
 	private:
-		Ref<Model> model;
-		Ref<Mesh> mesh;
+		MeshInfo transform;
+
+		RenderObject* object;
 
 		bool hasGravity = true;
 		float velocity = 0.0f;

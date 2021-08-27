@@ -39,8 +39,8 @@ namespace Broccoli {
 
 		virtual void updateUniform(const std::string& name, int set, int binding, void* data, int size) = 0;
 
-		virtual void renderModel(Ref<Pipeline> pipeline, Ref<Model> model) = 0;
-		virtual void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh) = 0;
+		virtual void renderModel(Ref<Pipeline> pipeline, Model* model) = 0;
+		virtual void renderMesh(Ref<Pipeline> pipeline, Mesh* mesh) = 0;
 
 		// Render mesh etc...
 		static RendererAPIType getCurrent() { return currentRenderer; }

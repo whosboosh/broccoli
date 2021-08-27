@@ -2,26 +2,26 @@
 
 namespace Broccoli
 {
-	Entity::Entity(Ref<Model> model, bool canCollide, bool initialVelocity, bool hasGravity)
+	Entity::Entity(Model* model, bool canCollide, bool initialVelocity, bool hasGravity)
 	{
-		this->model = model;
+		this->object = renderObject;
 		this->canCollide = canCollide;
 		this->velocity = initialVelocity;
 		this->hasGravity = hasGravity;
 	}
 
-	Entity::Entity(Ref<Mesh> mesh, bool canCollide, bool initialVelocity, bool hasGravity)
+	Entity::Entity(Mesh* mesh, bool canCollide, bool initialVelocity, bool hasGravity)
 	{
-		this->mesh = mesh;
+		this->object = renderObject;
 		this->canCollide = canCollide;
 		this->velocity = initialVelocity;
 		this->hasGravity = hasGravity;
 	}
+
 
 	Entity::~Entity()
 	{
-		delete &mesh;
-		delete &model;
+
 	}
 
 	void Entity::act()
@@ -32,7 +32,7 @@ namespace Broccoli
 	void Entity::actGravity()
 	{
 		// Boundary checking (TODO: Add bounding boxes to entities)
-
+		object->setTransform(object->getTransform().transform);
 		
 	}
 }

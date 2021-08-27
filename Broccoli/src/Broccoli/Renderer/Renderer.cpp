@@ -95,12 +95,12 @@ namespace Broccoli {
 		renderAPI->updateUniform(name, set, binding, data, size);
 	}
 
-	void Renderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh)
+	void Renderer::renderMesh(Ref<Pipeline> pipeline, Mesh* mesh)
 	{
 		renderAPI->renderMesh(pipeline, mesh);
 	}
 
-	void Renderer::renderModel(Ref<Pipeline> pipeline, Ref<Model> model)
+	void Renderer::renderModel(Ref<Pipeline> pipeline, Model* model)
 	{
 		renderAPI->renderModel(pipeline, model);
 	}
@@ -109,12 +109,16 @@ namespace Broccoli {
 	// Entity is an engine concept that contains a mesh/model for cleaner abstraction
 	void Renderer::renderEntity(Ref<Pipeline> pipeline, Entity* entity)
 	{
-		if (entity->getModel())
+		std::cout << glm::to_string(entity->getRenderObject()->getTransform().transform) << "\n";
+
+		if (entity->getRenderObject()->getAssetType() == AssetType::Mesh)
 		{
-			renderAPI->renderModel(pipeline, entity->getModel());
+
+			//renderAPI->renderMesh(pipeline, dynamic_cast<Mesh*>(entity));
 		}
-		else if (entity->getMesh()){
-			renderAPI->renderMesh(pipeline, entity->getMesh());
+		else if (entity->getRenderObject()->getAssetType() == AssetType::Model)
+		{
+		//	renderAPI->renderModel(pipeline, dynamic_cast<Model*>(entity));
 		}
 	}
 
