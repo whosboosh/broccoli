@@ -145,6 +145,13 @@ namespace Broccoli {
 		}
 	}
 
+	void Model::calculateBoundingBox()
+	{
+		// Use trig to find the angle of the sloped surface between 2 points
+		// At any point along the sloped surface (from 2 points), calculate the height of that point by going down until the slope is hit
+		// Slope height is equal to 
+	}
+
 
 	Model::~Model()
 	{

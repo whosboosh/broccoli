@@ -24,7 +24,7 @@ namespace Broccoli {
 		}
 		MeshInfo& getTransform() { return transform; }
 
-		void calculateBoundingBox();
+		virtual void calculateBoundingBox() = 0;
 
 	protected:
 		MeshInfo transform;

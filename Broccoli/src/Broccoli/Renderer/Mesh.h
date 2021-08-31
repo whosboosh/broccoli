@@ -32,7 +32,11 @@ namespace Broccoli {
 		void setHasTexture(bool state) { this->transform.hasTexture = state; }
 		bool getHasTexture() { return this->transform.hasTexture; }
 
+		virtual void calculateBoundingBox() override;
+
 		Ref<Texture> getTexture() { return texture; }
+
+		std::vector<Vertex> boundingBox = {};
 
 	private:
 		int vertexCount;
@@ -42,6 +46,8 @@ namespace Broccoli {
 		Ref<IndexBuffer> indexBuffer;
 
 		Ref<Texture> texture;
+
+
 	};
 
 }

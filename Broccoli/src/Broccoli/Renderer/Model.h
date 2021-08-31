@@ -38,6 +38,8 @@ namespace Broccoli {
 			return &meshList[index];
 		}
 
+		virtual void calculateBoundingBox() override;
+
 		Ref<Texture>& getTexture() { return texture; }
 
 	private:
