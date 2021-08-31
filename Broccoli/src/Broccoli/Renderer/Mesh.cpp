@@ -47,71 +47,80 @@ namespace Broccoli {
 		// 4 is bottom (y < current y)
 		// 5 is top (y > current y)
 
-		int lowestZ = 0; // front
-		int highestX = 0; // right
-		int highestZ = 0; // back
-		int lowestX = 0; // left
-		int lowestY = 0; // bottom
-		int highestY = 0; // top
+		int xMin = 0; // left
+		int xMax = 0; // right
+		int yMin = 0; // bottom
+		int yMax = 0; // top
+		int zMin = 0; // front
+		int zMax = 0; // back
 
 		std::cout << "\n\n";
 
+		// Iterate through vertices of the mesh
+		for (int i = 0; i < vertexBuffer->getVertices()->size(); i++)
+		{
+			Vertex vertex = vertexBuffer->getVertices()->at(i);
+
+			if (vertex.pos.x < xMin) xMin = vertex.pos.x;
+			else if (vertex.pos.x > xMax) xMax = vertex.pos.x;
+			if (vertex.pos.y < yMin) yMin = vertex.pos.y;
+			else if (vertex.pos.y > yMax) yMax= vertex.pos.y;
+			if (vertex.pos.z < zMin) zMin = vertex.pos.z;
+			else if (vertex.pos.z > zMax) zMax = vertex.pos.z;
+		}
+
+		int width = std::abs(xMax - xMin);
+		int height = std::abs(yMax - yMin);
+		int depth = std::abs(zMax - zMin);
+
+		std::cout << width << " " << height << " " << depth << "\n";
+
+		boundingBox = {
+			{ { xMin, yMin, zMax }, { 1.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 0
+			{ {xMax, yMin, zMax }, { 1.0, 0.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin, yMax, zMax }, { 1.0, 0.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax, yMax, zMax }, { 1.0, 0.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+
+			{ { xMax, yMin, zMin }, { 0.0, 1.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 4
+			{ { xMax, yMin, zMax }, { 0.0, 1.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax, yMax, zMax }, { 0.0, 1.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax, yMax, zMin }, { 0.0, 1.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+
+			{ { xMax, yMin, zMin }, { 1.0, 1.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 8 back
+			{ { xMin, yMin, zMin }, { 1.0, 1.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax, yMax, zMin }, { 1.0, 1.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin, yMax, zMin }, { 1.0, 1.0, 0.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+
+			{ { xMin, yMin, zMin }, { 1.0, 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 12 left
+			{ { xMin, yMin, zMax }, { 1.0, 0.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin, yMax, zMin }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin, yMax, zMax }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+
+			{ { xMin, yMin, zMin }, { 0.0, 0.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }}, // 16 bottom
+			{ { xMax, yMin, zMin }, { 0.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin, yMin, zMax }, { 0.0, 0.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax, yMin, zMax }, { 0.0, 0.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+
+			{ { xMin, yMax, zMax }, { 1.0, 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 20 Top
+			{ { xMax, yMax, zMax }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin, yMax, zMin }, { 1.0, 0.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax, yMax, zMin }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+
+		};
+
+		/*
+		// Create a square with dimensions width x height x depth
 		// Each face
 		for (int i = 0; i < 6; i++)
 		{
 			// Each vert in face
 			for (int j = 0; j < 4; j++)
 			{
-				Vertex vertex = vertexBuffer->getVertices()->at((4 * i) + j);
-
 				if (i == 0)
 				{
-					if (vertex.pos.z > highestZ) highestZ = vertex.pos.z;
-				}
-				else if (i == 1)
-				{
-					if (vertex.pos.x > highestX) highestX = vertex.pos.x;
-				}
-				else if (i == 2)
-				{
-					if (vertex.pos.z < lowestZ) lowestZ = vertex.pos.z;
-				}
-				else if (i == 3)
-				{
-					if (vertex.pos.x < lowestX) lowestX = vertex.pos.x;
-				}
-				else if (i == 4)
-				{
-					if (vertex.pos.y < lowestY) lowestY = vertex.pos.y;
-				}
-				else if (i == 5)
-				{
-					if (vertex.pos.y > highestY) highestY = vertex.pos.y;
+					Vertex vert = { { j == 0 || j == 2 ? 0 + (width / 2) : 0 - (width / 2), j == 0 || j == 1 ? 0 - (height / 2) : 0 + (height / 2), 0 + (depth / 2) }, { 1,1,1 } { } }
 				}
 			}
-
-			// Add face with set bounds to boundingBox vector
-			// TODO: This wont work because need to update all positions not just ones for that face
-			for (int k = 0; k < 4; k++)
-			{
-				std::cout << "highest z: " << lowestZ << " " << k << "\n";
-				std::cout << "lowest z: " << highestZ << " " << k << "\n";
-				std::cout << "lowest y: " << lowestY << " " << k << "\n";
-				std::cout << "highest y: " << highestY << " " << k << "\n";
-				std::cout << "lowest x: " << lowestZ << " " << k << "\n";
-				std::cout << "highest x: " << lowestZ << " " << k << "\n";
-
-				Vertex vertex = vertexBuffer->getVertices()->at((4 * i) + k);
-
-				if (i == 0) vertex.pos.z = lowestZ+0.2;
-				else if (i == 1) vertex.pos.x = highestX+0.2;
-				else if (i == 2) vertex.pos.z = highestZ-0.2;
-				else if (i == 3) vertex.pos.x = lowestX-0.2;
-				else if (i == 4) vertex.pos.y = lowestY-0.2;
-				else if (i == 5) vertex.pos.y = highestY+0.2;
-
-				boundingBox.push_back(vertex);
-			}
-		}
+		}*/
 	}
 }

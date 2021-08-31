@@ -33,7 +33,7 @@ namespace Broccoli {
 
 		PipelineSpecification spec = {};
 		spec.backFaceCulling = false;
-		spec.depthTest = false;
+		spec.depthTest = true;
 		spec.lineWidth = 1.0f;
 		spec.topology = PrimitiveTopology::Triangles;
 		spec.wireFrame = false;

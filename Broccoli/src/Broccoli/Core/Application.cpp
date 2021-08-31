@@ -124,16 +124,13 @@ namespace Broccoli {
 
 		// TODO: Don't use absolute path xd
 		Ref<VulkanTexture> textureTest = Texture::create("resources/textures/brickwall.jpg", "geometry.frag", "textureSampler");
-		Ref<VulkanTexture> textureTest2 = Texture::create("resources/textures/sand.png", "geometry.frag", "textureSampler");
 		//modelList.push_back(Ref<Model>::create("resources/models/dust2/source/de_dust2.fbx", mapTransform));
 		//meshList.push_back(Ref<Mesh>::create(&vertices, &indices, glm::mat4(1.0f)));
 
 		Ref<Mesh> mesh = Ref<Mesh>::create(&vertices, &indices, glm::mat4(1.0f));
-		Ref<Mesh> boundingBox = Ref<Mesh>::create(&mesh->boundingBox, &indices, glm::mat4(1.0f), textureTest2);
 
 		entityList.push_back(new Entity(mesh, 1, 0.0f, 0)); // Testing character entity (cube)
-		entityList.push_back(new Entity(boundingBox, 1, 0.0f, 0)); // Testing character entity (cube)
-		//entityList.push_back(new Entity(Ref<Model>::create("resources/models/dust2/source/de_dust2.fbx", mapTransform), 1, 0.0f, 0)); // Map entity
+		entityList.push_back(new Entity(Ref<Model>::create("resources/models/dust2/source/de_dust2.fbx", mapTransform), 1, 0.0f, 0)); // Map entity
 	}
 
 	void Application::updateUniforms()
