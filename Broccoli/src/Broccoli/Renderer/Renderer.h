@@ -41,8 +41,8 @@ namespace Broccoli {
 
 		void updateUniform(const std::string& name, int set, int binding, void* data, int size);
 
-		void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh);
-		void renderModel (Ref<Pipeline> pipeline, Ref<Model> model);
+		void renderMesh(Ref<Pipeline> pipeline, Mesh* mesh);
+		void renderModel (Ref<Pipeline> pipeline, Model* model);
 		void renderEntity(Ref<Pipeline> pipeline, Entity* entity);
 
 	private:

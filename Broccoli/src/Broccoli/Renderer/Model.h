@@ -31,11 +31,11 @@ namespace Broccoli {
 
 		size_t getMeshCount() { return meshList.size(); };
 
-		Ref<Mesh>* getMesh(size_t index) {
+		Mesh* getMesh(size_t index) {
 			if (index >= meshList.size()) {
 				throw std::runtime_error("Attempted to access invalid Mesh index");
 			}
-			return &meshList[index];
+			return meshList[index];
 		}
 
 		virtual void calculateBoundingBox() override;
@@ -51,7 +51,7 @@ namespace Broccoli {
 
 		std::vector<Ref<Texture>> matToTex;
 
-		std::vector<Ref<Mesh>> meshList;
+		std::vector<Mesh*> meshList;
 		std::vector<std::string> textureList;
 	};
 

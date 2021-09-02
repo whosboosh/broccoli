@@ -154,21 +154,21 @@ namespace Broccoli {
 		shader->updateDescriptorSet(set, binding, swapChain->getCurrentImageIndex(), data, size);
 	}
 
-	void VulkanRenderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh)
+	void VulkanRenderer::renderMesh(Ref<Pipeline> pipeline, Mesh* mesh)
 	{
 		drawObject(pipeline, mesh, mesh->getTransform());
 	}
 
-	void VulkanRenderer::renderModel(Ref<Pipeline> pipeline, Ref<Model> model)
+	void VulkanRenderer::renderModel(Ref<Pipeline> pipeline, Model* model)
 	{
 		for (size_t i = 0; i < model->getMeshCount(); i++)
 		{
-			Ref<Mesh> mesh = model->getMesh(i)->As<Mesh>();
+			Mesh* mesh = model->getMesh(i);
 			drawObject(pipeline, mesh, model->getTransform());
 		}
 	}
 
-	void VulkanRenderer::drawObject(Ref<Pipeline> pipeline, Ref<Mesh> mesh, MeshInfo transform)
+	void VulkanRenderer::drawObject(Ref<Pipeline> pipeline, Mesh* mesh, glm::mat4 transform)
 	{
 		Ref<VulkanPipeline> vulkanPipeline = pipeline.As<VulkanPipeline>();
 
@@ -182,7 +182,7 @@ namespace Broccoli {
 		vkCmdBindIndexBuffer(swapChain->getCurrentCommandBuffer(), mesh->getIndexBuffer()->As<VulkanIndexBuffer>()->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32); // Bind mesh index buffer with 0 offset and using uint32 type
 
 		std::vector descriptorSetGroup = vulkanPipeline->getShaderLibrary()->getShaderUniformDescriptorSets(swapChain->getCurrentImageIndex()); // Add all of the uniform descriptors (multiple because of multiple sets)
-		if (mesh->getTransform().hasTexture) {
+		if (mesh->getHasTexture()) {
 			descriptorSetGroup.push_back(vulkanPipeline->getShaderLibrary()->getShaderSamplerDescriptorSets(mesh->getTexture()->getShaderId(), mesh->getTexture()->getTextureId())); // Add the sampler descriptor
 		}
 		else {

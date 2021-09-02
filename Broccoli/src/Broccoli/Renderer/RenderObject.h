@@ -44,6 +44,12 @@ namespace Broccoli {
 			computeNewTransform();
 		}
 
+		void setTransform(glm::mat4 transform)
+		{
+			this->transform = transform;
+			this->inverseTransform = glm::inverse(glm::transpose(this->transform));
+		}
+
 		glm::mat4 getTransform() const
 		{
 			return transform;

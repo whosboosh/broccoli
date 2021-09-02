@@ -33,10 +33,10 @@ namespace Broccoli {
 
 		virtual void updateUniform(const std::string& name, int set, int binding, void* data, int size) override;
 
-		virtual void renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh) override;
-		virtual void renderModel(Ref<Pipeline> pipeline, Ref<Model> model) override;
+		virtual void renderMesh(Ref<Pipeline> pipeline, Mesh* mesh) override;
+		virtual void renderModel(Ref<Pipeline> pipeline, Model* model) override;
 
-		void drawObject(Ref<Pipeline> pipeline, Ref<Mesh> mesh, MeshInfo transform);
+		void drawObject(Ref<Pipeline> pipeline, Mesh* mesh, glm::mat4 transform);
 
 		void recreateSwapChain();
 

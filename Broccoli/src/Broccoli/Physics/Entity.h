@@ -8,12 +8,12 @@ namespace Broccoli
 	class Entity
 	{
 	public:
-		Entity(Ref<Mesh> mesh, bool canCollide, bool initialVelocity, bool hasGravity);
-		Entity(Ref<Model> model, bool canCollide, bool initialVelocity, bool hasGravity);
+		Entity(Mesh* mesh, bool canCollide, bool initialVelocity, bool hasGravity);
+		Entity(Model* model, bool canCollide, bool initialVelocity, bool hasGravity);
 		~Entity();
 
-		Ref<Model> getModel() { return model; }
-		Ref<Model> getMesh() { return mesh; }
+		Model* getModel() { return model; }
+		Mesh* getMesh() { return mesh; }
 
 		// Carry out per frame actions for this entity
 		// E.g. affected by gravity or animation
@@ -21,8 +21,8 @@ namespace Broccoli
 		void actGravity();
 
 	private:
-		Ref<Model> model;
-		Ref<Mesh> mesh;
+		Model* model;
+		Mesh* mesh;
 
 		bool hasGravity = true;
 		float velocity = 0.0f;

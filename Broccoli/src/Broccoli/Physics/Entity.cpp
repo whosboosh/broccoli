@@ -6,7 +6,7 @@
 
 namespace Broccoli
 {
-	Entity::Entity(Ref<Model> model, bool canCollide, bool initialVelocity, bool hasGravity)
+	Entity::Entity(Model* model, bool canCollide, bool initialVelocity, bool hasGravity)
 	{
 		this->model = model;
 		this->canCollide = canCollide;
@@ -14,7 +14,7 @@ namespace Broccoli
 		this->hasGravity = hasGravity;
 	}
 
-	Entity::Entity(Ref<Mesh> mesh, bool canCollide, bool initialVelocity, bool hasGravity)
+	Entity::Entity(Mesh* mesh, bool canCollide, bool initialVelocity, bool hasGravity)
 	{
 		this->mesh = mesh;
 		this->canCollide = canCollide;

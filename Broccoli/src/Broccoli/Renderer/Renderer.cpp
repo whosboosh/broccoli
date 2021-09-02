@@ -95,12 +95,12 @@ namespace Broccoli {
 		renderAPI->updateUniform(name, set, binding, data, size);
 	}
 
-	void Renderer::renderMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh)
+	void Renderer::renderMesh(Ref<Pipeline> pipeline, Mesh* mesh)
 	{
 		renderAPI->renderMesh(pipeline, mesh);
 	}
 
-	void Renderer::renderModel(Ref<Pipeline> pipeline, Ref<Model> model)
+	void Renderer::renderModel(Ref<Pipeline> pipeline, Model* model)
 	{
 		renderAPI->renderModel(pipeline, model);
 	}

@@ -1,7 +1,7 @@
 #include "Model.h"
 
 namespace Broccoli {
-	Model::Model(const std::string& fileName, glm::vec3 translate = glm::vec3(0, 0, 0), glm::vec3 scale = glm::vec3(1, 1, 1), glm::vec3 rotate = glm::vec3(0, 0, 0)) : fileName(fileName)
+	Model::Model(const std::string& fileName, glm::vec3 translate, glm::vec3 scale , glm::vec3 rotate) : fileName(fileName)
 	{
 		this->transform.translation = translate;
 		this->transform.scale = scale;
@@ -10,7 +10,7 @@ namespace Broccoli {
 		loadModel();
 	}
 
-	Model::Model(const std::string& fileName, Ref<Texture> texture, glm::vec3 translate = glm::vec3(0, 0, 0), glm::vec3 scale = glm::vec3(1, 1, 1), glm::vec3 rotate = glm::vec3(0, 0, 0)) : fileName(fileName)
+	Model::Model(const std::string& fileName, Ref<Texture> texture, glm::vec3 translate, glm::vec3 scale, glm::vec3 rotate) : fileName(fileName)
 	{
 		this->transform.translation = translate;
 		this->transform.scale = scale;
@@ -122,7 +122,7 @@ namespace Broccoli {
 
 		//std::cout <<"Creating mesh with material index: "<< mesh->mMaterialIndex << " " << matToTex[mesh->mMaterialIndex]->getTextureId() << "\n";
 
-		Ref<Mesh> newMesh = Ref<Mesh>::create(&vertices, &indices, modelTransform.transform, matToTex[mesh->mMaterialIndex]);
+		Mesh* newMesh = new Mesh(&vertices, &indices, matToTex[mesh->mMaterialIndex], modelTransform.transform.getTransform()); // TODO: update transform component
 		meshList.push_back(newMesh);
 	}
 

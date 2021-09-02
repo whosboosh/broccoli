@@ -3,7 +3,7 @@
 #include <unordered_map>
 
 namespace Broccoli {
-	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::vec3 translate = glm::vec3(0, 0, 0), glm::vec3 scale = glm::vec3(1, 1, 1), glm::vec3 rotate = glm::vec3(0, 0, 0))
+	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::vec3 translate, glm::vec3 scale, glm::vec3 rotate)
 	{
 		indexCount = indices->size();
 		vertexCount = vertices->size();
@@ -21,7 +21,7 @@ namespace Broccoli {
 		calculateBoundingBox();
 	}
 
-	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, Ref<Texture> texture, glm::vec3 translate = glm::vec3(0, 0, 0), glm::vec3 scale = glm::vec3(1, 1, 1), glm::vec3 rotate = glm::vec3(0, 0, 0))
+	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, Ref<Texture> texture, glm::vec3 translate, glm::vec3 scale, glm::vec3 rotate)
 	{
 		indexCount = indices->size();
 		vertexCount = vertices->size();
@@ -37,6 +37,40 @@ namespace Broccoli {
 		this->transform.computeNewTransform();
 
 		this->hasTexture = true;
+
+		calculateBoundingBox();
+	}
+
+	// Explicitly set transform as a matrix instead of individual components
+	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform)
+	{
+		indexCount = indices->size();
+		vertexCount = vertices->size();
+
+		this->texture = texture;
+
+		vertexBuffer = VertexBuffer::create(vertices);
+		indexBuffer = IndexBuffer::create(indices);
+
+		this->hasTexture = false;
+		this->transform.setTransform(transform);
+
+		calculateBoundingBox();
+	}
+
+	// Explicitly set transform as a matrix instead of individual components (With texture)
+	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, Ref<Texture> texture, glm::mat4 transform)
+	{
+		indexCount = indices->size();
+		vertexCount = vertices->size();
+
+		this->texture = texture;
+
+		vertexBuffer = VertexBuffer::create(vertices);
+		indexBuffer = IndexBuffer::create(indices);
+
+		this->hasTexture = true;
+		this->transform.setTransform(transform);
 
 		calculateBoundingBox();
 	}
