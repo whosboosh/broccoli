@@ -1,15 +1,22 @@
 #include "Model.h"
 
 namespace Broccoli {
-	Model::Model(const std::string& fileName, glm::mat4 transform) : fileName(fileName)
+	Model::Model(const std::string& fileName, glm::vec3 translate = glm::vec3(0, 0, 0), glm::vec3 scale = glm::vec3(1, 1, 1), glm::vec3 rotate = glm::vec3(0, 0, 0)) : fileName(fileName)
 	{
-		setTransform(transform);
+		this->transform.translation = translate;
+		this->transform.scale = scale;
+		this->transform.rotation = rotate;
+		this->transform.computeNewTransform();
 		loadModel();
 	}
 
-	Model::Model(const std::string& fileName, glm::mat4 transform, Ref<Texture> texture) : fileName(fileName)
+	Model::Model(const std::string& fileName, Ref<Texture> texture, glm::vec3 translate = glm::vec3(0, 0, 0), glm::vec3 scale = glm::vec3(1, 1, 1), glm::vec3 rotate = glm::vec3(0, 0, 0)) : fileName(fileName)
 	{
-		setTransform(transform);
+		this->transform.translation = translate;
+		this->transform.scale = scale;
+		this->transform.rotation = rotate;
+		this->transform.computeNewTransform();
+
 		this->texture = texture;
 
 		loadModel();

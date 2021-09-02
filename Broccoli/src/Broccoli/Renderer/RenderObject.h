@@ -13,15 +13,44 @@ namespace Broccoli {
 		glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
 
+		glm::mat4 transform = glm::mat4(1.0f);
 		glm::mat4 inverseTransform = glm::mat4(1.0f);
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent& other) = default;
 		TransformComponent(const glm::vec3& translation) { this->translation = translation; this->inverseTransform = glm::inverse(glm::transpose(getTransform())); }
  
+		void computeNewTransform()
+		{
+			this->transform = glm::translate(glm::mat4(1.0f), translation) * glm::toMat4(glm::quat(rotation)) * glm::scale(glm::mat4(1.0f), scale);
+			this->inverseTransform = glm::inverse(glm::transpose(this->transform));
+		}
+
+		void updateScale(glm::vec3 scale)
+		{
+			this->scale = scale;
+			computeNewTransform();
+		}
+
+		void updateRotation(glm::vec3 rotation)
+		{
+			this->rotation = rotation;
+			computeNewTransform();
+		}
+
+		void updateTranslation(glm::vec3 translation)
+		{
+			this->translation = translation;
+			computeNewTransform();
+		}
+
 		glm::mat4 getTransform() const
 		{
-			return glm::translate(glm::mat4(1.0f), translation) * glm::toMat4(glm::quat(rotation)) * glm::scale(glm::mat4(1.0f), scale);
+			return transform;
+		}
+		glm::mat4 getInverseTransform() const
+		{
+			return inverseTransform;
 		}
 	};
 
@@ -56,6 +85,7 @@ namespace Broccoli {
 
 	protected:
 		TransformComponent transform;
+		bool hasTexture;
 
 		// TODO: bounding box
 

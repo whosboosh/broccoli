@@ -20,8 +20,8 @@ namespace Broccoli {
 	{
 
 	public:
-		Model(const std::string& fileName, glm::mat4 transform);
-		Model(const std::string& fileName, glm::mat4 transform, Ref<Texture> texture);
+		Model(const std::string& fileName, glm::vec3 translate = glm::vec3(0, 0, 0), glm::vec3 scale = glm::vec3(1, 1, 1), glm::vec3 rotate = glm::vec3(0, 0, 0));
+		Model(const std::string& fileName, Ref<Texture> texture, glm::vec3 translate = glm::vec3(0, 0, 0), glm::vec3 scale = glm::vec3(1, 1, 1), glm::vec3 rotate = glm::vec3(0, 0, 0));
 		~Model();
 
 		void loadModel();

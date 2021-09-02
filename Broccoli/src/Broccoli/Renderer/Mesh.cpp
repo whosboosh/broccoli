@@ -3,7 +3,7 @@
 #include <unordered_map>
 
 namespace Broccoli {
-	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform)
+	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::vec3 translate = glm::vec3(0, 0, 0), glm::vec3 scale = glm::vec3(1, 1, 1), glm::vec3 rotate = glm::vec3(0, 0, 0))
 	{
 		indexCount = indices->size();
 		vertexCount = vertices->size();
@@ -11,14 +11,17 @@ namespace Broccoli {
 		vertexBuffer = VertexBuffer::create(vertices);
 		indexBuffer = IndexBuffer::create(indices);
 
-		this->transform.transform = transform;
-		this->transform.inverseTransform = glm::transpose(glm::inverse(transform));
-		this->transform.hasTexture = false;
+		this->transform.translation = translate;
+		this->transform.scale = scale;
+		this->transform.rotation = rotate;
+		this->transform.computeNewTransform();
+
+		this->hasTexture = false;
 
 		calculateBoundingBox();
 	}
 
-	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform, Ref<Texture> texture)
+	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, Ref<Texture> texture, glm::vec3 translate = glm::vec3(0, 0, 0), glm::vec3 scale = glm::vec3(1, 1, 1), glm::vec3 rotate = glm::vec3(0, 0, 0))
 	{
 		indexCount = indices->size();
 		vertexCount = vertices->size();
@@ -28,9 +31,14 @@ namespace Broccoli {
 		vertexBuffer = VertexBuffer::create(vertices);
 		indexBuffer = IndexBuffer::create(indices);
 
-		this->transform.transform = transform;
-		this->transform.inverseTransform = glm::transpose(glm::inverse(transform));
-		this->transform.hasTexture = true;
+		this->transform.translation = translate;
+		this->transform.scale = scale;
+		this->transform.rotation = rotate;
+		this->transform.computeNewTransform();
+
+		this->hasTexture = true;
+
+		calculateBoundingBox();
 	}
 
 	Mesh::~Mesh()
@@ -69,11 +77,11 @@ namespace Broccoli {
 			else if (vertex.pos.z > zMax) zMax = vertex.pos.z;
 		}
 
-		int width = std::abs(xMax - xMin);
-		int height = std::abs(yMax - yMin);
-		int depth = std::abs(zMax - zMin);
+		//int width = std::abs(xMax - xMin);
+		//int height = std::abs(yMax - yMin);
+		//int depth = std::abs(zMax - zMin);
 
-		std::cout << width << " " << height << " " << depth << "\n";
+		//std::cout << width << " " << height << " " << depth << "\n";
 
 		boundingBox = {
 			{ { xMin, yMin, zMax }, { 1.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 0
@@ -107,20 +115,5 @@ namespace Broccoli {
 			{ { xMax, yMax, zMin }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
 
 		};
-
-		/*
-		// Create a square with dimensions width x height x depth
-		// Each face
-		for (int i = 0; i < 6; i++)
-		{
-			// Each vert in face
-			for (int j = 0; j < 4; j++)
-			{
-				if (i == 0)
-				{
-					Vertex vert = { { j == 0 || j == 2 ? 0 + (width / 2) : 0 - (width / 2), j == 0 || j == 1 ? 0 - (height / 2) : 0 + (height / 2), 0 + (depth / 2) }, { 1,1,1 } { } }
-				}
-			}
-		}*/
 	}
 }

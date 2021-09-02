@@ -19,8 +19,8 @@ namespace Broccoli {
 	{
 
 	public:
-		Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform);
-		Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform, Ref<Texture> texture);
+		Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::vec3 translate = glm::vec3(0,0,0), glm::vec3 scale = glm::vec3(1,1,1), glm::vec3 rotate = glm::vec3(0,0,0));
+		Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, Ref<Texture> texture, glm::vec3 translate = glm::vec3(0, 0, 0), glm::vec3 scale = glm::vec3(1, 1, 1), glm::vec3 rotate = glm::vec3(0, 0, 0));
 		~Mesh();
 
 		Ref<VertexBuffer>* getVertexBuffer() { return &vertexBuffer; }
@@ -29,8 +29,9 @@ namespace Broccoli {
 		int getIndexCount() { return indexCount; };
 		int getVertexCount() { return vertexCount; };
 
-		void setHasTexture(bool state) { this->transform.hasTexture = state; }
-		bool getHasTexture() { return this->transform.hasTexture; }
+		
+		void setHasTexture(bool state) { this->hasTexture = state; }
+		bool getHasTexture() { return this->hasTexture; }
 
 		virtual void calculateBoundingBox() override;
 
