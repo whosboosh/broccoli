@@ -125,9 +125,8 @@ namespace Broccoli {
 		// TODO: Don't use absolute path xd
 		Ref<VulkanTexture> textureTest = Texture::create("resources/textures/brickwall.jpg", "geometry.frag", "textureSampler");
 
-	
 		entityList.push_back(new Entity(new Mesh(&vertices, &indices), 1, 0.0f, 1)); // Testing character entity (cube)
-		entityList.push_back(new Entity(new Model("resources/models/dust2/source/de_dust2.fbx"), 1, 0.0f, 0)); // Map entity (// TODO: Add transform components)
+		entityList.push_back(new Entity(new Model("resources/models/dust2/source/de_dust2.fbx", glm::vec3(0,0,0), glm::vec3(0.1f,0.1f,0.1f), glm::radians(glm::vec3(90.0f, 180.0f, 180.0f))), 1, 0.0f, 0)); // Map entity (// TODO: Add transform components)
 	}
 
 	void Application::updateUniforms()
