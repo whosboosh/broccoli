@@ -36,9 +36,13 @@ namespace Broccoli
 	void Entity::actGravity()
 	{
 		// Boundary checking (TODO: Add bounding boxes to entities)
-		// TODO: Fix transform
-		//if (mesh) mesh->setTransform(glm::translate(mesh->getTransform(), glm::vec3(0.0f, -0.01f, 0.0f)));
-		//else model->setTransform(glm::translate(model->getTransform(), glm::vec3(0.0f, -0.01f, 0.0f)));
-		
+		if (mesh) {
+			glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
+			mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.01, currentTranslation.z));
+		}
+		else {
+			glm::vec3 currentTranslation = model->getTransformComponent().translation;
+			model->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.01, currentTranslation.z));
+		}
 	}
 }

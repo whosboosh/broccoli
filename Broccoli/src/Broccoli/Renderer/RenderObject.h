@@ -74,17 +74,18 @@ namespace Broccoli {
 
 		void setTranslation(glm::vec3 translation)
 		{
-			this->transform.translation = translation;
+			transform.updateTranslation(translation);
 		}
 		void setRotation(glm::vec3 rotation)
 		{
-			this->transform.rotation = rotation;
+			transform.updateRotation(rotation);
 		}
 		void setScale(glm::vec3 scale)
 		{
-			this->transform.scale = scale;
+			transform.updateScale(scale);
 		}
 
+		TransformComponent getTransformComponent() { return transform; }
 		glm::mat4 getTransform() { return transform.getTransform(); }
 
 		virtual void calculateBoundingBox() = 0;
