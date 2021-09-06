@@ -1,5 +1,8 @@
 #include "Model.h"
 
+#include <time.h>  
+#include <stdlib.h> 
+
 namespace Broccoli {
 	Model::Model(const std::string& fileName, glm::vec3 translate, glm::vec3 scale , glm::vec3 rotate) : fileName(fileName)
 	{
@@ -24,6 +27,8 @@ namespace Broccoli {
 
 	void Model::loadModel()
 	{
+		srand(time(NULL));
+
 		Assimp::Importer importer;
 		scene = importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
 		if (!scene) {
@@ -78,9 +83,12 @@ namespace Broccoli {
 
 	void Model::loadNode(const aiNode* node)
 	{
+		// TODO: Remove the random colour generation
+		float random = (float)(rand() % 10000 + 1) / (float)10000;
+
 		for (size_t i = 0; i < node->mNumMeshes; i++)
 		{
-			loadMesh(scene->mMeshes[node->mMeshes[i]]);
+			loadMesh(scene->mMeshes[node->mMeshes[i]], random);
 		}
 		for (size_t i = 0; i < node->mNumChildren; i++)
 		{
@@ -88,7 +96,7 @@ namespace Broccoli {
 		}
 	}
 
-	void Model::loadMesh(const aiMesh* mesh)
+	void Model::loadMesh(const aiMesh* mesh, float col)
 	{
 		std::vector<Vertex> vertices;
 		std::vector<uint32_t> indices;
@@ -100,6 +108,7 @@ namespace Broccoli {
 		{
 			vertices[i].pos = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
 			vertices[i].col = { 1.0f, 1.0f, 1.0f };
+			//vertices[i].col = { col, col, col };
 			vertices[i].normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
 
 			if (mesh->mTextureCoords[0]) {
@@ -150,13 +159,6 @@ namespace Broccoli {
 				}
 			}
 		}
-	}
-
-	void Model::calculateBoundingBox()
-	{
-		// Use trig to find the angle of the sloped surface between 2 points
-		// At any point along the sloped surface (from 2 points), calculate the height of that point by going down until the slope is hit
-		// Slope height is equal to 
 	}
 
 

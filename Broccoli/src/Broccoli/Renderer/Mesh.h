@@ -37,10 +37,9 @@ namespace Broccoli {
 		bool getHasTexture() { return this->hasTexture; }
 
 		virtual void calculateBoundingBox() override;
+		virtual glm::vec3 getOrigin() override;
 
 		Ref<Texture> getTexture() { return texture; }
-
-		std::vector<Vertex> boundingBox = {};
 
 	private:
 		int vertexCount;
@@ -50,8 +49,6 @@ namespace Broccoli {
 		Ref<IndexBuffer> indexBuffer;
 
 		Ref<Texture> texture;
-
-
 	};
 
 }

@@ -52,7 +52,7 @@ namespace Broccoli {
 		window->init();
 		window->setVsync(false);
 
-		camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -10.0f, 10.0f, 0.05f);
+		camera = new Camera(glm::vec3(100.0f, 0.0f, -200.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -10.0f, 10.0f, 0.05f);
 
 		// Initialise renderer (shaders etc) and ImGui
 		renderer = new Renderer();
@@ -72,7 +72,7 @@ namespace Broccoli {
 		};*/
 
 		std::vector<Vertex> vertices = {
-		{ { -1.0, -1.0, 2.0 }, { 1.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 0
+		{ { -1.0, -2.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 0
 		{ { 1.0, -1.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
 		{ { -1.0, 1.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
 		{ { 1.0, 1.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
@@ -125,8 +125,15 @@ namespace Broccoli {
 		// TODO: Don't use absolute path xd
 		Ref<VulkanTexture> textureTest = Texture::create("resources/textures/brickwall.jpg", "geometry.frag", "textureSampler");
 
-		entityList.push_back(new Entity(new Mesh(&vertices, &indices), 1, 0.0f, 1)); // Testing character entity (cube)
-		entityList.push_back(new Entity(new Model("resources/models/dust2/source/de_dust2.fbx", glm::vec3(0,0,0), glm::vec3(0.1f,0.1f,0.1f), glm::radians(glm::vec3(90.0f, 180.0f, 180.0f))), 1, 0.0f, 0)); // Map entity (// TODO: Add transform components)
+		entityList.push_back(new Entity(new Mesh(&vertices, &indices, glm::vec3(95, 5, -220), glm::vec3(5,5,5), glm::vec3(0,0,0)), 1, 0.0f, 1)); // Testing character entity (cube)
+		entityList.push_back(new Entity(new Model("resources/models/dust2/source/de_dust2.fbx", glm::vec3(0, 0, 0), glm::vec3(0.1f, 0.1f, 0.1f), glm::radians(glm::vec3(90.0f, 180.0f, 180.0f))), 1, 0.0f, 0));
+		
+		/*
+		for (Mesh* mesh : map->getModel()->getMeshList())
+		{
+			entityList.push_back(new Entity(new Mesh(mesh->getBoundingBox(), &indices, textureTest, map->getModel()->getTransform()), 1, 0.0f, 0));
+		}*/
+
 	}
 
 	void Application::updateUniforms()
@@ -183,7 +190,7 @@ namespace Broccoli {
 
 				for (Entity* entity : entityList)
 				{
-					entity->act(); // Animate, Physiscs etc
+					entity->act(entityList); // Animate, Physiscs etc
 					renderer->renderEntity(renderer->getGraphicsPipeline(), entity);
 				}
 

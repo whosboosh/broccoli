@@ -44,7 +44,6 @@ namespace Broccoli {
 		std::vector<Ref<Model>> modelList;
 		std::vector<Entity*> entityList;
 
-
 		ViewProjection viewProjection;
 		LightSpace lightSpace;
 		

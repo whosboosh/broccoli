@@ -6,6 +6,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include <vector>
+#include "Broccoli/Renderer/VertexBuffer.h"
+
 namespace Broccoli {
 	struct TransformComponent
 	{
@@ -90,12 +93,19 @@ namespace Broccoli {
 
 		virtual void calculateBoundingBox() = 0;
 
+		std::vector<Vertex>* getBoundingBox() { return &boundingBox; }
+
+
+		virtual glm::vec3 getOrigin() = 0;
+
 	protected:
 		TransformComponent transform;
 		bool hasTexture;
 
-		// TODO: bounding box
+		int width, height, depth;
+		float xMid, yMid, zMid;
 
+		std::vector<Vertex> boundingBox = {};
 	};
 
 }

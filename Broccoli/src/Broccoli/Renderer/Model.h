@@ -27,7 +27,7 @@ namespace Broccoli {
 		void loadModel();
 		void loadMaterials();
 		void loadNode(const aiNode* node);
-		void loadMesh(const aiMesh* mesh);
+		void loadMesh(const aiMesh* mesh, float col);
 
 		size_t getMeshCount() { return meshList.size(); };
 
@@ -38,7 +38,10 @@ namespace Broccoli {
 			return meshList[index];
 		}
 
-		virtual void calculateBoundingBox() override;
+		std::vector<Mesh*> getMeshList() { return meshList; }
+
+		virtual void calculateBoundingBox() override {};
+		virtual glm::vec3 getOrigin() override { return glm::vec3((float)(width / 2), (float)(height / 2), (float)(depth / 2)); }
 
 		Ref<Texture>& getTexture() { return texture; }
 

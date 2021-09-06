@@ -111,11 +111,22 @@ namespace Broccoli {
 			else if (vertex.pos.z > zMax) zMax = vertex.pos.z;
 		}
 
-		//int width = std::abs(xMax - xMin);
-		//int height = std::abs(yMax - yMin);
-		//int depth = std::abs(zMax - zMin);
+		width = std::abs(xMax - xMin);
+		height = std::abs(yMax - yMin);
+		depth = std::abs(zMax - zMin);
+
+		xMid = (xMin + xMax) == 0 ? 1 : (xMin + xMax);
+		yMid = (yMin + yMax) == 0 ? 1 : (yMin + yMax);
+		zMid = (zMin + zMax) == 0 ? 1 : (zMin + zMax);
+
+		// Floats are stupid?
+		xMid = xMid / 2;
+		yMid = yMid / 2;
+		zMid = zMid / 2;
 
 		//std::cout << width << " " << height << " " << depth << "\n";
+		//std::cout << xMin << " " << xMax << " " << yMin <<  " " << yMax << zMin << " " << zMax << "\n";
+		//std::cout << (float)xMid << " " << (float)yMid << " " << (float)zMid << "\n";
 
 		boundingBox = {
 			{ { xMin, yMin, zMax }, { 1.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 0
@@ -149,5 +160,9 @@ namespace Broccoli {
 			{ { xMax, yMax, zMin }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
 
 		};
+	}
+	glm::vec3 Mesh::getOrigin()
+	{
+		return glm::vec3(xMid, yMid, zMid);
 	}
 }
