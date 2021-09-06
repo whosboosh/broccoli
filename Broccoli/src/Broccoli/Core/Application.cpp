@@ -72,7 +72,7 @@ namespace Broccoli {
 		};*/
 
 		std::vector<Vertex> vertices = {
-		{ { -1.0, -2.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 0
+		{ { -1.0, -1.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 0
 		{ { 1.0, -1.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
 		{ { -1.0, 1.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
 		{ { 1.0, 1.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
@@ -125,7 +125,11 @@ namespace Broccoli {
 		// TODO: Don't use absolute path xd
 		Ref<VulkanTexture> textureTest = Texture::create("resources/textures/brickwall.jpg", "geometry.frag", "textureSampler");
 
-		entityList.push_back(new Entity(new Mesh(&vertices, &indices, glm::vec3(95, 5, -220), glm::vec3(5,5,5), glm::vec3(0,0,0)), 1, 0.0f, 1)); // Testing character entity (cube)
+		Entity* entity1 = new Entity(new Mesh(&vertices, &indices, glm::vec3(95, 5, -220), glm::vec3(5,5,5), glm::vec3(0,0,0)), 1, 0.0f, 1); // Testing character entity (cube)
+		Entity* entity2 = new Entity(new Mesh(&vertices, &indices, glm::vec3(40, 40, -150), glm::vec3(5, 5, 5), glm::vec3(0, 0, 0)), 1, 0.0f, 1);
+		entityList.push_back(entity1);
+		entityList.push_back(entity2);
+
 		entityList.push_back(new Entity(new Model("resources/models/dust2/source/de_dust2.fbx", glm::vec3(0, 0, 0), glm::vec3(0.1f, 0.1f, 0.1f), glm::radians(glm::vec3(90.0f, 180.0f, 180.0f))), 1, 0.0f, 0));
 		
 		/*
@@ -193,6 +197,7 @@ namespace Broccoli {
 					entity->act(entityList); // Animate, Physiscs etc
 					renderer->renderEntity(renderer->getGraphicsPipeline(), entity);
 				}
+				entityList[1]->moveToEntity(entityList[0]);
 
 				renderer->endRenderPass();
 
