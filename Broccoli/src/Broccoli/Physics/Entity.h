@@ -30,7 +30,7 @@ namespace Broccoli
 		Model* model;
 		Mesh* mesh;
 
-		float movementSpeed = 0.01f;
+		float movementSpeed = 0.001f;
 
 		bool hasGravity = true;
 		float velocity = 0.0f;

@@ -76,7 +76,7 @@ namespace Broccoli
 			model->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.01, currentTranslation.z));
 		}
 
-		moveToPosition(glm::vec3(10, 5, -400), movementSpeed);
+		moveToPosition(glm::vec3(40, 50, -200), 20);
 	}
 
 	void Entity::moveToPosition(glm::vec3 position, float velocity)
@@ -84,8 +84,6 @@ namespace Broccoli
 		// Update transformation matrix until origin of entity is at position
 		if (mesh)
 		{
-			glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
-
 			//float x = (mesh->getOrigin().x * mesh->getTransform()[3][0]);
 			//float y = (mesh->getOrigin().y * mesh->getTransform()[3][1]);
 			//float z = (mesh->getOrigin().z * mesh->getTransform()[3][2]);
@@ -97,30 +95,31 @@ namespace Broccoli
 			//std::cout << " Mesh Translation " << glm::to_string(currentTranslation) << "\n";
 			//std::cout << " new position: " << glm::to_string(position) << "\n";
 
-
-			if (currentTranslation != position)
+			for (int i = 0; i < velocity; i++)
 			{
-				// mesh->getTransform[3] contains the x y and z translation components
-				// mesh->getTranslationComponent().translation is the same ^^
+				glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
 
 				float xDifference = std::abs(position.x - currentTranslation.x);
 				float yDifference = std::abs(position.y - currentTranslation.y);
 				float zDifference = std::abs(position.z - currentTranslation.z);
 
-				float updatePosX;
-				float updatePosY;
-				float updatePosZ;
+				if (xDifference > movementSpeed || yDifference > movementSpeed || zDifference > movementSpeed)
+				{
+					float updatePosX;
+					float updatePosY;
+					float updatePosZ;
 
-				if (currentTranslation.x > position.x)  updatePosX = currentTranslation.x - movementSpeed;
-				else updatePosX = currentTranslation.x + movementSpeed;
+					if (currentTranslation.x > position.x)  updatePosX = currentTranslation.x - movementSpeed;
+					else updatePosX = currentTranslation.x + movementSpeed;
 
-				if (currentTranslation.y > position.y)  updatePosY = currentTranslation.y - movementSpeed;
-				else updatePosY = currentTranslation.y + movementSpeed;
+					if (currentTranslation.y > position.y)  updatePosY = currentTranslation.y - movementSpeed;
+					else updatePosY = currentTranslation.y + movementSpeed;
 
-				if (currentTranslation.z > position.z)  updatePosZ = currentTranslation.z - movementSpeed;
-				else updatePosZ = currentTranslation.z + movementSpeed;
+					if (currentTranslation.z > position.z)  updatePosZ = currentTranslation.z - movementSpeed;
+					else updatePosZ = currentTranslation.z + movementSpeed;
 
-				mesh->setTranslation(glm::vec3(updatePosX, updatePosY, updatePosZ));
+					mesh->setTranslation(glm::vec3(updatePosX, updatePosY, updatePosZ));
+				}
 			}
 
 		}
