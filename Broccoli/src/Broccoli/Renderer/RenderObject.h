@@ -95,9 +95,6 @@ namespace Broccoli {
 
 		std::vector<Vertex>* getBoundingBox() { return &boundingBox; }
 
-
-		virtual glm::vec3 getOrigin() = 0;
-
 	protected:
 		TransformComponent transform;
 		bool hasTexture;

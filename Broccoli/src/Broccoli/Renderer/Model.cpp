@@ -49,21 +49,23 @@ namespace Broccoli {
 			if (texture != NULL)
 			{
 				matToTex[i] = texture; // Use provided texture
+				std::cout << "1";
 			}
-			if (textureList[i].empty()) {
-				matToTex[i] = 0; // If there are no mateirals in the model, use the first texture ever loaded in
+			if (textureList.empty()) {
+				matToTex[i] = 0; // If there are no materials in the model, use the first texture ever loaded in
+				std::cout << "2";
 			}
 			else {
+
 				// Otherwise create texture from material name and set value to index of new texture inside sampler
 				//std::cout << "Creating texture with fileName: " << fileDirectory + "/textures/" + textureList[i].substr(0, textureList[i].find_last_of(".")) + ".png\n";
 				std::string filePath = fileDirectory + "/textures/" + textureList[i].substr(0, textureList[i].find_last_of(".")) + ".png";
 
 				for (Ref<Texture> tex : matToTex)
 				{
+					// Don't create same texture more than once
 					if (tex != NULL)
 					{
-						//std::cout << tex->getFilePath() << " : ";
-						///std::cout << filePath << "\n";
 						if (tex->getFilePath() == filePath) 
 						{
 							matToTex[i] = tex;
@@ -71,7 +73,7 @@ namespace Broccoli {
 						}
 					}
 				}
-				
+
 				if (matToTex[i] == nullptr) {
 					matToTex[i] = Texture::create(fileDirectory + "/textures/" + textureList[i].substr(0, textureList[i].find_last_of(".")) + ".png", "geometry.frag", "textureSampler");					
 				}
@@ -85,6 +87,8 @@ namespace Broccoli {
 	{
 		// TODO: Remove the random colour generation
 		float random = (float)(rand() % 10000 + 1) / (float)10000;
+
+		std::cout << node->mNumMeshes << "\n";
 
 		for (size_t i = 0; i < node->mNumMeshes; i++)
 		{
@@ -129,7 +133,7 @@ namespace Broccoli {
 			}
 		}
 
-		//std::cout <<"Creating mesh with material index: "<< mesh->mMaterialIndex << " " << matToTex[mesh->mMaterialIndex]->getTextureId() << "\n";
+		std::cout << "Creating mesh with material index: " << mesh->mMaterialIndex << "\n"; //<< " " << matToTex[mesh->mMaterialIndex]->getTextureId() << "\n";
 
 		Mesh* newMesh = new Mesh(&vertices, &indices, matToTex[mesh->mMaterialIndex], modelTransform.transform.getTransform()); // TODO: update transform component
 		meshList.push_back(newMesh);

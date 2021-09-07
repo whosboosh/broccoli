@@ -41,7 +41,6 @@ namespace Broccoli {
 		std::vector<Mesh*> getMeshList() { return meshList; }
 
 		virtual void calculateBoundingBox() override {};
-		virtual glm::vec3 getOrigin() override { return glm::vec3((float)(width / 2), (float)(height / 2), (float)(depth / 2)); }
 
 		Ref<Texture>& getTexture() { return texture; }
 

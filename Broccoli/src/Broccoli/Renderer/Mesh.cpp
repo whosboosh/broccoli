@@ -1,6 +1,7 @@
 #include "Mesh.h"
 
 #include <unordered_map>
+#include <limits>
 
 namespace Broccoli {
 	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::vec3 translate, glm::vec3 scale, glm::vec3 rotate)
@@ -89,44 +90,47 @@ namespace Broccoli {
 		// 4 is bottom (y < current y)
 		// 5 is top (y > current y)
 
-		int xMin = 0; // left
-		int xMax = 0; // right
-		int yMin = 0; // bottom
-		int yMax = 0; // top
-		int zMin = 0; // front
-		int zMax = 0; // back
-
-		std::cout << "\n\n";
+		int xMin = std::numeric_limits<int>::max(); // left
+		int xMax = std::numeric_limits<int>::min(); // right
+		int yMin = std::numeric_limits<int>::max(); // bottom
+		int yMax = std::numeric_limits<int>::min(); // top
+		int zMin = std::numeric_limits<int>::max(); // front
+		int zMax = std::numeric_limits<int>::min(); // back
 
 		// Iterate through vertices of the mesh
 		for (int i = 0; i < vertexBuffer->getVertices()->size(); i++)
 		{
 			Vertex vertex = vertexBuffer->getVertices()->at(i);
 
-			if (vertex.pos.x < xMin) xMin = vertex.pos.x;
-			else if (vertex.pos.x > xMax) xMax = vertex.pos.x;
-			if (vertex.pos.y < yMin) yMin = vertex.pos.y;
-			else if (vertex.pos.y > yMax) yMax= vertex.pos.y;
-			if (vertex.pos.z < zMin) zMin = vertex.pos.z;
-			else if (vertex.pos.z > zMax) zMax = vertex.pos.z;
+			//std::cout << vertex.pos.x << " " << xMin << " " << vertex.pos.y << " " << yMin << " " << vertex.pos.z << " " << zMin << "\n";
+
+			if (vertex.pos.x < xMin) {
+				xMin = vertex.pos.x;
+			}
+			else if (vertex.pos.x > xMax) {
+				xMax = vertex.pos.x;
+			}
+			if (vertex.pos.y < yMin) {
+				yMin = vertex.pos.y;
+			}
+			else if (vertex.pos.y > yMax) {
+				yMax = vertex.pos.y;
+			}
+			if (vertex.pos.z < zMin) {
+				zMin = vertex.pos.z;
+			}
+			else if (vertex.pos.z > zMax)
+			{
+				zMax = vertex.pos.z;
+			}
 		}
 
 		width = std::abs(xMax - xMin);
 		height = std::abs(yMax - yMin);
 		depth = std::abs(zMax - zMin);
 
-		xMid = (xMin + xMax) == 0 ? 1 : (xMin + xMax);
-		yMid = (yMin + yMax) == 0 ? 1 : (yMin + yMax);
-		zMid = (zMin + zMax) == 0 ? 1 : (zMin + zMax);
-
-		// Floats are stupid?
-		xMid = xMid / 2;
-		yMid = yMid / 2;
-		zMid = zMid / 2;
-
 		//std::cout << width << " " << height << " " << depth << "\n";
-		//std::cout << xMin << " " << xMax << " " << yMin <<  " " << yMax << zMin << " " << zMax << "\n";
-		//std::cout << (float)xMid << " " << (float)yMid << " " << (float)zMid << "\n";
+		//std::cout << "Min dimensions for bounding box: " << xMin << " " << xMax << " " << yMin << " " << yMax << " " << zMin << " " << zMax << "\n";
 
 		boundingBox = {
 			{ { xMin, yMin, zMax }, { 1.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 0
@@ -160,9 +164,5 @@ namespace Broccoli {
 			{ { xMax, yMax, zMin }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
 
 		};
-	}
-	glm::vec3 Mesh::getOrigin()
-	{
-		return glm::vec3(xMid, yMid, zMid);
 	}
 }

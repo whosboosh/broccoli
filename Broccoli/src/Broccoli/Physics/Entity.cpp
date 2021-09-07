@@ -67,14 +67,12 @@ namespace Broccoli
 
 		if (mesh) {
 			glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
-			mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y, currentTranslation.z));
+			mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.01, currentTranslation.z));
 		}
 		else {
 			glm::vec3 currentTranslation = model->getTransformComponent().translation;
 			model->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.01, currentTranslation.z));
 		}
-
-		//moveToPosition(glm::vec3(40, 50, -200), 20);
 	}
 
 	void Entity::moveToPosition(glm::vec3 position, float velocity)

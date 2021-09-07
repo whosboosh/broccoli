@@ -37,7 +37,6 @@ namespace Broccoli {
 		bool getHasTexture() { return this->hasTexture; }
 
 		virtual void calculateBoundingBox() override;
-		virtual glm::vec3 getOrigin() override;
 
 		Ref<Texture> getTexture() { return texture; }
 
