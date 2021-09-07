@@ -38,6 +38,8 @@ namespace Broccoli {
 
 		virtual void calculateBoundingBox() override;
 
+		void calculateAngleOfInclination();
+
 		Ref<Texture> getTexture() { return texture; }
 
 	private:

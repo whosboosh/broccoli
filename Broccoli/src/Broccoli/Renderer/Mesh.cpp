@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <limits>
+#include <glm/gtx/string_cast.hpp>
 
 namespace Broccoli {
 	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::vec3 translate, glm::vec3 scale, glm::vec3 rotate)
@@ -164,5 +165,48 @@ namespace Broccoli {
 			{ { xMax, yMax, zMin }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
 
 		};
+
+		// TODO: Put this somewhere that makes sense
+		calculateAngleOfInclination();
+	}
+
+	void Mesh::calculateAngleOfInclination()
+	{
+		// The map model file has been separated out into meshes for areas that have height differences.
+		// If an entity is intersecting with part of a mesh that is inclined, (use bounding box), use trig to find the angle inclination from lowest part of mesh to highest part
+		// All slopes are a single gradient so this works
+		
+		// Find the vertices in the mesh with the highest and lowest y axis coordinates
+		// We'll use these for calculating the angle
+		Vertex maxY = { { 0,std::numeric_limits<int>::min(),0 }, {0,0,0}, {0,0}, {0,0,0} };
+		Vertex minY = { { 0,std::numeric_limits<int>::max(),0 }, {0,0,0}, {0,0}, {0,0,0} };
+
+		for (int i = 0; i < vertexBuffer->getVertices()->size(); i++)
+		{
+			Vertex point = vertexBuffer->getVertices()->at(i);
+			if (point.pos.y > maxY.pos.y) maxY = point;
+			else if (point.pos.y < minY.pos.y) minY = point;
+		}
+
+		// Get distance between y and z coordinates between maxY and minY
+		float zDistance = std::abs(maxY.pos.z - minY.pos.z);
+		float yDistance = std::abs(maxY.pos.y - minY.pos.y);
+		float xDistance = std::abs(maxY.pos.x - minY.pos.x);
+
+		std::cout << "x distance: " << xDistance << " y distance: " << yDistance << " z distance: " << zDistance << "\n";
+		//std::cout << "Col: "<<maxY.col.r << " " << maxY.col.g << " " << maxY.col.b << " " << "Max y points are x : " << maxY.pos.x << " y : " << maxY.pos.y << " z : " << maxY.pos.z <<"\n";
+		//std::cout << "Col: " << minY.col.r << " " << minY.col.g << " " << minY.col.b << " " << "Min y points are x: " << minY.pos.x << " y: " << minY.pos.y << " z: " << minY.pos.z << "\n";
+		std::cout << "Col: " << maxY.col.r << " " << maxY.col.g << " " << maxY.col.b << " " << "Max y points are x : " << glm::to_string(glm::vec3(transform.transform * glm::vec4(maxY.pos, 0))) << "\n";
+		std::cout << "Col: " << minY.col.r << " " << minY.col.g << " " << minY.col.b << " " << "Min y points are x : " << glm::to_string(glm::vec3(transform.transform * glm::vec4(minY.pos, 0))) << "\n";
+
+		double xAngle = glm::atan(zDistance, yDistance);
+		double zAngle = glm::atan(xDistance, yDistance);
+		
+		std::cout << "x angle of mesh is: " << glm::degrees(xAngle) << "\n";
+		std::cout << "z angle of mesh is: " << glm::degrees(zAngle) << "\n";
+
+		// Find the y position of any coordinate on the plane using tan
+		std::cout << "Y axis of point z: -110: " << 550 * glm::tan(glm::degrees(zAngle)) << "\n";
+		
 	}
 }

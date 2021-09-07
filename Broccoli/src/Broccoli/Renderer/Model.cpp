@@ -111,8 +111,8 @@ namespace Broccoli {
 		for (size_t i = 0; i < mesh->mNumVertices; i++)
 		{
 			vertices[i].pos = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
-			vertices[i].col = { 1.0f, 1.0f, 1.0f };
-			//vertices[i].col = { col, col, col };
+			//vertices[i].col = { 1.0f, 1.0f, 1.0f };
+			vertices[i].col = { col, col, col };
 			vertices[i].normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
 
 			if (mesh->mTextureCoords[0]) {

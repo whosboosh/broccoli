@@ -127,7 +127,7 @@ namespace Broccoli {
 
 		Entity* entity1 = new Entity(new Mesh(&vertices, &indices, glm::vec3(95, 5, -220), glm::vec3(5,5,5), glm::vec3(0,0,0)), 1, 0.0f, 0); // Testing character entity (cube)
 		//Entity* entity2 = new Entity(new Mesh(&vertices, &indices, glm::vec3(40, 40, -150), glm::vec3(5, 5, 5), glm::vec3(0, 0, 0)), 1, 0.0f, 0);
-		//entityList.push_back(entity1);
+		entityList.push_back(entity1);
 		//entityList.push_back(entity2);
 		//entityList.push_back(new Entity(new Mesh(entity1->getMesh()->getBoundingBox(), &indices, entity1->getMesh()->getTransform()), 1, 0, 0));
 
@@ -135,10 +135,10 @@ namespace Broccoli {
 		entityList.push_back(map);
 
 		
-		for (Mesh* mesh : map->getModel()->getMeshList())
-		{
-			entityList.push_back(new Entity(new Mesh(mesh->getBoundingBox(), &indices, map->getModel()->getTransform()), 1, 0.0f, 0));
-		}
+		//for (Mesh* mesh : map->getModel()->getMeshList())
+		//{
+			//entityList.push_back(new Entity(new Mesh(mesh->getBoundingBox(), &indices, map->getModel()->getTransform()), 1, 0.0f, 0));
+		//}
 
 	}
 
