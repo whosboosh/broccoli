@@ -7,22 +7,24 @@
 
 namespace Broccoli
 {
-	Entity::Entity(Model* model, bool canCollide, bool initialVelocity, bool hasGravity)
+	Entity::Entity(Model* model, bool canCollide, bool initialVelocity, bool hasGravity, bool shouldDrawBoundingBox)
 	{
 		this->model = model;
 		this->canCollide = canCollide;
 		this->velocity = initialVelocity;
 		this->hasGravity = hasGravity;
+		this->shouldDrawBoundingBox = shouldDrawBoundingBox;
 
 		setAssetType(AssetType::Model);
 	}
 
-	Entity::Entity(Mesh* mesh, bool canCollide, bool initialVelocity, bool hasGravity)
+	Entity::Entity(Mesh* mesh, bool canCollide, bool initialVelocity, bool hasGravity, bool shouldDrawBoundingBox)
 	{
 		this->mesh = mesh;
 		this->canCollide = canCollide;
 		this->velocity = initialVelocity;
 		this->hasGravity = hasGravity;
+		this->shouldDrawBoundingBox = shouldDrawBoundingBox;
 
 		setAssetType(AssetType::Mesh);
 	}

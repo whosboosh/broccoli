@@ -9,8 +9,8 @@ namespace Broccoli
 	class Entity : Asset
 	{
 	public:
-		Entity(Mesh* mesh, bool canCollide, bool initialVelocity, bool hasGravity);
-		Entity(Model* model, bool canCollide, bool initialVelocity, bool hasGravity);
+		Entity(Mesh* mesh, bool canCollide, bool initialVelocity, bool hasGravity, bool shouldDrawBoundingBox);
+		Entity(Model* model, bool canCollide, bool initialVelocity, bool hasGravity, bool shouldDrawBoundingBox);
 		~Entity();
 
 		Model* getModel() { return model; }
@@ -26,6 +26,8 @@ namespace Broccoli
 
 		bool checkIntersection(std::vector<Vertex>* object1, std::vector<Vertex>* object2);
 
+		bool getShouldDrawBoundingBox() { return shouldDrawBoundingBox; }
+
 	private:
 		Model* model;
 		Mesh* mesh;
@@ -35,5 +37,6 @@ namespace Broccoli
 		bool hasGravity = true;
 		float velocity = 0.0f;
 		bool canCollide = true;
+		bool shouldDrawBoundingBox = false;
 	};
 }

@@ -112,9 +112,20 @@ namespace Broccoli {
 		if (entity->getModel())
 		{
 			renderAPI->renderModel(pipeline, entity->getModel());
+			//if (entity->getShouldDrawBoundingBox())
+			//{
+			//	for (Mesh* mesh : entity->getModel()->getMeshList())
+			//	{
+			//		renderAPI->renderMesh(pipeline, mesh->getBoundingBoxMesh());
+			//	}
+			//}
 		}
 		else if (entity->getMesh()){
 			renderAPI->renderMesh(pipeline, entity->getMesh());
+		//	if (entity->getShouldDrawBoundingBox())
+		//	{
+		//		renderAPI->renderMesh(pipeline, entity->getMesh()->getBoundingBoxMesh());
+		//	}
 		}
 	}
 

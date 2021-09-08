@@ -94,6 +94,7 @@ namespace Broccoli {
 		virtual void calculateBoundingBox() = 0;
 
 		std::vector<Vertex>* getBoundingBox() { return &boundingBox; }
+		std::vector<uint32_t>* getBoundingIndices() { return &boundingIndices; }
 
 	protected:
 		TransformComponent transform;
@@ -103,6 +104,14 @@ namespace Broccoli {
 		float xMid, yMid, zMid;
 
 		std::vector<Vertex> boundingBox = {};
+		std::vector<uint32_t> boundingIndices = {
+			1,3,2, 2,0,1,  //Face front
+			4,7,6, 6,5,4, //Face right
+			10,8,9, 9,11,10, // Back
+			14,12,13, 13,15,14, // Left
+			16,17,19, 19,18,16, // Bottom
+			23,22,20, 20,21,23, // Top
+		};
 	};
 
 }

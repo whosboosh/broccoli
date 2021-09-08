@@ -44,6 +44,7 @@ namespace Broccoli {
 		calculateBoundingBox();
 	}
 
+	// TODO: Remove this constructor as it doesn't set the individual components
 	// Explicitly set transform as a matrix instead of individual components
 	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform)
 	{
@@ -164,11 +165,10 @@ namespace Broccoli {
 			{ { xMax, yMax, zMax }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
 			{ { xMin, yMax, zMin }, { 1.0, 0.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
 			{ { xMax, yMax, zMin }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
-
 		};
 
 		// TODO: Put this somewhere that makes sense
-		calculateAngleOfInclination();
+		//calculateAngleOfInclination();
 	}
 
 	void Mesh::calculateAngleOfInclination()
