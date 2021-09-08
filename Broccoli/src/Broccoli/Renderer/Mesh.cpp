@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <limits>
+#include <math.h>
 #include <glm/gtx/string_cast.hpp>
 
 namespace Broccoli {
@@ -188,6 +189,12 @@ namespace Broccoli {
 			else if (point.pos.y < minY.pos.y) minY = point;
 		}
 
+		// Transform the local coordinates using the model matrix to world space
+		maxY.pos = glm::vec3(transform.transform * glm::vec4(maxY.pos, 0));
+		minY.pos = glm::vec3(transform.transform * glm::vec4(minY.pos, 0));
+
+		//std::cout << "Transform matrix: " << glm::to_string(transform.transform) << "\n";
+
 		// Get distance between y and z coordinates between maxY and minY
 		float zDistance = std::abs(maxY.pos.z - minY.pos.z);
 		float yDistance = std::abs(maxY.pos.y - minY.pos.y);
@@ -196,17 +203,18 @@ namespace Broccoli {
 		std::cout << "x distance: " << xDistance << " y distance: " << yDistance << " z distance: " << zDistance << "\n";
 		//std::cout << "Col: "<<maxY.col.r << " " << maxY.col.g << " " << maxY.col.b << " " << "Max y points are x : " << maxY.pos.x << " y : " << maxY.pos.y << " z : " << maxY.pos.z <<"\n";
 		//std::cout << "Col: " << minY.col.r << " " << minY.col.g << " " << minY.col.b << " " << "Min y points are x: " << minY.pos.x << " y: " << minY.pos.y << " z: " << minY.pos.z << "\n";
-		std::cout << "Col: " << maxY.col.r << " " << maxY.col.g << " " << maxY.col.b << " " << "Max y points are x : " << glm::to_string(glm::vec3(transform.transform * glm::vec4(maxY.pos, 0))) << "\n";
-		std::cout << "Col: " << minY.col.r << " " << minY.col.g << " " << minY.col.b << " " << "Min y points are x : " << glm::to_string(glm::vec3(transform.transform * glm::vec4(minY.pos, 0))) << "\n";
+		std::cout << "Col: " << maxY.col.r << " " << maxY.col.g << " " << maxY.col.b << " " << "Max y points are x : " << glm::to_string(maxY.pos) << "\n";
+		std::cout << "Col: " << minY.col.r << " " << minY.col.g << " " << minY.col.b << " " << "Min y points are x : " << glm::to_string(minY.pos) << "\n";
 
-		double xAngle = glm::atan(zDistance, yDistance);
-		double zAngle = glm::atan(xDistance, yDistance);
+		double zAngle = std::atan(yDistance / zDistance);
+		double xAngle = std::atan(yDistance / xDistance);
 		
 		std::cout << "x angle of mesh is: " << glm::degrees(xAngle) << "\n";
 		std::cout << "z angle of mesh is: " << glm::degrees(zAngle) << "\n";
 
 		// Find the y position of any coordinate on the plane using tan
-		std::cout << "Y axis of point z: -110: " << 550 * glm::tan(glm::degrees(zAngle)) << "\n";
+		std::cout << "Tan of z angle: " << std::tan(zAngle) << " When multiplied by z position: " << 168 * std::tan(zAngle) << "\n";
+		std::cout << "Tan of x angle: " << std::tan(xAngle) << " When multiplied by x position: " << -21 * std::tan(xAngle) << "\n";
 		
 	}
-}
+}	

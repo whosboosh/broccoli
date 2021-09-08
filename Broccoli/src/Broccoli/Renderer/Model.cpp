@@ -111,8 +111,8 @@ namespace Broccoli {
 		for (size_t i = 0; i < mesh->mNumVertices; i++)
 		{
 			vertices[i].pos = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
-			//vertices[i].col = { 1.0f, 1.0f, 1.0f };
-			vertices[i].col = { col, col, col };
+			vertices[i].col = { 1.0f, 1.0f, 1.0f };
+			//vertices[i].col = { col, col, col };
 			vertices[i].normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
 
 			if (mesh->mTextureCoords[0]) {
@@ -135,7 +135,7 @@ namespace Broccoli {
 
 		std::cout << "Creating mesh with material index: " << mesh->mMaterialIndex << "\n"; //<< " " << matToTex[mesh->mMaterialIndex]->getTextureId() << "\n";
 
-		Mesh* newMesh = new Mesh(&vertices, &indices, matToTex[mesh->mMaterialIndex], modelTransform.transform.getTransform()); // TODO: update transform component
+		Mesh* newMesh = new Mesh(&vertices, &indices, matToTex[mesh->mMaterialIndex], transform.translation, transform.scale, transform.rotation); // TODO: update transform component
 		meshList.push_back(newMesh);
 	}
 

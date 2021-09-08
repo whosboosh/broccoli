@@ -67,9 +67,17 @@ namespace Broccoli
 
 		if (mesh) {
 			glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
-			mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.01, currentTranslation.z));
+
+			if (currentTranslation.y > 20)
+			{
+				for (int i = 0; i < 10; i++)
+				{
+					mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.1, currentTranslation.z));
+				}
+			}
 		}
 		else {
+			// TODO: Enable y testing
 			glm::vec3 currentTranslation = model->getTransformComponent().translation;
 			model->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.01, currentTranslation.z));
 		}
