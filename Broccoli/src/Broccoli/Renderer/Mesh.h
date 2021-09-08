@@ -38,7 +38,8 @@ namespace Broccoli {
 
 		virtual void calculateBoundingBox() override;
 
-		void calculateAngleOfInclination();
+		void findMaxAndMinHeight();
+		double calculateAngleOfInclination(int point);
 
 		Ref<Texture> getTexture() { return texture; }
 
@@ -50,6 +51,9 @@ namespace Broccoli {
 		Ref<IndexBuffer> indexBuffer;
 
 		Ref<Texture> texture;
+
+		glm::vec3 startPointSlope;
+		glm::vec3 endPointSlope;
 	};
 
 }
