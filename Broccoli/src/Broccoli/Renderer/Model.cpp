@@ -147,7 +147,6 @@ namespace Broccoli {
 			{
 				std::cout << "Checking model collision\n";
 				return mesh;
-				break;
 			}
 		}
 

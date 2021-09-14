@@ -59,18 +59,20 @@ namespace Broccoli
 					//	collidingMesh = entity->getMesh();
 					//	std::cout << "Object is colliding with mesh\n";
 					//	yDepth = collidingMesh->calculateAngleOfInclination(mesh->getTransformComponent().translation); // TODO: Create origin, transform by transform matrix
-				//	}
+					//}
 				}
+				
 				else if (entity->getAssetType() == AssetType::Model)
 				{
 					// Return mesh that is colliding with inside model
 					collidingMesh = entity->getModel()->getCollidingMesh(mesh);
 					if (collidingMesh != NULL)
 					{
-						std::cout << "Object is colliding with a mesh of model\n";
-						yDepth = collidingMesh->calculateAngleOfInclination(model->getTransformComponent().translation);
+						std::cout << "Object is colliding with a mesh of model : height : "<< mesh->height << "\n";
+						yDepth = collidingMesh->calculateAngleOfInclination(mesh->origin) + mesh->height;
 					}
 				}	
+
 			}
 
 			/*
@@ -82,7 +84,7 @@ namespace Broccoli
 					if (entity->getMesh()->isInsideBoundingBox(model))
 					{
 						collidingMesh = entity->getMesh();
-						yDepth = collidingMesh->calculateAngleOfInclination(mesh->getTransformComponent().translation);
+						yDepth = collidingMesh->calculateAngleOfInclination(model->getTransformComponent().translation);
 					}
 				}
 				else if (entity->getAssetType() == AssetType::Model)
@@ -101,7 +103,7 @@ namespace Broccoli
 		if (mesh) {
 			glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
 
-			if (currentTranslation.y > 10)
+			if (currentTranslation.y > yDepth)
 			{
 				for (int i = 0; i < 10; i++)
 				{

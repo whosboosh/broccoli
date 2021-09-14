@@ -100,33 +100,42 @@ namespace Broccoli {
 		zMin = std::numeric_limits<int>::max(); // front
 		zMax = std::numeric_limits<int>::min(); // back
 
+		glm::vec3 pos;
+
 		// Iterate through vertices of the mesh
 		for (int i = 0; i < vertexBuffer->getVertices()->size(); i++)
 		{
 			Vertex vertex = vertexBuffer->getVertices()->at(i);
 
+
+			pos = glm::vec3(transform.transform * glm::vec4(vertex.pos, 1));
+
+
 			//std::cout << vertex.pos.x << " " << xMin << " " << vertex.pos.y << " " << yMin << " " << vertex.pos.z << " " << zMin << "\n";
 
-			if (vertex.pos.x < xMin) {
-				xMin = vertex.pos.x;
+			if (pos.x < xMin) {
+				xMin = pos.x;
 			}
-			else if (vertex.pos.x > xMax) {
-				xMax = vertex.pos.x;
+			else if (pos.x > xMax) {
+				xMax = pos.x;
 			}
-			if (vertex.pos.y < yMin) {
-				yMin = vertex.pos.y;
+			if (pos.y < yMin) {
+				yMin = pos.y;
 			}
-			else if (vertex.pos.y > yMax) {
-				yMax = vertex.pos.y;
+			else if (pos.y > yMax) {
+				yMax = pos.y;
 			}
-			if (vertex.pos.z < zMin) {
-				zMin = vertex.pos.z;
+			if (pos.z < zMin) {
+				zMin = pos.z;
 			}
-			else if (vertex.pos.z > zMax)
+			else if (pos.z > zMax)
 			{
-				zMax = vertex.pos.z;
+				zMax = pos.z;
 			}
 		}
+
+		origin = glm::vec3(xMin + xMax / 2, yMin+yMax /2, zMin+zMax /2);
+
 
 		width = std::abs(xMax - xMin);
 		height = std::abs(yMax - yMin);
@@ -180,12 +189,12 @@ namespace Broccoli {
 		{
 			Vertex point = vertexBuffer->getVertices()->at(i);
 
-			//glm::vec3 posTransform = glm::vec3(transform.transform * glm::vec4(point.pos, 0));
+			glm::vec3 posTransform = glm::vec3(transform.transform * glm::vec4(point.pos, 0));
 
 			//std::cout << "Point " << i << " has coordinates " << glm::to_string(point.pos) << "\n";
 
-			if (point.pos.y > maxY.y) maxY = point.pos;
-			else if (point.pos.y < minY.y) minY = point.pos;
+			if (posTransform.y > maxY.y) maxY = posTransform;
+			else if (posTransform.y < minY.y) minY = posTransform;
 		}
 
 		startPointSlope = maxY;
@@ -194,25 +203,66 @@ namespace Broccoli {
 
 	double Mesh::calculateAngleOfInclination(glm::vec3 point)
 	{
+		// The map model file has been separated out into meshes for areas that have height differences.
+		// If an entity is intersecting with part of a mesh that is inclined, (use bounding box), use trig to find the angle inclination from lowest part of mesh to highest part
+		// All slopes are a single gradient so this works
+
+		// Find the vertices in the mesh with the highest and lowest y axis coordinates
+		// We'll use these for calculating the angle
+
+		//glm::mat4 mapTransform = glm::mat4(1.0f);
+		//mapTransform = glm::rotate(mapTransform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		//mapTransform = glm::rotate(mapTransform, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		//mapTransform = glm::scale(mapTransform, glm::vec3(0.1f, 0.1f, 0.1f));
+
+		// Transform the local coordinates using the model matrix to world space
+		//maxY.pos = glm::vec3(transform.transform * glm::vec4(maxY.pos, 0));
+		//minY.pos = glm::vec3(transform.transform * glm::vec4(minY.pos, 0));
+
+		//std::cout << "Transform matrix: " << glm::to_string(transform.transform) << "\n";
+
+		// Get distance between y and z coordinates between maxY and minY
 		float zDistance = std::abs(startPointSlope.z - endPointSlope.z);
 		float yDistance = std::abs(startPointSlope.y - endPointSlope.y);
 		float xDistance = std::abs(startPointSlope.x - endPointSlope.x);
 
-		if (zDistance > xDistance) return (point.z / (startPointSlope.z - endPointSlope.z)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
-		else return (point.x / (startPointSlope.x - endPointSlope.x))* (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+		std::cout << point.x << " x point <<<\n";
+
+		std::cout << "Max y points are x : " << startPointSlope.x << " y : " << startPointSlope.y << " z : " << startPointSlope.z << "\n";
+		std::cout << "Min y points are x: " << endPointSlope.x << " y: " << endPointSlope.y << " z: " << endPointSlope.z << "\n";
+		std::cout << "x distance: " << xDistance << " y distance: " << yDistance << " z distance: " << zDistance << "\n";
+
+		//if (zDistance > xDistance) return (point.z / (startPointSlope.z - endPointSlope.z)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+		//else return (point.x / (startPointSlope.x - endPointSlope.x))* (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+		int height =  (endPointSlope.x / (startPointSlope.x - endPointSlope.x)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+
+		std::cout << "Final height: " << height << "\n";
+		return height;
+
+		//std::cout << "Col: " << maxY.r << " " << maxY.g << " " << maxY.b << " " << "Max y points are x : " << glm::to_string(maxY) << "\n";
+		//std::cout << "Col: " << minY.r << " " << minY.g << " " << minY.b << " " << "Min y points are x : " << glm::to_string(minY) << "\n";
+		//double zAngle = std::atan(yDistance / zDistance);
+		//double xAngle = std::atan(yDistance / xDistance);
+
+		//std::cout << "x angle of mesh is: " << glm::degrees(xAngle) << "\n";
+		//std::cout << "z angle of mesh is: " << glm::degrees(zAngle) << "\n";
+		// Find the y position of any coordinate on the plane using tan
+		//std::cout << "Tan of z angle: " << std::tan(zAngle) << " When multiplied by z position: " << maxY.z * std::tan(zAngle) << "\n";
+		//std::cout << "Tan of x angle: " << std::tan(xAngle) << " When multiplied by x position: " << maxY.x * std::tan(xAngle) << "\n";
+		
 	}
 	bool Mesh::isInsideBoundingBox(RenderObject* object)
 	{
-		glm::vec3 objectPosMin = glm::vec3(object->getTransform() * glm::vec4(glm::vec3(object->xMin, object->yMin, object->zMin), 1));
-		glm::vec3 objectPosMax = glm::vec3(object->getTransform() * glm::vec4(glm::vec3(object->xMax, object->yMax, object->zMax), 1));
+		//glm::vec3 objectPosMin = glm::vec3(object->getTransform() * glm::vec4(glm::vec3(object->xMin, object->yMin, object->zMin), 1));
+		//glm::vec3 objectPosMax = glm::vec3(object->getTransform() * glm::vec4(glm::vec3(object->xMax, object->yMax, object->zMax), 1));
 
-		glm::vec3 posMin = glm::vec3(transform.transform * glm::vec4(glm::vec3(xMin, yMin, yMax), 1));
-		glm::vec3 posMax = glm::vec3(transform.transform * glm::vec4(glm::vec3(xMax, yMax, zMax), 1));
+		//glm::vec3 posMin = glm::vec3(transform.transform * glm::vec4(glm::vec3(xMin, yMin, yMax), 1));
+		//glm::vec3 posMax = glm::vec3(transform.transform * glm::vec4(glm::vec3(xMax, yMax, zMax), 1));
 
-		std::cout << "object xMin,yMin,zMin transformed: " << objectPosMin.x << " " << objectPosMin.y << " " << objectPosMin.z << "\n";
-		std::cout << "Pos xMin,yMin,zMin transformed: " << posMin.x << " " << posMin.y << " " << posMin.z << "\n";
-		std::cout << "object x,y,z min/max: " << object->xMin << " " << object->xMax << " " << object->yMin << " " << object->yMax << " " << object->zMin << " " << object->zMax << "\n";
-		std::cout << "comparision x,y,z min/max" << xMin << " " << xMax << " " << yMin << " " << yMax << " " << zMin << " " << zMax << "\n";
+		//std::cout << "object xMin,yMin,zMin transformed: " << objectPosMin.x << " " << objectPosMin.y << " " << objectPosMin.z << "\n";
+		//std::cout << "Pos xMin,yMin,zMin transformed: " << posMin.x << " " << posMin.y << " " << posMin.z << "\n";
+		//std::cout << "object x,y,z min/max: " << object->xMin << " " << object->xMax << " " << object->yMin << " " << object->yMax << " " << object->zMin << " " << object->zMax << "\n";
+		//std::cout << "comparision x,y,z min/max" << xMin << " " << xMax << " " << yMin << " " << yMax << " " << zMin << " " << zMax << "\n";
 
 
 		//return (objectPosMin.x <= posMax.x && objectPosMax.x >= posMin.x) &&
@@ -223,6 +273,5 @@ namespace Broccoli {
 		return (object->xMin <= xMax && object->xMax >= xMin) &&
 			(object->yMin <= yMax && object->yMax >= yMin) &&
 			(object->zMin <= zMax && object->zMax >= zMin);
-			
 	}
 }	
