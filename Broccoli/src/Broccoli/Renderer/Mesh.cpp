@@ -189,13 +189,14 @@ namespace Broccoli {
 		{
 			Vertex point = vertexBuffer->getVertices()->at(i);
 
-			glm::vec3 posTransform = glm::vec3(transform.transform * glm::vec4(point.pos, 0));
-
 			//std::cout << "Point " << i << " has coordinates " << glm::to_string(point.pos) << "\n";
 
-			if (posTransform.y > maxY.y) maxY = posTransform;
-			else if (posTransform.y < minY.y) minY = posTransform;
+			if (point.pos.y > maxY.y) maxY = point.pos;
+			else if (point.pos.y < minY.y) minY = point.pos;
 		}
+
+		maxY = glm::vec3(transform.transform * glm::vec4(maxY, 0));
+		minY = glm::vec3(transform.transform * glm::vec4(minY, 0));
 
 		startPointSlope = maxY;
 		endPointSlope = minY;
@@ -226,18 +227,17 @@ namespace Broccoli {
 		float yDistance = std::abs(startPointSlope.y - endPointSlope.y);
 		float xDistance = std::abs(startPointSlope.x - endPointSlope.x);
 
-		std::cout << point.x << " x point <<<\n";
-
 		std::cout << "Max y points are x : " << startPointSlope.x << " y : " << startPointSlope.y << " z : " << startPointSlope.z << "\n";
 		std::cout << "Min y points are x: " << endPointSlope.x << " y: " << endPointSlope.y << " z: " << endPointSlope.z << "\n";
 		std::cout << "x distance: " << xDistance << " y distance: " << yDistance << " z distance: " << zDistance << "\n";
 
-		//if (zDistance > xDistance) return (point.z / (startPointSlope.z - endPointSlope.z)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
-		//else return (point.x / (startPointSlope.x - endPointSlope.x))* (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
-		int height =  (endPointSlope.x / (startPointSlope.x - endPointSlope.x)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+		if (zDistance > xDistance) return ((point.z - endPointSlope.z) / (startPointSlope.z - endPointSlope.z)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+		else return ((point.x - endPointSlope.x) / (startPointSlope.x - endPointSlope.x))* (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
 
-		std::cout << "Final height: " << height << "\n";
-		return height;
+		//int height =  ((endPointSlope.x - endPointSlope.x) / (startPointSlope.x - endPointSlope.x)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+
+		//std::cout << "Final height: " << height << "\n";
+		//return height;
 
 		//std::cout << "Col: " << maxY.r << " " << maxY.g << " " << maxY.b << " " << "Max y points are x : " << glm::to_string(maxY) << "\n";
 		//std::cout << "Col: " << minY.r << " " << minY.g << " " << minY.b << " " << "Min y points are x : " << glm::to_string(minY) << "\n";
