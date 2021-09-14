@@ -6,10 +6,10 @@
 #include <glm/gtx/string_cast.hpp>
 
 namespace Broccoli {
-	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::vec3 translate, glm::vec3 scale, glm::vec3 rotate)
+	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t>* indices, glm::vec3 translate, glm::vec3 scale, glm::vec3 rotate)
 	{
 		indexCount = indices->size();
-		vertexCount = vertices->size();
+		vertexCount = vertices.size();
 
 		vertexBuffer = VertexBuffer::create(vertices);
 		indexBuffer = IndexBuffer::create(indices);
@@ -24,10 +24,10 @@ namespace Broccoli {
 		calculateBoundingBox();
 	}
 
-	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, Ref<Texture> texture, glm::vec3 translate, glm::vec3 scale, glm::vec3 rotate)
+	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t>* indices, Ref<Texture> texture, glm::vec3 translate, glm::vec3 scale, glm::vec3 rotate)
 	{
 		indexCount = indices->size();
-		vertexCount = vertices->size();
+		vertexCount = vertices.size();
 
 		this->texture = texture;
 
@@ -46,10 +46,10 @@ namespace Broccoli {
 
 	// TODO: Remove this constructor as it doesn't set the individual components
 	// Explicitly set transform as a matrix instead of individual components
-	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, glm::mat4 transform)
+	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t>* indices, glm::mat4 transform)
 	{
 		indexCount = indices->size();
-		vertexCount = vertices->size();
+		vertexCount = vertices.size();
 
 		this->texture = texture;
 
@@ -63,10 +63,10 @@ namespace Broccoli {
 	}
 
 	// Explicitly set transform as a matrix instead of individual components (With texture)
-	Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, Ref<Texture> texture, glm::mat4 transform)
+	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t>* indices, Ref<Texture> texture, glm::mat4 transform)
 	{
 		indexCount = indices->size();
-		vertexCount = vertices->size();
+		vertexCount = vertices.size();
 
 		this->texture = texture;
 
@@ -103,9 +103,9 @@ namespace Broccoli {
 		glm::vec3 pos;
 
 		// Iterate through vertices of the mesh
-		for (int i = 0; i < vertexBuffer->getVertices()->size(); i++)
+		for (int i = 0; i < vertexBuffer->getVertices().size(); i++)
 		{
-			Vertex vertex = vertexBuffer->getVertices()->at(i);
+			Vertex vertex = vertexBuffer->getVertices().at(i);
 
 
 			pos = glm::vec3(transform.transform * glm::vec4(vertex.pos, 1));
@@ -185,9 +185,9 @@ namespace Broccoli {
 		glm::vec3 maxY = { 0,std::numeric_limits<int>::min(),0 };
 		glm::vec3 minY = { 0,std::numeric_limits<int>::max(),0 };
 
-		for (int i = 0; i < vertexBuffer->getVertices()->size(); i++)
+		for (int i = 0; i < vertexBuffer->getVertices().size(); i++)
 		{
-			Vertex point = vertexBuffer->getVertices()->at(i);
+			Vertex point = vertexBuffer->getVertices().at(i);
 
 			glm::vec3 pointTransform = glm::vec3(transform.transform * glm::vec4(point.pos, 1));
 
@@ -229,9 +229,9 @@ namespace Broccoli {
 		float yDistance = std::abs(startPointSlope.y - endPointSlope.y);
 		float xDistance = std::abs(startPointSlope.x - endPointSlope.x);
 
-		std::cout << "Max y points are x : " << startPointSlope.x << " y : " << startPointSlope.y << " z : " << startPointSlope.z << "\n";
-		std::cout << "Min y points are x: " << endPointSlope.x << " y: " << endPointSlope.y << " z: " << endPointSlope.z << "\n";
-		std::cout << "x distance: " << xDistance << " y distance: " << yDistance << " z distance: " << zDistance << "\n";
+		//std::cout << "Max y points are x : " << startPointSlope.x << " y : " << startPointSlope.y << " z : " << startPointSlope.z << "\n";
+		//std::cout << "Min y points are x: " << endPointSlope.x << " y: " << endPointSlope.y << " z: " << endPointSlope.z << "\n";
+		//std::cout << "x distance: " << xDistance << " y distance: " << yDistance << " z distance: " << zDistance << "\n";
 
 		if (zDistance > xDistance) return ((point.z - endPointSlope.z) / (startPointSlope.z - endPointSlope.z)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
 		else return ((point.x - endPointSlope.x) / (startPointSlope.x - endPointSlope.x))* (startPointSlope.y - endPointSlope.y) + endPointSlope.y;

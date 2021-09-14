@@ -69,7 +69,7 @@ namespace Broccoli
 					if (collidingMesh != NULL)
 					{
 						std::cout << "Object is colliding with a mesh of model : height : "<< mesh->height << "\n";
-						yDepth = collidingMesh->calculateAngleOfInclination(mesh->origin) + mesh->height;
+						yDepth = collidingMesh->calculateAngleOfInclination(mesh->origin);
 					}
 				}	
 
@@ -101,20 +101,31 @@ namespace Broccoli
 		std::cout << "Y depth for component: " << yDepth << "\n";
 
 		if (mesh) {
-			glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
+			mesh->findMaxAndMinHeight();
+			// Get the lowest vertex in the mesh (endPointSlope)
+			// Make sure that endPointSlope.y > yDepth
+			// Transform the mesh to that yDepth until ^^
 
-			if (std::abs(currentTranslation.y - yDepth) <= 0.01)
+			glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
+			int lowestHeight = glm::vec3(mesh->getTransform() * glm::vec4(mesh->endPointSlope, 1)).y - (mesh->height /2);
+
+			int difference = std::abs(yDepth - currentTranslation.y);
+			int lowerBound = yDepth + difference;
+
+			std::cout << lowestHeight <<" " << currentTranslation.y << "\n";
+
+			if (std::abs(lowestHeight - yDepth) <= 0.01)
 			{
-				return;
+				
 			}
-			else if (currentTranslation.y > yDepth)
+			if (lowestHeight > yDepth)
 			{
 				for (int i = 0; i < 10; i++)
 				{
 					mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.1, currentTranslation.z));
 				}
 			}
-			else if (currentTranslation.y < yDepth)
+			else if (lowestHeight < yDepth)
 			{
 				for (int i = 0; i < 10; i++)
 				{
@@ -122,8 +133,6 @@ namespace Broccoli
 				}
 
 			}
-
-			std::cout << std::abs(currentTranslation.y - yDepth) << "\n";
 		}
 		else {
 			// TODO: Enable y testing

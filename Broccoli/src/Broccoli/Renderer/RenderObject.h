@@ -103,13 +103,12 @@ namespace Broccoli {
 		int width, height, depth;
 		int xMin, xMax, yMin, yMax, zMin, zMax;
 		glm::vec3 origin;
+		glm::vec3 startPointSlope;
+		glm::vec3 endPointSlope;
 
 	protected:
 		TransformComponent transform;
 		bool hasTexture;
-
-		glm::vec3 startPointSlope;
-		glm::vec3 endPointSlope;
 
 
 		std::vector<Vertex> boundingBox = {};

@@ -11,7 +11,7 @@
 
 namespace Broccoli {
 	
-	VulkanVertexBuffer::VulkanVertexBuffer(std::vector<Vertex>* vertices, VertexBufferUsage usage)
+	VulkanVertexBuffer::VulkanVertexBuffer(std::vector<Vertex> vertices, VertexBufferUsage usage)
 	{
 		this->vertices = vertices;
 
@@ -23,7 +23,7 @@ namespace Broccoli {
 		VkCommandPool graphicsCommandPool = device->getGraphicsCommandPool();
 
 		// Create buffer
-		VkDeviceSize bufferSize = sizeof(Vertex) * vertices->size();
+		VkDeviceSize bufferSize = sizeof(Vertex) * vertices.size();
 
 		// Temporary buffer to "stage" vertex data before transferring to GPU
 		VkBuffer stagingBuffer;
@@ -35,7 +35,7 @@ namespace Broccoli {
 		// Map memory to staging buffer
 		void* data; // Create a pointer to point in normal memory
 		vkMapMemory(logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data); // Map the staging buffer memory to that point
-		memcpy(data, vertices->data(), (size_t)bufferSize); // Copy memory from vertices vector to that point
+		memcpy(data, vertices.data(), (size_t)bufferSize); // Copy memory from vertices vector to that point
 		vkUnmapMemory(logicalDevice, stagingBufferMemory); // Unmap the staging buffer memory
 
 		// Create buffer with TRANSFER_DST_BIT to mark as recipient of transfer data (also VERTEX_BUFFER)

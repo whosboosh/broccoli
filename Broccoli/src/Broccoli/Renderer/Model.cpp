@@ -135,7 +135,7 @@ namespace Broccoli {
 
 		std::cout << "Creating mesh with material index: " << mesh->mMaterialIndex << "\n"; //<< " " << matToTex[mesh->mMaterialIndex]->getTextureId() << "\n";
 
-		Mesh* newMesh = new Mesh(&vertices, &indices, matToTex[mesh->mMaterialIndex], transform.translation, transform.scale, transform.rotation); // TODO: update transform component
+		Mesh* newMesh = new Mesh(vertices, &indices, matToTex[mesh->mMaterialIndex], transform.translation, transform.scale, transform.rotation); // TODO: update transform component
 		meshList.push_back(newMesh);
 	}
 

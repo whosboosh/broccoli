@@ -37,14 +37,14 @@ namespace Broccoli {
 		virtual unsigned int getSize() = 0;
 		
 
-		static Ref<VertexBuffer> create(std::vector<Vertex>* vertices, VertexBufferUsage usage = VertexBufferUsage::Dynamic);
+		static Ref<VertexBuffer> create(std::vector<Vertex> vertices, VertexBufferUsage usage = VertexBufferUsage::Dynamic);
 
 		// Vulkan Specific
 		virtual VkBuffer getVertexBuffer() = 0;
 
-		std::vector<Vertex>* getVertices() { return vertices; };
+		std::vector<Vertex> getVertices() { return vertices; };
 
 	protected:
-		std::vector<Vertex>* vertices;
+		std::vector<Vertex> vertices;
 	};
 }
