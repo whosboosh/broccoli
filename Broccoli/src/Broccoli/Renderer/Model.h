@@ -44,6 +44,11 @@ namespace Broccoli {
 
 		Ref<Texture>& getTexture() { return texture; }
 
+		virtual void findMaxAndMinHeight() override {};
+		virtual double calculateAngleOfInclination(glm::vec3 point) override { return 0; };
+		virtual bool isInsideBoundingBox(RenderObject* object) override { return 1; };
+		virtual Mesh* getCollidingMesh(RenderObject* object);
+
 	private:
 		const std::string fileName;
 		const aiScene* scene;

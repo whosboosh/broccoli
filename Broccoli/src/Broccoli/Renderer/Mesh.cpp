@@ -93,12 +93,12 @@ namespace Broccoli {
 		// 4 is bottom (y < current y)
 		// 5 is top (y > current y)
 
-		int xMin = std::numeric_limits<int>::max(); // left
-		int xMax = std::numeric_limits<int>::min(); // right
-		int yMin = std::numeric_limits<int>::max(); // bottom
-		int yMax = std::numeric_limits<int>::min(); // top
-		int zMin = std::numeric_limits<int>::max(); // front
-		int zMax = std::numeric_limits<int>::min(); // back
+		xMin = std::numeric_limits<int>::max(); // left
+		xMax = std::numeric_limits<int>::min(); // right
+		yMin = std::numeric_limits<int>::max(); // bottom
+		yMax = std::numeric_limits<int>::min(); // top
+		zMin = std::numeric_limits<int>::max(); // front
+		zMax = std::numeric_limits<int>::min(); // back
 
 		// Iterate through vertices of the mesh
 		for (int i = 0; i < vertexBuffer->getVertices()->size(); i++)
@@ -182,7 +182,7 @@ namespace Broccoli {
 
 			//glm::vec3 posTransform = glm::vec3(transform.transform * glm::vec4(point.pos, 0));
 
-			std::cout << "Point " << i << " has coordinates " << glm::to_string(point.pos) << "\n";
+			//std::cout << "Point " << i << " has coordinates " << glm::to_string(point.pos) << "\n";
 
 			if (point.pos.y > maxY.y) maxY = point.pos;
 			else if (point.pos.y < minY.y) minY = point.pos;
@@ -192,50 +192,37 @@ namespace Broccoli {
 		endPointSlope = minY;
 	}
 
-	double Mesh::calculateAngleOfInclination(int point)
+	double Mesh::calculateAngleOfInclination(glm::vec3 point)
 	{
-		// The map model file has been separated out into meshes for areas that have height differences.
-		// If an entity is intersecting with part of a mesh that is inclined, (use bounding box), use trig to find the angle inclination from lowest part of mesh to highest part
-		// All slopes are a single gradient so this works
-		
-		// Find the vertices in the mesh with the highest and lowest y axis coordinates
-		// We'll use these for calculating the angle
-
-		//glm::mat4 mapTransform = glm::mat4(1.0f);
-		//mapTransform = glm::rotate(mapTransform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		//mapTransform = glm::rotate(mapTransform, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		//mapTransform = glm::scale(mapTransform, glm::vec3(0.1f, 0.1f, 0.1f));
-
-		// Transform the local coordinates using the model matrix to world space
-		//maxY.pos = glm::vec3(transform.transform * glm::vec4(maxY.pos, 0));
-		//minY.pos = glm::vec3(transform.transform * glm::vec4(minY.pos, 0));
-
-		//std::cout << "Transform matrix: " << glm::to_string(transform.transform) << "\n";
-
-		// Get distance between y and z coordinates between maxY and minY
 		float zDistance = std::abs(startPointSlope.z - endPointSlope.z);
 		float yDistance = std::abs(startPointSlope.y - endPointSlope.y);
 		float xDistance = std::abs(startPointSlope.x - endPointSlope.x);
 
-		if (zDistance > xDistance) return (point / (startPointSlope.z - endPointSlope.z)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
-		else return (point / (startPointSlope.x - endPointSlope.x))* (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
-		/*
-		std::cout << "x distance: " << xDistance << " y distance: " << yDistance << " z distance: " << zDistance << "\n";
-		//std::cout << "Col: "<<maxY.col.r << " " << maxY.col.g << " " << maxY.col.b << " " << "Max y points are x : " << maxY.pos.x << " y : " << maxY.pos.y << " z : " << maxY.pos.z <<"\n";
-		//std::cout << "Col: " << minY.col.r << " " << minY.col.g << " " << minY.col.b << " " << "Min y points are x: " << minY.pos.x << " y: " << minY.pos.y << " z: " << minY.pos.z << "\n";
-		std::cout << "Col: " << maxY.r << " " << maxY.g << " " << maxY.b << " " << "Max y points are x : " << glm::to_string(maxY) << "\n";
-		std::cout << "Col: " << minY.r << " " << minY.g << " " << minY.b << " " << "Min y points are x : " << glm::to_string(minY) << "\n";
+		if (zDistance > xDistance) return (point.z / (startPointSlope.z - endPointSlope.z)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+		else return (point.x / (startPointSlope.x - endPointSlope.x))* (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+	}
+	bool Mesh::isInsideBoundingBox(RenderObject* object)
+	{
+		glm::vec3 objectPosMin = glm::vec3(object->getTransform() * glm::vec4(glm::vec3(object->xMin, object->yMin, object->zMin), 1));
+		glm::vec3 objectPosMax = glm::vec3(object->getTransform() * glm::vec4(glm::vec3(object->xMax, object->yMax, object->zMax), 1));
 
-		double zAngle = std::atan(yDistance / zDistance);
-		double xAngle = std::atan(yDistance / xDistance);
+		glm::vec3 posMin = glm::vec3(transform.transform * glm::vec4(glm::vec3(xMin, yMin, yMax), 1));
+		glm::vec3 posMax = glm::vec3(transform.transform * glm::vec4(glm::vec3(xMax, yMax, zMax), 1));
+
+		std::cout << "object xMin,yMin,zMin transformed: " << objectPosMin.x << " " << objectPosMin.y << " " << objectPosMin.z << "\n";
+		std::cout << "Pos xMin,yMin,zMin transformed: " << posMin.x << " " << posMin.y << " " << posMin.z << "\n";
+		std::cout << "object x,y,z min/max: " << object->xMin << " " << object->xMax << " " << object->yMin << " " << object->yMax << " " << object->zMin << " " << object->zMax << "\n";
+		std::cout << "comparision x,y,z min/max" << xMin << " " << xMax << " " << yMin << " " << yMax << " " << zMin << " " << zMax << "\n";
+
+
+		//return (objectPosMin.x <= posMax.x && objectPosMax.x >= posMin.x) &&
+			//(objectPosMin.y <= posMax.y && objectPosMax.y >= posMin.y) &&
+			//(objectPosMin.z <= posMax.z && objectPosMax.z >= posMin.z);
+
 		
-		std::cout << "x angle of mesh is: " << glm::degrees(xAngle) << "\n";
-		std::cout << "z angle of mesh is: " << glm::degrees(zAngle) << "\n";
-
-		// Find the y position of any coordinate on the plane using tan
-		std::cout << "Tan of z angle: " << std::tan(zAngle) << " When multiplied by z position: " << maxY.z * std::tan(zAngle) << "\n";
-		std::cout << "Tan of x angle: " << std::tan(xAngle) << " When multiplied by x position: " << maxY.x * std::tan(xAngle) << "\n";
-
-		*/
+		return (object->xMin <= xMax && object->xMax >= xMin) &&
+			(object->yMin <= yMax && object->yMax >= yMin) &&
+			(object->zMin <= zMax && object->zMax >= zMin);
+			
 	}
 }	

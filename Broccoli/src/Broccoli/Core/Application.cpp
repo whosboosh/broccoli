@@ -126,12 +126,12 @@ namespace Broccoli {
 		Ref<VulkanTexture> textureTest = Texture::create("resources/textures/brickwall.jpg", "geometry.frag", "textureSampler");
 		Ref<VulkanTexture> textureTest2 = Texture::create("resources/textures/sand.png", "geometry.frag", "textureSampler");
 
-		//Entity* entity1 = new Entity(new Mesh(&vertices, &indices, glm::vec3(-50, 100, 10), glm::vec3(5,5,5), glm::vec3(0,0,0)), 1, 0.0f, 1, 1); // Testing character entity (cube)
+		Entity* entity1 = new Entity(new Mesh(&vertices, &indices, glm::vec3(10, 100, 10), glm::vec3(5,5,5), glm::vec3(0,0,0)), 1, 0.0f, 1, 1); // Testing character entity (cube)
 		//Entity* entity2 = new Entity(new Mesh(&vertices, &indices, glm::vec3(40, 100, 100), glm::vec3(5, 5, 5), glm::vec3(0, 0, 0)), 1, 0.0f, 1, 1);
-		//entityList.push_back(entity1);
+		entityList.push_back(entity1);
 		//entityList.push_back(entity2);
 
-		Entity* map = new Entity(new Model("resources/models/dust2/source/de_dust2_edit.fbx", glm::vec3(10, 15, 10), glm::vec3(0.1f, 0.1f, 0.1f), glm::radians(glm::vec3(90,0,180.0f))), 1, 0.0f, 0, 0);
+		Entity* map = new Entity(new Model("resources/models/dust2/source/de_dust2_edit.fbx", glm::vec3(0,0,0), glm::vec3(0.1f, 0.1f, 0.1f), glm::radians(glm::vec3(90, 0, 180.0f))), 1, 0.0f, 0, 0);
 		entityList.push_back(map);
 		
 		//entityList.push_back(new Entity(new Mesh(entity1->getMesh()->getBoundingBox(), &indices, textureTest2, entity1->getMesh()->getTransformComponent().translation,
@@ -140,10 +140,10 @@ namespace Broccoli {
 		//entityList.push_back(new Entity(new Mesh(entity2->getMesh()->getBoundingBox(), &indices, textureTest2, entity2->getMesh()->getTransformComponent().translation,
 			//entity2->getMesh()->getTransformComponent().scale, entity2->getMesh()->getTransformComponent().rotation), 1, 0, 1, 0));
 
-		//for (Mesh* mesh : map->getModel()->getMeshList())
-		//{
-			//entityList.push_back(new Entity(new Mesh(mesh->getBoundingBox(), &indices, map->getModel()->getTransform()), 1, 0.0f, 0));
-		//}
+		for (Mesh* mesh : map->getModel()->getMeshList())
+		{
+			//entityList.push_back(new Entity(new Mesh(mesh->getBoundingBox(), &indices, map->getModel()->getTransform()), 1, 0.0f, 0, 1));
+		}
 
 	}
 

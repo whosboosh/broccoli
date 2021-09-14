@@ -42,35 +42,66 @@ namespace Broccoli
 
 	void Entity::actGravity(std::vector<Entity*> entityList)
 	{
-		/*
-		// Boundary checking (TODO: Add bounding boxes to entities)
+		// TODO: maybe object collides with more than 1?
+		Mesh* collidingMesh;
+		int yDepth = 0;
+
+		// Boundary checking
 		for (auto& entity : entityList)
 		{
-			if (entity->getAssetType() == AssetType::Mesh)
+			if (entity == this) continue;
+			if (getAssetType() == AssetType::Mesh)
 			{
-				// True if the mesh is intersecting
-				if (checkIntersection(mesh->getBoundingBox(), entity->getMesh()->getVertexBuffer()->As<VertexBuffer>()->getVertices()))
+				if (entity->getAssetType() == AssetType::Mesh)
 				{
-
+					//if (entity->getMesh()->isInsideBoundingBox(mesh))
+					//{
+					//	collidingMesh = entity->getMesh();
+					//	std::cout << "Object is colliding with mesh\n";
+					//	yDepth = collidingMesh->calculateAngleOfInclination(mesh->getTransformComponent().translation); // TODO: Create origin, transform by transform matrix
+				//	}
 				}
-			}
-			else if (entity->getAssetType() == AssetType::Model)
-			{
-				// Check each invidival mesh inside the model to see if colliding
-				for (auto& modelMesh: entity->getModel()->getMeshList())
+				else if (entity->getAssetType() == AssetType::Model)
 				{
-					if (checkIntersection(mesh->getBoundingBox(), modelMesh->getVertexBuffer()->As<VertexBuffer>()->getVertices()));
+					// Return mesh that is colliding with inside model
+					collidingMesh = entity->getModel()->getCollidingMesh(mesh);
+					if (collidingMesh != NULL)
 					{
+						std::cout << "Object is colliding with a mesh of model\n";
+						yDepth = collidingMesh->calculateAngleOfInclination(model->getTransformComponent().translation);
+					}
+				}	
+			}
 
+			/*
+			// TODO: Refactor so I don't have to check type of mesh/model
+			else if (getAssetType() == AssetType::Model)
+			{
+				if (entity->getAssetType() == AssetType::Mesh)
+				{
+					if (entity->getMesh()->isInsideBoundingBox(model))
+					{
+						collidingMesh = entity->getMesh();
+						yDepth = collidingMesh->calculateAngleOfInclination(mesh->getTransformComponent().translation);
 					}
 				}
-			}
-		}*/
+				else if (entity->getAssetType() == AssetType::Model)
+				{
+					collidingMesh = entity->getModel()->getCollidingMesh(model);
+					if (collidingMesh != NULL)
+					{
+						yDepth = collidingMesh->calculateAngleOfInclination(model->getTransformComponent().translation);
+					}
+				}
+			}*/
+		}
+
+		std::cout << "Y depth for component: " << yDepth << "\n";
 
 		if (mesh) {
 			glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
 
-			if (currentTranslation.y > 20)
+			if (currentTranslation.y > 10)
 			{
 				for (int i = 0; i < 10; i++)
 				{

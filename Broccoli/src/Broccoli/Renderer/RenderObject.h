@@ -96,12 +96,20 @@ namespace Broccoli {
 		std::vector<Vertex>* getBoundingBox() { return &boundingBox; }
 		std::vector<uint32_t>* getBoundingIndices() { return &boundingIndices; }
 
+		virtual void findMaxAndMinHeight() = 0;
+		virtual double calculateAngleOfInclination(glm::vec3 point) = 0;
+		virtual bool isInsideBoundingBox(RenderObject* object) = 0;
+
+		int xMin, xMax, yMin, yMax, zMin, zMax;
+
 	protected:
 		TransformComponent transform;
 		bool hasTexture;
 
 		int width, height, depth;
-		float xMid, yMid, zMid;
+
+		glm::vec3 startPointSlope;
+		glm::vec3 endPointSlope;
 
 		std::vector<Vertex> boundingBox = {};
 		std::vector<uint32_t> boundingIndices = {

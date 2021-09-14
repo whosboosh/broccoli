@@ -139,6 +139,21 @@ namespace Broccoli {
 		meshList.push_back(newMesh);
 	}
 
+	Mesh* Model::getCollidingMesh(RenderObject* object)
+	{
+		for (auto& mesh : meshList)
+		{
+			if (mesh->isInsideBoundingBox(object))
+			{
+				std::cout << "Checking model collision\n";
+				return mesh;
+				break;
+			}
+		}
+
+		return NULL;
+	}
+
 	void Model::loadMaterials()
 	{
 		// Create 1:1 sized list of textures
