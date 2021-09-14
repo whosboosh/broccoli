@@ -103,13 +103,27 @@ namespace Broccoli
 		if (mesh) {
 			glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
 
-			if (currentTranslation.y > yDepth)
+			if (std::abs(currentTranslation.y - yDepth) <= 0.01)
+			{
+				return;
+			}
+			else if (currentTranslation.y > yDepth)
 			{
 				for (int i = 0; i < 10; i++)
 				{
 					mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.1, currentTranslation.z));
 				}
 			}
+			else if (currentTranslation.y < yDepth)
+			{
+				for (int i = 0; i < 10; i++)
+				{
+					mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y + 0.1, currentTranslation.z));
+				}
+
+			}
+
+			std::cout << std::abs(currentTranslation.y - yDepth) << "\n";
 		}
 		else {
 			// TODO: Enable y testing

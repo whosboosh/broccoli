@@ -189,14 +189,16 @@ namespace Broccoli {
 		{
 			Vertex point = vertexBuffer->getVertices()->at(i);
 
+			glm::vec3 pointTransform = glm::vec3(transform.transform * glm::vec4(point.pos, 1));
+
 			//std::cout << "Point " << i << " has coordinates " << glm::to_string(point.pos) << "\n";
 
-			if (point.pos.y > maxY.y) maxY = point.pos;
-			else if (point.pos.y < minY.y) minY = point.pos;
+			if (pointTransform.y > maxY.y) maxY = pointTransform;
+			else if (pointTransform.y < minY.y) minY = pointTransform;
 		}
 
-		maxY = glm::vec3(transform.transform * glm::vec4(maxY, 0));
-		minY = glm::vec3(transform.transform * glm::vec4(minY, 0));
+		//maxY = glm::vec3(transform.transform * glm::vec4(maxY, 0));
+		//minY = glm::vec3(transform.transform * glm::vec4(minY, 0));
 
 		startPointSlope = maxY;
 		endPointSlope = minY;
