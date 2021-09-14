@@ -44,6 +44,7 @@ namespace Broccoli {
 
 		Ref<Texture>& getTexture() { return texture; }
 
+		virtual void findMinMaxVerticies() override {};
 		virtual void findMaxAndMinHeight() override {};
 		virtual double calculateAngleOfInclination(RenderObject* object) override { return 0; };
 		virtual bool isInsideBoundingBox(RenderObject* object) override { return 1; };

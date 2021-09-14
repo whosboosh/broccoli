@@ -100,39 +100,7 @@ namespace Broccoli {
 		zMin = std::numeric_limits<int>::max(); // front
 		zMax = std::numeric_limits<int>::min(); // back
 
-		glm::vec3 pos;
-
-		// Iterate through vertices of the mesh
-		for (int i = 0; i < vertexBuffer->getVertices().size(); i++)
-		{
-			Vertex vertex = vertexBuffer->getVertices().at(i);
-
-
-			pos = glm::vec3(transform.transform * glm::vec4(vertex.pos, 1));
-
-
-			//std::cout << vertex.pos.x << " " << xMin << " " << vertex.pos.y << " " << yMin << " " << vertex.pos.z << " " << zMin << "\n";
-
-			if (pos.x < xMin) {
-				xMin = pos.x;
-			}
-			else if (pos.x > xMax) {
-				xMax = pos.x;
-			}
-			if (pos.y < yMin) {
-				yMin = pos.y;
-			}
-			else if (pos.y > yMax) {
-				yMax = pos.y;
-			}
-			if (pos.z < zMin) {
-				zMin = pos.z;
-			}
-			else if (pos.z > zMax)
-			{
-				zMax = pos.z;
-			}
-		}
+		findMinMaxVerticies();
 
 		origin = glm::vec3(xMin + xMax / 2, yMin+yMax /2, zMin+zMax /2);
 
@@ -180,6 +148,43 @@ namespace Broccoli {
 		findMaxAndMinHeight();
 	}
 
+	void Mesh::findMinMaxVerticies()
+	{
+		glm::vec3 pos;
+
+		// Iterate through vertices of the mesh
+		for (int i = 0; i < vertexBuffer->getVertices().size(); i++)
+		{
+			Vertex vertex = vertexBuffer->getVertices().at(i);
+
+
+			pos = glm::vec3(transform.transform * glm::vec4(vertex.pos, 1));
+
+
+			//std::cout << vertex.pos.x << " " << xMin << " " << vertex.pos.y << " " << yMin << " " << vertex.pos.z << " " << zMin << "\n";
+
+			if (pos.x < xMin) {
+				xMin = pos.x;
+			}
+			else if (pos.x > xMax) {
+				xMax = pos.x;
+			}
+			if (pos.y < yMin) {
+				yMin = pos.y;
+			}
+			else if (pos.y > yMax) {
+				yMax = pos.y;
+			}
+			if (pos.z < zMin) {
+				zMin = pos.z;
+			}
+			else if (pos.z > zMax)
+			{
+				zMax = pos.z;
+			}
+		}
+	}
+
 	void Mesh::findMaxAndMinHeight()
 	{
 		glm::vec3 maxY = { 0,std::numeric_limits<int>::min(),0 };
@@ -218,67 +223,50 @@ namespace Broccoli {
 
 		if (zDistance > xDistance) {
 			int point;
+			int offset = 0;
 
 			// Check that the distance between endSlope.z - zMin is greater than startSlope.z - zMin
-
-			if (std::abs(object->origin.z- endPointSlope.z) < std::abs(object->origin.z - startPointSlope.z))
+			
+			if (startPointSlope.z > endPointSlope.z)
 			{
-				// End point is closer
-				if (std::abs(object->zMin - endPointSlope.z) < (std::abs(object->zMax - endPointSlope.z)))
-				{
-					// zMin is closer to endpoint than zMax
-					point = object->zMin;
-				}
-				else {
-					point = object->zMax;
-				}
+				point = object->zMax;
+				offset = std::abs(object->origin.y - glm::vec3(object->getTransform() * glm::vec4(object->endPointSlope, 1)).y);
 			}
 			else {
-				// Start point is closer
-				if (std::abs(object->zMin - startPointSlope.z) < (std::abs(object->zMax - startPointSlope.z)))
-				{
-					// zMin is closer to startpoint than zMax
-					point = object->zMin;
-				}
-				else {
-					point = object->zMax;
-				}
+				point = object->zMin;
+				offset = -std::abs(object->origin.y - glm::vec3(object->getTransform() * glm::vec4(object->endPointSlope, 1)).y);
 			}
-			height = ((point - endPointSlope.z) / (startPointSlope.z - endPointSlope.z)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+
+			height = (((point - endPointSlope.z) / (startPointSlope.z - endPointSlope.z)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y) + offset;
+			
 		}
 		else {
 			int point;
+			int offset = 0;
 
 			// Check that the distance between endSlope.z - zMin is greater than startSlope.z - zMin
 
-			if (std::abs(object->origin.x - endPointSlope.x) < std::abs(object->origin.x - startPointSlope.x))
+			if (startPointSlope.x < endPointSlope.x)
 			{
-				// End point is closer
+				std::cout << std::abs(xMin - endPointSlope.x) << " " << std::abs(xMin - startPointSlope.x) << "\n";
+
 				/*
-				if (std::abs(object->xMin - endPointSlope.x) < (std::abs(object->xMax - endPointSlope.x)))
+				if (std::abs(xMin - endPointSlope.x) < std::abs(xMin - startPointSlope.x))
 				{
-					// xMin is closer to endpoint than xMax
-					point = object->xMin;
+					offset = -std::abs(object->origin.y - glm::vec3(object->getTransform() * glm::vec4(object->endPointSlope, 1)).y) / 2;
 				}
 				else {
-					point = object->xMax;
-				}*/
-				point = object->xMax;
-			}
-			else {
-				// Start point is closer
-				/*
-				if (std::abs(object->xMin - startPointSlope.x) < (std::abs(object->xMax - startPointSlope.x)))
-				{
-					// xMin is closer to startpoint than xMax
-					point = object->xMin;
-				}
-				else {
-					point = object->xMax;
+					offset = std::abs(object->origin.y - glm::vec3(object->getTransform() * glm::vec4(object->endPointSlope, 1)).y) / 2;
 				}*/
 				point = object->xMin;
 			}
-			height = ((point - endPointSlope.x) / (startPointSlope.x - endPointSlope.x)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+			else {
+				point = object->xMax;
+				//offset = std::abs(object->origin.y - glm::vec3(object->getTransform() * glm::vec4(object->endPointSlope, 1)).y);
+			}
+
+
+			height = (((point - endPointSlope.x) / (startPointSlope.x - endPointSlope.x)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y); // + offset;
 		}
 
 		return height;
@@ -286,6 +274,9 @@ namespace Broccoli {
 	}
 	bool Mesh::isInsideBoundingBox(RenderObject* object)
 	{
+		findMinMaxVerticies();
+		object->findMinMaxVerticies();
+
 		//glm::vec3 objectPosMin = glm::vec3(object->getTransform() * glm::vec4(glm::vec3(object->xMin, object->yMin, object->zMin), 1));
 		//glm::vec3 objectPosMax = glm::vec3(object->getTransform() * glm::vec4(glm::vec3(object->xMax, object->yMax, object->zMax), 1));
 
@@ -298,9 +289,9 @@ namespace Broccoli {
 		//std::cout << "comparision x,y,z min/max" << xMin << " " << xMax << " " << yMin << " " << yMax << " " << zMin << " " << zMax << "\n";
 
 
-		//return (objectPosMin.x <= posMax.x && objectPosMax.x >= posMin.x) &&
-			//(objectPosMin.y <= posMax.y && objectPosMax.y >= posMin.y) &&
-			//(objectPosMin.z <= posMax.z && objectPosMax.z >= posMin.z);
+		//return (objectPosMin.x <= xMax && objectPosMax.x >= xMin) &&
+			//(objectPosMin.y <= yMax && objectPosMax.y >= yMin) &&
+			//(objectPosMin.z <= zMax && objectPosMax.z >= zMin);
 
 		
 		return (object->xMin <= xMax && object->xMax >= xMin) &&

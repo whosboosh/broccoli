@@ -126,7 +126,7 @@ namespace Broccoli {
 		Ref<VulkanTexture> textureTest = Texture::create("resources/textures/brickwall.jpg", "geometry.frag", "textureSampler");
 		Ref<VulkanTexture> textureTest2 = Texture::create("resources/textures/sand.png", "geometry.frag", "textureSampler");
 
-		Entity* entity1 = new Entity(new Mesh(vertices, &indices, glm::vec3(40, 5, 10), glm::vec3(5,5,5), glm::vec3(0,0,0)), 1, 0.0f, 1, 1); // Testing character entity (cube)
+		Entity* entity1 = new Entity(new Mesh(vertices, &indices, glm::vec3(40, 100, 10), glm::vec3(5,5,5), glm::vec3(0,0,0)), 1, 0.0f, 1, 1); // Testing character entity (cube)
 		//Entity* entity2 = new Entity(new Mesh(&vertices, &indices, glm::vec3(40, 100, 100), glm::vec3(5, 5, 5), glm::vec3(0, 0, 0)), 1, 0.0f, 1, 1);
 		entityList.push_back(entity1);
 		//entityList.push_back(entity2);

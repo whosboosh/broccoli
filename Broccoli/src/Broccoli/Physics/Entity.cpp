@@ -107,12 +107,11 @@ namespace Broccoli
 			// Transform the mesh to that yDepth until ^^
 
 			glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
-			int lowestHeight = glm::vec3(mesh->getTransform() * glm::vec4(mesh->endPointSlope, 1)).y - (mesh->height /2);
+			int lowestHeight = glm::vec3(mesh->getTransform() * glm::vec4(mesh->endPointSlope, 1)).y;
 
-			int difference = std::abs(yDepth - currentTranslation.y);
-			int lowerBound = yDepth + difference;
+			int difference = mesh->origin.y - lowestHeight;
 
-			std::cout << lowestHeight <<" " << currentTranslation.y << "\n";
+			std::cout << difference << " " << lowestHeight << " " << currentTranslation.y << "\n";
 
 			if (std::abs((lowestHeight) - yDepth) <= 0.01)
 			{
@@ -131,7 +130,6 @@ namespace Broccoli
 				{
 					mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y + 0.1, currentTranslation.z));
 				}
-
 			}
 		}
 		else {
