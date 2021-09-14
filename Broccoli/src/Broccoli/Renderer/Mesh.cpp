@@ -204,27 +204,8 @@ namespace Broccoli {
 		endPointSlope = minY;
 	}
 
-	double Mesh::calculateAngleOfInclination(glm::vec3 point)
+	double Mesh::calculateAngleOfInclination(RenderObject* object)
 	{
-		// The map model file has been separated out into meshes for areas that have height differences.
-		// If an entity is intersecting with part of a mesh that is inclined, (use bounding box), use trig to find the angle inclination from lowest part of mesh to highest part
-		// All slopes are a single gradient so this works
-
-		// Find the vertices in the mesh with the highest and lowest y axis coordinates
-		// We'll use these for calculating the angle
-
-		//glm::mat4 mapTransform = glm::mat4(1.0f);
-		//mapTransform = glm::rotate(mapTransform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		//mapTransform = glm::rotate(mapTransform, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		//mapTransform = glm::scale(mapTransform, glm::vec3(0.1f, 0.1f, 0.1f));
-
-		// Transform the local coordinates using the model matrix to world space
-		//maxY.pos = glm::vec3(transform.transform * glm::vec4(maxY.pos, 0));
-		//minY.pos = glm::vec3(transform.transform * glm::vec4(minY.pos, 0));
-
-		//std::cout << "Transform matrix: " << glm::to_string(transform.transform) << "\n";
-
-		// Get distance between y and z coordinates between maxY and minY
 		float zDistance = std::abs(startPointSlope.z - endPointSlope.z);
 		float yDistance = std::abs(startPointSlope.y - endPointSlope.y);
 		float xDistance = std::abs(startPointSlope.x - endPointSlope.x);
@@ -233,24 +214,74 @@ namespace Broccoli {
 		//std::cout << "Min y points are x: " << endPointSlope.x << " y: " << endPointSlope.y << " z: " << endPointSlope.z << "\n";
 		//std::cout << "x distance: " << xDistance << " y distance: " << yDistance << " z distance: " << zDistance << "\n";
 
-		if (zDistance > xDistance) return ((point.z - endPointSlope.z) / (startPointSlope.z - endPointSlope.z)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
-		else return ((point.x - endPointSlope.x) / (startPointSlope.x - endPointSlope.x))* (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+		int height;
 
-		//int height =  ((endPointSlope.x - endPointSlope.x) / (startPointSlope.x - endPointSlope.x)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+		if (zDistance > xDistance) {
+			int point;
 
-		//std::cout << "Final height: " << height << "\n";
-		//return height;
+			// Check that the distance between endSlope.z - zMin is greater than startSlope.z - zMin
 
-		//std::cout << "Col: " << maxY.r << " " << maxY.g << " " << maxY.b << " " << "Max y points are x : " << glm::to_string(maxY) << "\n";
-		//std::cout << "Col: " << minY.r << " " << minY.g << " " << minY.b << " " << "Min y points are x : " << glm::to_string(minY) << "\n";
-		//double zAngle = std::atan(yDistance / zDistance);
-		//double xAngle = std::atan(yDistance / xDistance);
+			if (std::abs(object->origin.z- endPointSlope.z) < std::abs(object->origin.z - startPointSlope.z))
+			{
+				// End point is closer
+				if (std::abs(object->zMin - endPointSlope.z) < (std::abs(object->zMax - endPointSlope.z)))
+				{
+					// zMin is closer to endpoint than zMax
+					point = object->zMin;
+				}
+				else {
+					point = object->zMax;
+				}
+			}
+			else {
+				// Start point is closer
+				if (std::abs(object->zMin - startPointSlope.z) < (std::abs(object->zMax - startPointSlope.z)))
+				{
+					// zMin is closer to startpoint than zMax
+					point = object->zMin;
+				}
+				else {
+					point = object->zMax;
+				}
+			}
+			height = ((point - endPointSlope.z) / (startPointSlope.z - endPointSlope.z)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+		}
+		else {
+			int point;
 
-		//std::cout << "x angle of mesh is: " << glm::degrees(xAngle) << "\n";
-		//std::cout << "z angle of mesh is: " << glm::degrees(zAngle) << "\n";
-		// Find the y position of any coordinate on the plane using tan
-		//std::cout << "Tan of z angle: " << std::tan(zAngle) << " When multiplied by z position: " << maxY.z * std::tan(zAngle) << "\n";
-		//std::cout << "Tan of x angle: " << std::tan(xAngle) << " When multiplied by x position: " << maxY.x * std::tan(xAngle) << "\n";
+			// Check that the distance between endSlope.z - zMin is greater than startSlope.z - zMin
+
+			if (std::abs(object->origin.x - endPointSlope.x) < std::abs(object->origin.x - startPointSlope.x))
+			{
+				// End point is closer
+				/*
+				if (std::abs(object->xMin - endPointSlope.x) < (std::abs(object->xMax - endPointSlope.x)))
+				{
+					// xMin is closer to endpoint than xMax
+					point = object->xMin;
+				}
+				else {
+					point = object->xMax;
+				}*/
+				point = object->xMax;
+			}
+			else {
+				// Start point is closer
+				/*
+				if (std::abs(object->xMin - startPointSlope.x) < (std::abs(object->xMax - startPointSlope.x)))
+				{
+					// xMin is closer to startpoint than xMax
+					point = object->xMin;
+				}
+				else {
+					point = object->xMax;
+				}*/
+				point = object->xMin;
+			}
+			height = ((point - endPointSlope.x) / (startPointSlope.x - endPointSlope.x)) * (startPointSlope.y - endPointSlope.y) + endPointSlope.y;
+		}
+
+		return height;
 		
 	}
 	bool Mesh::isInsideBoundingBox(RenderObject* object)

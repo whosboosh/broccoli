@@ -39,7 +39,7 @@ namespace Broccoli {
 		virtual void calculateBoundingBox() override;
 
 		virtual void findMaxAndMinHeight() override;
-		virtual double calculateAngleOfInclination(glm::vec3 point) override;
+		virtual double calculateAngleOfInclination(RenderObject* object) override;
 		virtual bool isInsideBoundingBox(RenderObject* object) override;
 
 		Ref<Texture> getTexture() { return texture; }

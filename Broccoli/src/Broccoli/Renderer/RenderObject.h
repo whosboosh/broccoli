@@ -97,7 +97,7 @@ namespace Broccoli {
 		std::vector<uint32_t>* getBoundingIndices() { return &boundingIndices; }
 
 		virtual void findMaxAndMinHeight() = 0;
-		virtual double calculateAngleOfInclination(glm::vec3 point) = 0;
+		virtual double calculateAngleOfInclination(RenderObject* object) = 0;
 		virtual bool isInsideBoundingBox(RenderObject* object) = 0;
 
 		int width, height, depth;

@@ -69,7 +69,7 @@ namespace Broccoli
 					if (collidingMesh != NULL)
 					{
 						std::cout << "Object is colliding with a mesh of model : height : "<< mesh->height << "\n";
-						yDepth = collidingMesh->calculateAngleOfInclination(mesh->origin);
+						yDepth = collidingMesh->calculateAngleOfInclination(mesh);
 					}
 				}	
 
@@ -114,7 +114,7 @@ namespace Broccoli
 
 			std::cout << lowestHeight <<" " << currentTranslation.y << "\n";
 
-			if (std::abs(lowestHeight - yDepth) <= 0.01)
+			if (std::abs((lowestHeight) - yDepth) <= 0.01)
 			{
 				
 			}
