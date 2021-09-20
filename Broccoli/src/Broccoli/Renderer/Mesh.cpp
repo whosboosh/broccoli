@@ -248,7 +248,7 @@ namespace Broccoli {
 
 			if (startPointSlope.x < endPointSlope.x)
 			{
-				std::cout << std::abs(xMin - endPointSlope.x) << " " << std::abs(xMin - startPointSlope.x) << "\n";
+				//std::cout << std::abs(xMin - endPointSlope.x) << " " << std::abs(xMin - startPointSlope.x) << "\n";
 
 				/*
 				if (std::abs(xMin - endPointSlope.x) < std::abs(xMin - startPointSlope.x))

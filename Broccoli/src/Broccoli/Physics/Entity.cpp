@@ -72,7 +72,6 @@ namespace Broccoli
 						yDepth = collidingMesh->calculateAngleOfInclination(mesh);
 					}
 				}	
-
 			}
 
 			/*
@@ -98,7 +97,7 @@ namespace Broccoli
 			}*/
 		}
 
-		std::cout << "Y depth for component: " << yDepth << "\n";
+		//std::cout << "Y depth for component: " << yDepth << "\n";
 
 		if (mesh) {
 			mesh->findMaxAndMinHeight();
@@ -111,20 +110,16 @@ namespace Broccoli
 
 			int difference = mesh->origin.y - lowestHeight;
 
-			std::cout << difference << " " << lowestHeight << " " << currentTranslation.y << "\n";
+			//std::cout << difference << " " << lowestHeight << " " << currentTranslation.y << "\n";
 
-			if (std::abs((lowestHeight) - yDepth) <= 0.01)
-			{
-				
-			}
-			if (lowestHeight > yDepth)
+			if (lowestHeight > yDepth && std::abs((lowestHeight)-yDepth) > 0.01)
 			{
 				for (int i = 0; i < 10; i++)
 				{
 					mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.1, currentTranslation.z));
 				}
 			}
-			else if (lowestHeight < yDepth)
+			else if (lowestHeight < yDepth && std::abs((lowestHeight)-yDepth) > 0.01)
 			{
 				for (int i = 0; i < 10; i++)
 				{
