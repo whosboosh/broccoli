@@ -93,7 +93,7 @@ namespace Broccoli {
 
 		virtual void calculateBoundingBox() = 0;
 
-		std::vector<Vertex>* getBoundingBox() { return &boundingBox; }
+		std::vector<Vertex> getBoundingBox() { return boundingBox; }
 		std::vector<uint32_t>* getBoundingIndices() { return &boundingIndices; }
 
 		virtual void findMinMaxVerticies() = 0;
@@ -102,7 +102,10 @@ namespace Broccoli {
 		virtual bool isInsideBoundingBox(RenderObject* object) = 0;
 
 		int width, height, depth;
-		int xMin, xMax, yMin, yMax, zMin, zMax;
+		
+		glm::vec3 minPoint;
+		glm::vec3 maxPoint;
+
 		glm::vec3 origin;
 		glm::vec3 startPointSlope;
 		glm::vec3 endPointSlope;

@@ -11,7 +11,8 @@ namespace Broccoli {
 		None = 0,
 		Mesh = 1,
 		Model = 2,
-		Texture = 3
+		Texture = 3,
+		Map = 4
 	};
 
 	static AssetType assetTypeFromString(const std::string& assetType)
@@ -20,6 +21,7 @@ namespace Broccoli {
 		if (assetType == "Mesh") { return AssetType::Mesh; }
 		if (assetType == "Model") { return AssetType::Model; }
 		if (assetType == "Texture") { return AssetType::Texture; }
+		if (assetType == "Map") { return AssetType::Map; }
 
 		std::cout << "No asset found for: " << assetType << "\n";
 		return AssetType::None;

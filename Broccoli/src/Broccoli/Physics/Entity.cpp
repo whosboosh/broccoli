@@ -58,7 +58,7 @@ namespace Broccoli
 					//{
 					//	collidingMesh = entity->getMesh();
 					//	std::cout << "Object is colliding with mesh\n";
-					//	yDepth = collidingMesh->calculateAngleOfInclination(mesh->getTransformComponent().translation); // TODO: Create origin, transform by transform matrix
+					//	yDepth = collidingMesh->calculateAngleOfInclination(mesh);
 					//}
 				}
 				
@@ -97,7 +97,7 @@ namespace Broccoli
 			}*/
 		}
 
-		//std::cout << "Y depth for component: " << yDepth << "\n";
+		std::cout << "Y depth for component: " << yDepth << "\n";
 
 		if (mesh) {
 			mesh->findMaxAndMinHeight();
@@ -110,7 +110,7 @@ namespace Broccoli
 
 			int difference = mesh->origin.y - lowestHeight;
 
-			//std::cout << difference << " " << lowestHeight << " " << currentTranslation.y << "\n";
+			std::cout << difference << " " << lowestHeight << " " << currentTranslation.y << "\n";
 
 			if (lowestHeight > yDepth && std::abs((lowestHeight)-yDepth) > 0.01)
 			{
@@ -183,28 +183,5 @@ namespace Broccoli
 	void Entity::moveToEntity(Entity* entity)
 	{
 		moveToPosition(entity->getMesh()->getTransformComponent().translation, 10);
-	}
-
-	bool Entity::checkIntersection(std::vector<Vertex>* object1, std::vector<Vertex>* object2)
-	{
-		// TODO: Create a gravity intersection function that only checks with the map
-		// 
-
-		// Apply transformation matrix on each vector in bounding box to get real 3D space coordinate
-		// arctan of height / distance = angle between 2 points
-		// tan(angle) * x coordinate of arbritrary point to find the height at that slope
-
-		// Find the closest vertice in homogenous coordinate space
-		// We only care about the bottom vertices 16/19 are the points in a square that relate to the bottom 4 vertices
-		for (int i = 16; i < 20; i++)
-		{
-			//glm::vec3 transformedPoint = glm::vec3(object->getTransform() * glm::vec4(boundingBox->at(i).pos, 0.0));
-			
-			// Find closest vertex to transformedPoint
-			//for (int j = 0; j < vertexBuffer)
-
-		}
-
-		return 0;
 	}
 }

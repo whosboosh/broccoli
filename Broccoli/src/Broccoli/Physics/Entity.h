@@ -24,8 +24,6 @@ namespace Broccoli
 		void moveToPosition(glm::vec3 position, float velocity);
 		void moveToEntity(Entity* entity);
 
-		bool checkIntersection(std::vector<Vertex>* object1, std::vector<Vertex>* object2);
-
 		bool getShouldDrawBoundingBox() { return shouldDrawBoundingBox; }
 
 	private:
