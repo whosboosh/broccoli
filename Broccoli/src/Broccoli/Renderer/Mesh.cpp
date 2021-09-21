@@ -93,55 +93,55 @@ namespace Broccoli {
 		// 4 is bottom (y < current y)
 		// 5 is top (y > current y)
 
-		xMin = std::numeric_limits<int>::max(); // left
-		xMax = std::numeric_limits<int>::min(); // right
-		yMin = std::numeric_limits<int>::max(); // bottom
-		yMax = std::numeric_limits<int>::min(); // top
-		zMin = std::numeric_limits<int>::max(); // front
-		zMax = std::numeric_limits<int>::min(); // back
+		xMin = glm::vec3(std::numeric_limits<int>::max()); // left
+		xMax = glm::vec3(std::numeric_limits<int>::min()); // right
+		yMin = glm::vec3(std::numeric_limits<int>::max()); // bottom
+		yMax = glm::vec3(std::numeric_limits<int>::min()); // top
+		zMin = glm::vec3(std::numeric_limits<int>::max()); // front
+		zMax = glm::vec3(std::numeric_limits<int>::min()); // back
 
 		findMinMaxVerticies();
 
-		origin = glm::vec3(xMin + xMax / 2, yMin+yMax /2, zMin+zMax /2);
+		origin = glm::vec3(xMin.x + xMax.x / 2, yMin.y+yMax.x /2, zMin.z+zMax.z /2);
 
 
-		width = std::abs(xMax - xMin);
-		height = std::abs(yMax - yMin);
-		depth = std::abs(zMax - zMin);
+		width = std::abs(xMax.x - xMin.x);
+		height = std::abs(yMax.y - yMin.y);
+		depth = std::abs(zMax.z - zMin.z);
 
 		//std::cout << width << " " << height << " " << depth << "\n";
 		//std::cout << "Min dimensions for bounding box: " << xMin << " " << xMax << " " << yMin << " " << yMax << " " << zMin << " " << zMax << "\n";
 
 		boundingBox = {
-			{ { xMin, yMin, zMax }, { 1.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 0
-			{ {xMax, yMin, zMax }, { 1.0, 0.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
-			{ { xMin, yMax, zMax }, { 1.0, 0.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
-			{ { xMax, yMax, zMax }, { 1.0, 0.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin.x, yMin.y, zMax.z }, { 1.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 0
+			{ {xMax.x, yMin.y, zMax.z }, { 1.0, 0.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin.x, yMax.y, zMax.z }, { 1.0, 0.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax.x, yMax.y, zMax.z }, { 1.0, 0.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
 
-			{ { xMax, yMin, zMin }, { 0.0, 1.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 4
-			{ { xMax, yMin, zMax }, { 0.0, 1.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }},
-			{ { xMax, yMax, zMax }, { 0.0, 1.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
-			{ { xMax, yMax, zMin }, { 0.0, 1.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax.x, yMin.y, zMin.z }, { 0.0, 1.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 4
+			{ { xMax.x, yMin.y, zMax.z }, { 0.0, 1.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax.x, yMax.y, zMax.z }, { 0.0, 1.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax.x, yMax.y, zMin.z }, { 0.0, 1.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
 
-			{ { xMax, yMin, zMin }, { 1.0, 1.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 8 back
-			{ { xMin, yMin, zMin }, { 1.0, 1.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }},
-			{ { xMax, yMax, zMin }, { 1.0, 1.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
-			{ { xMin, yMax, zMin }, { 1.0, 1.0, 0.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax.x, yMin.y, zMin.z }, { 1.0, 1.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 8 back
+			{ { xMin.x, yMin.y, zMin.z }, { 1.0, 1.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax.x, yMax.y, zMin.z }, { 1.0, 1.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin.x, yMax.y, zMin.z }, { 1.0, 1.0, 0.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
 
-			{ { xMin, yMin, zMin }, { 1.0, 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 12 left
-			{ { xMin, yMin, zMax }, { 1.0, 0.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
-			{ { xMin, yMax, zMin }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
-			{ { xMin, yMax, zMax }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin.x, yMin.y, zMin.z }, { 1.0, 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 12 left
+			{ { xMin.x, yMin.y, zMax.z }, { 1.0, 0.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin.x, yMax.y, zMin.z }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin.x, yMax.y, zMax.z }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
 
-			{ { xMin, yMin, zMin }, { 0.0, 0.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }}, // 16 bottom
-			{ { xMax, yMin, zMin }, { 0.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }},
-			{ { xMin, yMin, zMax }, { 0.0, 0.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
-			{ { xMax, yMin, zMax }, { 0.0, 0.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin.x, yMin.y, zMin.z }, { 0.0, 0.0, 1.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }}, // 16 bottom
+			{ { xMax.x, yMin.y, zMin.z }, { 0.0, 0.0, 1.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin.x, yMin.y, zMax.z }, { 0.0, 0.0, 1.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax.x, yMin.y, zMax.z }, { 0.0, 0.0, 1.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
 
-			{ { xMin, yMax, zMax }, { 1.0, 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 20 Top
-			{ { xMax, yMax, zMax }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
-			{ { xMin, yMax, zMin }, { 1.0, 0.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
-			{ { xMax, yMax, zMin }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin.x, yMax.y, zMax.z }, { 1.0, 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0, 0.0 }}, // 20 Top
+			{ { xMax.x, yMax.y, zMax.z }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMin.x, yMax.y, zMin.z }, { 1.0, 0.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 0.0, 0.0 }},
+			{ { xMax.x, yMax.y, zMin.z }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0, 0.0 }},
 		};
 
 		// TODO: Put this somewhere that makes sense
@@ -150,7 +150,7 @@ namespace Broccoli {
 
 	void Mesh::findMinMaxVerticies()
 	{
-		glm::vec3 pos;
+		//glm::vec3 pos;
 
 		// Iterate through vertices of the mesh
 		for (int i = 0; i < vertexBuffer->getVertices().size(); i++)
@@ -158,29 +158,28 @@ namespace Broccoli {
 			Vertex vertex = vertexBuffer->getVertices().at(i);
 
 
-			pos = glm::vec3(transform.transform * glm::vec4(vertex.pos, 1));
-
+			//pos = glm::vec3(transform.transform * glm::vec4(vertex.pos, 1));
 
 			//std::cout << vertex.pos.x << " " << xMin << " " << vertex.pos.y << " " << yMin << " " << vertex.pos.z << " " << zMin << "\n";
 
-			if (pos.x < xMin) {
-				xMin = pos.x;
+			if (vertex.pos.x < xMin.x) {
+				xMin = vertex.pos;
 			}
-			else if (pos.x > xMax) {
-				xMax = pos.x;
+			else if (vertex.pos.x > xMax.x) {
+				xMax = vertex.pos;
 			}
-			if (pos.y < yMin) {
-				yMin = pos.y;
+			if (vertex.pos.y < yMin.y) {
+				yMin = vertex.pos;
 			}
-			else if (pos.y > yMax) {
-				yMax = pos.y;
+			else if (vertex.pos.y > yMax.y) {
+				yMax = vertex.pos;
 			}
-			if (pos.z < zMin) {
-				zMin = pos.z;
+			if (vertex.pos.z < zMin.z) {
+				zMin = vertex.pos;
 			}
-			else if (pos.z > zMax)
+			else if (vertex.pos.z > zMax.z)
 			{
-				zMax = pos.z;
+				zMax = vertex.pos;
 			}
 		}
 	}
@@ -229,11 +228,11 @@ namespace Broccoli {
 			
 			if (startPointSlope.z > endPointSlope.z)
 			{
-				point = object->zMax;
+				point = object->zMax.z;
 				offset = std::abs(object->origin.y - glm::vec3(object->getTransform() * glm::vec4(object->endPointSlope, 1)).y);
 			}
 			else {
-				point = object->zMin;
+				point = object->zMin.z;
 				offset = -std::abs(object->origin.y - glm::vec3(object->getTransform() * glm::vec4(object->endPointSlope, 1)).y);
 			}
 
@@ -258,10 +257,10 @@ namespace Broccoli {
 				else {
 					offset = std::abs(object->origin.y - glm::vec3(object->getTransform() * glm::vec4(object->endPointSlope, 1)).y) / 2;
 				}*/
-				point = object->xMin;
+				point = object->xMin.x;
 			}
 			else {
-				point = object->xMax;
+				point = object->xMax.x;
 				//offset = std::abs(object->origin.y - glm::vec3(object->getTransform() * glm::vec4(object->endPointSlope, 1)).y);
 			}
 
@@ -274,28 +273,42 @@ namespace Broccoli {
 	}
 	bool Mesh::isInsideBoundingBox(RenderObject* object)
 	{
-		findMinMaxVerticies();
-		object->findMinMaxVerticies();
+		int xMinTrans = glm::vec3(transform.transform * glm::vec4(xMin,1)).x;
+		int yMinTrans = glm::vec3(transform.transform * glm::vec4(yMin, 1)).y;
+		int zMinTrans = glm::vec3(transform.transform * glm::vec4(zMin, 1)).z;
+		int xMaxTrans = glm::vec3(transform.transform * glm::vec4(xMax, 1)).x;
+		int yMaxTrans = glm::vec3(transform.transform * glm::vec4(yMax, 1)).y;
+		int zMaxTrans = glm::vec3(transform.transform * glm::vec4(zMax, 1)).z;
 
-		//glm::vec3 objectPosMin = glm::vec3(object->getTransform() * glm::vec4(glm::vec3(object->xMin, object->yMin, object->zMin), 1));
-		//glm::vec3 objectPosMax = glm::vec3(object->getTransform() * glm::vec4(glm::vec3(object->xMax, object->yMax, object->zMax), 1));
-
-		//glm::vec3 posMin = glm::vec3(transform.transform * glm::vec4(glm::vec3(xMin, yMin, yMax), 1));
-		//glm::vec3 posMax = glm::vec3(transform.transform * glm::vec4(glm::vec3(xMax, yMax, zMax), 1));
-
-		//std::cout << "object xMin,yMin,zMin transformed: " << objectPosMin.x << " " << objectPosMin.y << " " << objectPosMin.z << "\n";
-		//std::cout << "Pos xMin,yMin,zMin transformed: " << posMin.x << " " << posMin.y << " " << posMin.z << "\n";
-		//std::cout << "object x,y,z min/max: " << object->xMin << " " << object->xMax << " " << object->yMin << " " << object->yMax << " " << object->zMin << " " << object->zMax << "\n";
-		//std::cout << "comparision x,y,z min/max" << xMin << " " << xMax << " " << yMin << " " << yMax << " " << zMin << " " << zMax << "\n";
+		int objectXMinTrans = glm::vec3(transform.transform * glm::vec4(object->xMin, 1)).x;
+		int objectYMinTrans = glm::vec3(transform.transform * glm::vec4(object->yMin, 1)).y;
+		int objectZMinTrans = glm::vec3(transform.transform * glm::vec4(object->zMin, 1)).z;
+		int objectXMaxTrans = glm::vec3(transform.transform * glm::vec4(object->xMax, 1)).x;
+		int objectYMaxTrans = glm::vec3(transform.transform * glm::vec4(object->yMax, 1)).y;
+		int objectZMaxTrans = glm::vec3(transform.transform * glm::vec4(object->zMax, 1)).z;
 
 
-		//return (objectPosMin.x <= xMax && objectPosMax.x >= xMin) &&
-			//(objectPosMin.y <= yMax && objectPosMax.y >= yMin) &&
-			//(objectPosMin.z <= zMax && objectPosMax.z >= zMin);
+		//glm::vec3 minTrans = glm::vec3(transform.transform * glm::vec4(xMin, yMin, zMin, 1));
+		//glm::vec3 maxTrans = glm::vec3(transform.transform * glm::vec4(xMax, yMax, zMax, 1));
 
+		//glm::vec3 objectMinTrans = glm::vec3(object->getTransform() * glm::vec4(object->xMin, object->yMin, object->zMin, 1));
+		//glm::vec3 objectMaxTrans = glm::vec3(object->getTransform() * glm::vec4(object->xMax, object->yMax, object->zMax, 1));
+
+		std::cout << "Local min: " << glm::to_string(glm::vec3(xMinTrans, yMinTrans, zMinTrans)) << "\n";
+		std::cout << "Local max: " << glm::to_string(glm::vec3(xMaxTrans, yMaxTrans, zMaxTrans)) << "\n";
+		std::cout << "Object min: " << glm::to_string(glm::vec3(objectXMinTrans, objectYMinTrans, objectZMinTrans)) << "\n";
+		std::cout << "Object max: " << glm::to_string(glm::vec3(objectXMaxTrans, objectYMaxTrans, objectZMaxTrans)) << "\n";
+
+		//return (objectMinTrans.x <= minTrans.x && objectMaxTrans.x >= maxTrans.x) &&
+			//(objectMinTrans.y <= minTrans.y && objectMaxTrans.y >= maxTrans.y) &&
+			//(objectMinTrans.z <= minTrans.z && objectMaxTrans.z >= maxTrans.z);
+
+		return (objectXMinTrans <= xMinTrans && objectXMaxTrans >= xMaxTrans) &&
+			(objectYMinTrans <= yMinTrans && objectYMaxTrans >= yMaxTrans) &&
+			(objectZMinTrans <= zMinTrans && objectZMaxTrans >= zMaxTrans);
 		
-		return (object->xMin <= xMax && object->xMax >= xMin) &&
-			(object->yMin <= yMax && object->yMax >= yMin) &&
-			(object->zMin <= zMax && object->zMax >= zMin);
+		//return (object->xMin <= xMax && object->xMax >= xMin) &&
+			//(object->yMin <= yMax && object->yMax >= yMin) &&
+			//(object->zMin <= zMax && object->zMax >= zMin);
 	}
 }	

@@ -102,7 +102,7 @@ namespace Broccoli {
 		virtual bool isInsideBoundingBox(RenderObject* object) = 0;
 
 		int width, height, depth;
-		int xMin, xMax, yMin, yMax, zMin, zMax;
+		glm::vec3 xMin, xMax, yMin, yMax, zMin, zMax;
 		glm::vec3 origin;
 		glm::vec3 startPointSlope;
 		glm::vec3 endPointSlope;

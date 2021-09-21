@@ -131,7 +131,7 @@ namespace Broccoli {
 		entityList.push_back(entity1);
 		//entityList.push_back(entity2);
 
-		Entity* map = new Entity(new Model("resources/models/dust2/source/de_dust2_edit_full.fbx", glm::vec3(0,0,0), glm::vec3(0.1f, 0.1f, 0.1f), glm::radians(glm::vec3(90, 0, 180.0f))), 1, 0.0f, 0, 0);
+		Entity* map = new Entity(new Model("resources/models/dust2/source/de_dust2_edit.fbx", glm::vec3(0,0,0), glm::vec3(0.1f, 0.1f, 0.1f), glm::radians(glm::vec3(90, 0, 180.0f))), 1, 0.0f, 0, 0);
 		entityList.push_back(map);
 		
 		//entityList.push_back(new Entity(new Mesh(entity1->getMesh()->getBoundingBox(), &indices, textureTest2, entity1->getMesh()->getTransformComponent().translation,
