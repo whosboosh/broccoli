@@ -107,26 +107,10 @@ namespace Broccoli {
 
 	// Keep the render API more primitive
 	// Entity is an engine concept that contains a mesh/model for cleaner abstraction
+	// UPDATE: Entity is just a mesh now
 	void Renderer::renderEntity(Ref<Pipeline> pipeline, Entity* entity)
 	{
-		if (entity->getModel())
-		{
-			renderAPI->renderModel(pipeline, entity->getModel());
-			//if (entity->getShouldDrawBoundingBox())
-			//{
-			//	for (Mesh* mesh : entity->getModel()->getMeshList())
-			//	{
-			//		renderAPI->renderMesh(pipeline, mesh->getBoundingBoxMesh());
-			//	}
-			//}
-		}
-		else if (entity->getMesh()){
-			renderAPI->renderMesh(pipeline, entity->getMesh());
-		//	if (entity->getShouldDrawBoundingBox())
-		//	{
-		//		renderAPI->renderMesh(pipeline, entity->getMesh()->getBoundingBoxMesh());
-		//	}
-		}
+		renderAPI->renderMesh(pipeline, entity->getMesh());
 	}
 
 	Ref<RendererContext> Renderer::getContext()

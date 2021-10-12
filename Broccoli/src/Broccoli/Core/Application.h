@@ -40,8 +40,8 @@ namespace Broccoli {
 		void setMinimise(bool state) { isMinimised = state; }
 
 	private:
-		std::vector<Ref<Mesh>> meshList;
-		std::vector<Ref<Model>> modelList;
+		std::vector<Mesh*> meshList;
+		std::vector<Model*> modelList;
 		std::vector<Entity*> entityList;
 
 		ViewProjection viewProjection;

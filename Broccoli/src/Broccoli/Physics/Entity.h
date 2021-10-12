@@ -10,10 +10,8 @@ namespace Broccoli
 	{
 	public:
 		Entity(Mesh* mesh, bool canCollide, bool initialVelocity, bool hasGravity, bool shouldDrawBoundingBox);
-		Entity(Model* model, bool canCollide, bool initialVelocity, bool hasGravity, bool shouldDrawBoundingBox);
 		~Entity();
 
-		Model* getModel() { return model; }
 		Mesh* getMesh() { return mesh; }
 
 		// Carry out per frame actions for this entity
@@ -27,7 +25,6 @@ namespace Broccoli
 		bool getShouldDrawBoundingBox() { return shouldDrawBoundingBox; }
 
 	private:
-		Model* model;
 		Mesh* mesh;
 
 		float movementSpeed = 0.001f;

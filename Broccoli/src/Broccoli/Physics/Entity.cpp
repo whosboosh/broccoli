@@ -7,17 +7,6 @@
 
 namespace Broccoli
 {
-	Entity::Entity(Model* model, bool canCollide, bool initialVelocity, bool hasGravity, bool shouldDrawBoundingBox)
-	{
-		this->model = model;
-		this->canCollide = canCollide;
-		this->velocity = initialVelocity;
-		this->hasGravity = hasGravity;
-		this->shouldDrawBoundingBox = shouldDrawBoundingBox;
-
-		setAssetType(AssetType::Model);
-	}
-
 	Entity::Entity(Mesh* mesh, bool canCollide, bool initialVelocity, bool hasGravity, bool shouldDrawBoundingBox)
 	{
 		this->mesh = mesh;
@@ -32,11 +21,11 @@ namespace Broccoli
 	Entity::~Entity()
 	{
 		delete &mesh;
-		delete &model;
 	}
 
 	void Entity::act(std::vector<Entity*> entityList)
 	{
+		// Only toggle gravity for meshes
 		if(hasGravity) actGravity(entityList);
 	}
 
@@ -61,122 +50,78 @@ namespace Broccoli
 					//	yDepth = collidingMesh->calculateAngleOfInclination(mesh);
 					//}
 				}
-				
-				else if (entity->getAssetType() == AssetType::Model)
-				{
-					// Return mesh that is colliding with inside model
-					collidingMesh = entity->getModel()->getCollidingMesh(mesh);
-					if (collidingMesh != NULL)
-					{
-						std::cout << "Object is colliding with a mesh of model : height : "<< mesh->height << "\n";
-						yDepth = collidingMesh->calculateAngleOfInclination(mesh);
-					}
-				}	
 			}
-
-			/*
-			// TODO: Refactor so I don't have to check type of mesh/model
-			else if (getAssetType() == AssetType::Model)
-			{
-				if (entity->getAssetType() == AssetType::Mesh)
-				{
-					if (entity->getMesh()->isInsideBoundingBox(model))
-					{
-						collidingMesh = entity->getMesh();
-						yDepth = collidingMesh->calculateAngleOfInclination(model->getTransformComponent().translation);
-					}
-				}
-				else if (entity->getAssetType() == AssetType::Model)
-				{
-					collidingMesh = entity->getModel()->getCollidingMesh(model);
-					if (collidingMesh != NULL)
-					{
-						yDepth = collidingMesh->calculateAngleOfInclination(model->getTransformComponent().translation);
-					}
-				}
-			}*/
 		}
 
 		std::cout << "Y depth for component: " << yDepth << "\n";
 
-		if (mesh) {
-			mesh->findMaxAndMinHeight();
-			// Get the lowest vertex in the mesh (endPointSlope)
-			// Make sure that endPointSlope.y > yDepth
-			// Transform the mesh to that yDepth until ^^
+		mesh->findMaxAndMinHeight();
+		// Get the lowest vertex in the mesh (endPointSlope)
+		// Make sure that endPointSlope.y > yDepth
+		// Transform the mesh to that yDepth until ^^
 
-			glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
-			int lowestHeight = glm::vec3(mesh->getTransform() * glm::vec4(mesh->endPointSlope, 1)).y;
+		glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
+		int lowestHeight = glm::vec3(mesh->getTransform() * glm::vec4(mesh->endPointSlope, 1)).y;
 
-			int difference = mesh->origin.y - lowestHeight;
+		int difference = mesh->origin.y - lowestHeight;
 
-			std::cout << difference << " " << lowestHeight << " " << currentTranslation.y << "\n";
+		std::cout << difference << " " << lowestHeight << " " << currentTranslation.y << "\n";
 
-			if (lowestHeight > yDepth && std::abs((lowestHeight)-yDepth) > 0.01)
+		if (lowestHeight > yDepth && std::abs((lowestHeight)-yDepth) > 0.01)
+		{
+			for (int i = 0; i < 10; i++)
 			{
-				for (int i = 0; i < 10; i++)
-				{
-					mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.1, currentTranslation.z));
-				}
-			}
-			else if (lowestHeight < yDepth && std::abs((lowestHeight)-yDepth) > 0.01)
-			{
-				for (int i = 0; i < 10; i++)
-				{
-					mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y + 0.1, currentTranslation.z));
-				}
+				mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.1, currentTranslation.z));
 			}
 		}
-		else {
-			// TODO: Enable y testing
-			glm::vec3 currentTranslation = model->getTransformComponent().translation;
-			model->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y - 0.01, currentTranslation.z));
+		else if (lowestHeight < yDepth && std::abs((lowestHeight)-yDepth) > 0.01)
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				mesh->setTranslation(glm::vec3(currentTranslation.x, currentTranslation.y + 0.1, currentTranslation.z));
+			}
 		}
 	}
 
 	void Entity::moveToPosition(glm::vec3 position, float velocity)
 	{
 		// Update transformation matrix until origin of entity is at position
-		if (mesh)
+		//float x = (mesh->getOrigin().x * mesh->getTransform()[3][0]);
+		//float y = (mesh->getOrigin().y * mesh->getTransform()[3][1]);
+		//float z = (mesh->getOrigin().z * mesh->getTransform()[3][2]);
+
+		//glm::vec3 currentPosition = glm::vec3(x,y,z);
+
+		//std::cout << glm::to_string(currentPosition) << "\n";
+		//std::cout << " Mesh transform: " << glm::to_string(mesh->getTransform()) << "\n";
+		//std::cout << " Mesh Translation " << glm::to_string(currentTranslation) << "\n";
+		//std::cout << " new position: " << glm::to_string(position) << "\n";
+
+		for (int i = 0; i < velocity; i++)
 		{
-			//float x = (mesh->getOrigin().x * mesh->getTransform()[3][0]);
-			//float y = (mesh->getOrigin().y * mesh->getTransform()[3][1]);
-			//float z = (mesh->getOrigin().z * mesh->getTransform()[3][2]);
+			glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
 
-			//glm::vec3 currentPosition = glm::vec3(x,y,z);
+			float xDifference = std::abs(position.x - currentTranslation.x);
+			float yDifference = std::abs(position.y - currentTranslation.y);
+			float zDifference = std::abs(position.z - currentTranslation.z);
 
-			//std::cout << glm::to_string(currentPosition) << "\n";
-			//std::cout << " Mesh transform: " << glm::to_string(mesh->getTransform()) << "\n";
-			//std::cout << " Mesh Translation " << glm::to_string(currentTranslation) << "\n";
-			//std::cout << " new position: " << glm::to_string(position) << "\n";
-
-			for (int i = 0; i < velocity; i++)
+			if (xDifference > movementSpeed || yDifference > movementSpeed || zDifference > movementSpeed)
 			{
-				glm::vec3 currentTranslation = mesh->getTransformComponent().translation;
+				float updatePosX;
+				float updatePosY;
+				float updatePosZ;
 
-				float xDifference = std::abs(position.x - currentTranslation.x);
-				float yDifference = std::abs(position.y - currentTranslation.y);
-				float zDifference = std::abs(position.z - currentTranslation.z);
+				if (currentTranslation.x > position.x)  updatePosX = currentTranslation.x - movementSpeed;
+				else updatePosX = currentTranslation.x + movementSpeed;
 
-				if (xDifference > movementSpeed || yDifference > movementSpeed || zDifference > movementSpeed)
-				{
-					float updatePosX;
-					float updatePosY;
-					float updatePosZ;
+				if (currentTranslation.y > position.y)  updatePosY = currentTranslation.y - movementSpeed;
+				else updatePosY = currentTranslation.y + movementSpeed;
 
-					if (currentTranslation.x > position.x)  updatePosX = currentTranslation.x - movementSpeed;
-					else updatePosX = currentTranslation.x + movementSpeed;
+				if (currentTranslation.z > position.z)  updatePosZ = currentTranslation.z - movementSpeed;
+				else updatePosZ = currentTranslation.z + movementSpeed;
 
-					if (currentTranslation.y > position.y)  updatePosY = currentTranslation.y - movementSpeed;
-					else updatePosY = currentTranslation.y + movementSpeed;
-
-					if (currentTranslation.z > position.z)  updatePosZ = currentTranslation.z - movementSpeed;
-					else updatePosZ = currentTranslation.z + movementSpeed;
-
-					mesh->setTranslation(glm::vec3(updatePosX, updatePosY, updatePosZ));
-				}
+				mesh->setTranslation(glm::vec3(updatePosX, updatePosY, updatePosZ));
 			}
-
 		}
 	}
 
