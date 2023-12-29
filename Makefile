@@ -2,7 +2,7 @@ BROCCOLI_NAME = broccoli
 
 BROCCOLI_OBJECTS = $(shell find src -type f -name '*.cpp')
 
-BROCCOLI_LIBS = -Wl,-rpath -Wl,/usr/local/lib64 -Lsrc/Vendor -lglfw -lvulkan -lshaderc_shared -lassimp -lvulkan -lspirv-cross-core -lglad
+BROCCOLI_LIBS = -Wl,-rpath -Wl,/usr/local/lib64 -Lsrc/Vendor -lglfw -lvulkan -lshaderc_shared -lassimp -lvulkan -lspirv-cross-core
 
 BROCCOLI_INCLUDE = -Isrc \
 				   -I/usr/include \
