@@ -1,7 +1,7 @@
 #include "Model.h"
 
-#include <time.h>  
-#include <stdlib.h> 
+#include <time.h>
+#include <stdlib.h>
 
 namespace Broccoli {
 	Model::Model(const std::string& fileName, glm::vec3 translate, glm::vec3 scale , glm::vec3 rotate) : fileName(fileName)
@@ -41,7 +41,7 @@ namespace Broccoli {
 		// Mapping from material string values to descriptor ids
 		matToTex.resize(textureList.size());
 
-		// Remove final contents after last / in fileName for 
+		// Remove final contents after last / in fileName for
 		std::string fileDirectory = fileName.substr(0, fileName.find_last_of("/"));
 		//std::cout << fileDirectory << "\n";
 
@@ -66,7 +66,7 @@ namespace Broccoli {
 					// Don't create same texture more than once
 					if (tex != NULL)
 					{
-						if (tex->getFilePath() == filePath) 
+						if (tex->getFilePath() == filePath)
 						{
 							matToTex[i] = tex;
 							break;
@@ -75,7 +75,7 @@ namespace Broccoli {
 				}
 
 				if (matToTex[i] == nullptr) {
-					matToTex[i] = Texture::create(fileDirectory + "/textures/" + textureList[i].substr(0, textureList[i].find_last_of(".")) + ".png", "geometry.frag", "textureSampler");					
+					matToTex[i] = Texture::create(fileDirectory + "/textures/" + textureList[i].substr(0, textureList[i].find_last_of(".")) + ".png", "geometry.frag", "textureSampler");
 				}
 			}
 		}

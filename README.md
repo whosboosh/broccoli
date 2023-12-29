@@ -6,4 +6,12 @@ Place a shortcut from the VulkanSDK folder to the root vendor directory
 
 Also download the Vulkan Debug libs and extract them inside the VulkanSDK folder. (Used for auto shader compilation)
 
-I need to fix some absolute paths in the source code :))
+* glfw-devel
+* glm-devel
+* vulkan-headers
+* stb_image-devel
+* assimp-devel
+* glad2
+* spirv-tools-devel
+* spirv-headers-devel
+* libshaderc
